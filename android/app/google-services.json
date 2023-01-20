@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "246652916677",
+    "project_id": "athleteiq-2f163",
+    "storage_bucket": "athleteiq-2f163.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:246652916677:android:29463787e148af22e331ac",
+        "android_client_info": {
+          "package_name": "com.AthleteIQ.www.athlete_iq"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "246652916677-kpn321ibgecctfprch4ps62qgr144oe4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDd8gSqfepHfzWUZHVFBXVrTx9rybUta00"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "246652916677-kpn321ibgecctfprch4ps62qgr144oe4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "246652916677-u703rg2d5rbq0onj4dok1pkcdkvtp3bn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.AthleteIQ.www.athleteIq"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
