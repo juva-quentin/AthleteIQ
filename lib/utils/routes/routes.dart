@@ -3,6 +3,8 @@ import 'package:athlete_iq/view/home_screen.dart';
 import 'package:athlete_iq/view/login_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../../view/signup_screen.dart';
+
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final argu = settings.arguments;
@@ -13,6 +15,9 @@ class Routes {
       case RoutesName.login:
         return MaterialPageRoute(
             builder: (BuildContext context) => LoginScreen());
+      case RoutesName.signup:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => SignupScreen());
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(
