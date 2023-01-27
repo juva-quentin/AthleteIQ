@@ -1,6 +1,7 @@
 import 'package:athlete_iq/utils/routes/routes_name.dart';
 import 'package:athlete_iq/view/home_screen.dart';
 import 'package:athlete_iq/view/login_screen.dart';
+import 'package:athlete_iq/view/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../view/signup_screen.dart';
@@ -18,6 +19,9 @@ class Routes {
       case RoutesName.signup:
         return MaterialPageRoute(
             builder: (BuildContext context) => SignupScreen());
+      case RoutesName.onboarding:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => OnboardingScreen());
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(
