@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../network/FireStoreServiceImpl.dart';
+import '../network/firestore_service_impl.dart';
 import '../network/firebase_service_impl.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -46,7 +46,7 @@ class AuthProvider extends ChangeNotifier {
     final hashPassword = cryptPassword.hashPassword(password);
 
     _userCredential =
-    await fauth.signupUserWithFirebase(email, hashPassword, name, genre);
+    await fauth.signupUserWithFirebase(email, password, name, genre);
 
     final data = {
       'email': email,
