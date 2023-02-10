@@ -22,13 +22,14 @@ class Utils {
             margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             padding: EdgeInsets.all(10),
             message: message,
-            backgroundColor: Colors.black,
+            backgroundColor: Color.fromARGB(255, 86, 0, 0),
             duration: const Duration(seconds: 3),
             reverseAnimationCurve: Curves.easeInOut,
             positionOffset: 20,
             borderRadius: BorderRadius.circular(20),
             flushbarPosition: FlushbarPosition.TOP,
-            icon: Icon(Icons.error, size: 28, color: Colors.white))
+            icon: Icon(Icons.error,
+                size: 28, color: Color.fromARGB(255, 255, 255, 255)))
           ..show(context));
   }
 
@@ -38,6 +39,4 @@ class Utils {
       content: Text(message),
     ));
   }
-
-  
 }

@@ -1,18 +1,25 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../utils/utils.dart';
 import 'abstract/firebase_service.dart';
 
 class FirebaseServiceImpl implements FirebaseService {
-
   FirebaseAuth auth = FirebaseAuth.instance;
   @override
   bool isUserLoggedIn() {
-    if (auth.currentUser != null) { return true; }else{ return false; }
+    if (auth.currentUser != null) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @override
-  Future<UserCredential> loginUserWithFirebase(String email, String password) {
-    final userCredential = auth.signInWithEmailAndPassword(email: email, password: password);
+  Future<UserCredential> loginUserWithFirebase(
+      String email, String password) async {
+    UserCredential userCredential;
+    userCredential =
+        await auth.signInWithEmailAndPassword(email: email, password: password);
     return userCredential;
   }
 
@@ -22,9 +29,10 @@ class FirebaseServiceImpl implements FirebaseService {
   }
 
   @override
-  Future<UserCredential> signupUserWithFirebase(String email, String password, String name, String genre) {
-    final userCredential = auth.createUserWithEmailAndPassword(email: email, password: password);
+  Future<UserCredential> signupUserWithFirebase(
+      String email, String password, String name, String genre) {
+    final userCredential =
+        auth.createUserWithEmailAndPassword(email: email, password: password);
     return userCredential;
   }
-  
 }

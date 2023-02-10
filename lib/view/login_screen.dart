@@ -2,6 +2,7 @@ import 'package:athlete_iq/resources/colors.dart';
 import 'package:athlete_iq/resources/size.dart';
 import 'package:athlete_iq/utils/EmailVAlidator.dart';
 import 'package:athlete_iq/utils/utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/riverpods/auth_pod.dart';
@@ -149,14 +150,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               } else {
                 bool firstTimeState = true;
                 firstTimeState = await hive.getHiveData('firstTime') ?? true;
-                auth
-                    .loginUserWithFirebase(
-                        _emailController.text, _passwordController.text)
-                    .then((value) {
-                  firstTimeState
-                      ? Navigator.pushNamed(context, RoutesName.onboarding)
-                      : Navigator.pushNamed(context, RoutesName.home);
-                });
+                try {
+                  await auth
+                      .loginUserWithFirebase(
+                          _emailController.text, _passwordController.text)
+                      .then((value) {
+                    firstTimeState
+                        ? Navigator.pushNamed(context, RoutesName.onboarding)
+                        : Navigator.pushNamed(context, RoutesName.home);
+                  });
+                } on FirebaseAuthException catch (e) {
+                  setState(() {
+                    Utils.flushBarErrorMessage(e.message!, context);
+                  });
+                }
               }
             },
           ),
@@ -172,7 +179,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Navigator.pushNamed(context, RoutesName.signup);
                 },
                 child: const Text(
-                  "Enregistrement",
+                  "Inscription",
                   style: TextStyle(color: Color.fromARGB(255, 0, 152, 240)),
                 ),
               ),
