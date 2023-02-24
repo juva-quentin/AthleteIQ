@@ -34,7 +34,7 @@ class OnboardingScreen extends ConsumerWidget {
         ],
         onDone: () {
           hive.storeHiveData('firstTime', false);
-          Navigator.pushNamed(context, RoutesName.home);
+          Navigator.pushNamed(context, RoutesName.app);
         },
         skip: const Icon(Icons.skip_next),
         next: const Icon(Icons.forward),
