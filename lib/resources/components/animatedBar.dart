@@ -12,7 +12,7 @@ class AnimatedBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: const Duration(microseconds: 500),
+      duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.only(bottom: 2),
       height: 4,
       width: isActive ?  30 : 0,

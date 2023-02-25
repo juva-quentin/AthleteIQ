@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-class InfoScreen extends StatefulWidget {
+import '../data/riverpods/auth_pod.dart';
+import '../utils/routes/routes_name.dart';
+
+class InfoScreen extends ConsumerStatefulWidget {
   const InfoScreen({Key? key}) : super(key: key);
 
   @override
-  State<InfoScreen> createState() => _InfoScreenState();
+  _InfoScreenState createState() => _InfoScreenState();
 }
 
-class _InfoScreenState extends State<InfoScreen> {
+class _InfoScreenState extends ConsumerState<InfoScreen> {
+  @override
+  void initState() {
+    super.initState();
+    ref.read(authProvider);
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    final authNotifier = ref.read(authProvider);
     final top = MediaQuery.of(context).size.height * 0.22 -
         MediaQuery.of(context).size.height * 0.13 / 2;
     return Stack(clipBehavior: Clip.none, alignment: Alignment.center, children: [
@@ -25,19 +37,9 @@ class _InfoScreenState extends State<InfoScreen> {
               size: 35,
             ),
             onPressed: () async {
-              Navigator.pop(context);
+              authNotifier.logoutUser();
+              Navigator.pushNamed(context, RoutesName.login);
             }),
-      ),
-      Positioned(
-        top: MediaQuery.of(context).size.height * 0.04,
-        child: IconButton(
-          icon: Icon(
-            Icons.keyboard_arrow_up,
-            color: Color.fromARGB(255, 255, 255, 255),
-            size: 40,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       Positioned(
           left: MediaQuery.of(context).size.width * 0.10,

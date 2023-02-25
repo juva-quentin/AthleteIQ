@@ -66,6 +66,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     final height = appSize.globalHeight;
     final width = appSize.globalWidth;
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -75,7 +76,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               height: height * .30,
               width: width,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(35),
+                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(35), bottomLeft: Radius.circular(35)),
                   color: AppColors.blueColor),
               child: Padding(
                 padding:

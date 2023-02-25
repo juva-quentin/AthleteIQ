@@ -11,7 +11,7 @@ import '../resources/components/authTextField.dart';
 import '../resources/components/authTextPassField.dart';
 import '../resources/components/round_button.dart';
 import '../utils/routes/routes_name.dart';
-import 'onboarding_screen.dart';
+
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -53,6 +53,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final width = appSize.globalWidth;
     var loading = false;
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -61,8 +62,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             Container(
               height: height * .30,
               width: width,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(35),
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(35), bottomLeft: Radius.circular(35)),
                   color: AppColors.blueColor),
               child: Padding(
                 padding:
@@ -156,7 +157,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   setState(() {
                     loading = true;
                   });
-                  await Future.delayed(const Duration(seconds: 5));
                   await auth
                       .loginUserWithFirebase(
                           _emailController.text, _passwordController.text)
