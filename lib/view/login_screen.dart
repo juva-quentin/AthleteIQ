@@ -135,7 +135,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             height: height * .08,
           ),
           RoundButton(
-            loading: loading,
             title: 'Connexion',
             onPress: () async {
               if (_emailController.text.isEmpty) {
