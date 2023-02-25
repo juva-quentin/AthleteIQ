@@ -21,14 +21,16 @@ class RoundButton extends StatelessWidget {
           height: 40,
           width: 200,
           decoration: BoxDecoration(
-              color: AppColors.blueColor,
+              color: Theme.of(context).buttonTheme.colorScheme!.primary,
               borderRadius: BorderRadius.circular(10)),
           child: Center(
               child: loading
-                  ? CircleAvatar()
+                  ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    )
                   : Text(
                       title,
-                      style: TextStyle(color: AppColors.whiteColor),
+                      style: TextStyle(color: Theme.of(context).colorScheme.background),
                     ))),
     );
   }

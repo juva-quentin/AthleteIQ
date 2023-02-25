@@ -1,3 +1,4 @@
+import 'package:athlete_iq/resources/components/authTextPassField.dart';
 import 'package:athlete_iq/utils/EmailVAlidator.dart';
 import 'package:athlete_iq/utils/routes/routes_name.dart';
 import 'package:athlete_iq/utils/utils.dart';
@@ -9,6 +10,7 @@ import 'package:gender_selection/gender_selection.dart';
 import '../data/riverpods/auth_pod.dart';
 import '../data/riverpods/hive_pod.dart';
 import '../resources/colors.dart';
+import '../resources/components/authTextField.dart';
 import '../resources/components/round_button.dart';
 import '../resources/size.dart';
 
@@ -28,7 +30,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   }
 
   late String selectGender = '';
-  final ValueNotifier _obsecurePassword = ValueNotifier<bool>(true);
+  final ValueNotifier _obscurePassword = ValueNotifier<bool>(true);
   final ValueNotifier _obsecureValidePassword = ValueNotifier<bool>(true);
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
@@ -52,7 +54,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     emailFocusNode.dispose();
     passwordFocusNode.dispose();
     validePasswordFocusNode.dispose();
-    _obsecurePassword.dispose();
+    _obscurePassword.dispose();
     _obsecureValidePassword.dispose();
   }
 
@@ -64,6 +66,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     final height = appSize.globalHeight;
     final width = appSize.globalWidth;
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -73,7 +76,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               height: height * .30,
               width: width,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(35),
+                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(35), bottomLeft: Radius.circular(35)),
                   color: AppColors.blueColor),
               child: Padding(
                 padding:
@@ -110,79 +113,69 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
           ),
           Column(
             children: [
-              TextFormField(
+              AuthTextField(
                 controller: _nameController,
-                keyboardType: TextInputType.name,
                 focusNode: nameFocusNode,
-                decoration: const InputDecoration(
-                    hintText: 'Pseudo',
-                    labelText: 'Pseudo',
-                    prefixIcon: Icon(Icons.account_circle_outlined)),
-                onFieldSubmitted: (value) {
-                  Utils.fieldFocusChange(
-                      context, nameFocusNode, emailFocusNode);
-                },
+                keyboardType: TextInputType.name,
+                hintText: 'Pseudo',
+                labelText: 'Pseudo',
+                prefixIcon: const Icon(Icons.account_circle_outlined),
+                nextFocus: emailFocusNode,
               ),
-              TextFormField(
+              AuthTextField(
                 controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
                 focusNode: emailFocusNode,
-                decoration: const InputDecoration(
-                    hintText: 'Email',
-                    labelText: 'Email',
-                    prefixIcon: Icon(Icons.alternate_email)),
-                onFieldSubmitted: (value) {
-                  Utils.fieldFocusChange(
-                      context, emailFocusNode, passwordFocusNode);
-                },
+                keyboardType: TextInputType.emailAddress,
+                hintText: 'Email',
+                labelText: 'Email',
+                prefixIcon: const Icon(Icons.alternate_email),
+                nextFocus: passwordFocusNode
               ),
               ValueListenableBuilder(
-                  valueListenable: _obsecurePassword,
+                  valueListenable: _obscurePassword,
                   builder: (context, value, child) {
-                    return TextFormField(
+                    return AuthTextPassField(
                       controller: _passwordController,
-                      obscureText: _obsecurePassword.value,
+                      obscureText: _obscurePassword,
                       focusNode: passwordFocusNode,
-                      decoration: InputDecoration(
-                        hintText: 'Password',
-                        labelText: 'Password',
-                        prefixIcon: const Icon(Icons.lock),
-                        suffixIcon: InkWell(
-                          onTap: () {
-                            _obsecurePassword.value = !_obsecurePassword.value;
-                          },
-                          child: Icon(_obsecurePassword.value
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility),
+                      keyboardType: TextInputType.text,
+                      hintText: 'Mot de passe',
+                      labelText: 'Mot de passe',
+                      prefixIcon: const Icon(Icons.lock),
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          _obscurePassword.value = !_obscurePassword.value;
+                        },
+                        child: Icon(
+                            _obscurePassword.value
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility
                         ),
-                      ),
-                      onFieldSubmitted: (value) {
-                        Utils.fieldFocusChange(context, passwordFocusNode,
-                            validePasswordFocusNode);
-                      },
+                    ),
+                      nextFocus: validePasswordFocusNode
                     );
                   }),
               ValueListenableBuilder(
                   valueListenable: _obsecureValidePassword,
                   builder: (context, value, child) {
-                    return TextFormField(
-                      controller: _validePasswordController,
-                      obscureText: _obsecureValidePassword.value,
-                      focusNode: validePasswordFocusNode,
-                      decoration: InputDecoration(
-                        hintText: 'Password',
-                        labelText: 'Password',
+                    return AuthTextPassField(
+                        controller: _validePasswordController,
+                        obscureText: _obsecureValidePassword,
+                        focusNode: validePasswordFocusNode,
+                        keyboardType: TextInputType.text,
+                        hintText: 'Mot de passe',
+                        labelText: 'Mot de passe',
                         prefixIcon: const Icon(Icons.lock),
                         suffixIcon: InkWell(
                           onTap: () {
                             _obsecureValidePassword.value =
-                                !_obsecureValidePassword.value;
+                            !_obsecureValidePassword.value;
                           },
                           child: Icon(_obsecureValidePassword.value
                               ? Icons.visibility_off_outlined
                               : Icons.visibility),
                         ),
-                      ),
+                        nextFocus: validePasswordFocusNode
                     );
                   }),
               SizedBox(
@@ -274,12 +267,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         firstTimeState
                             ? Navigator.pushNamed(
                                 context, RoutesName.onboarding)
-                            : Navigator.pushNamed(context, RoutesName.home);
+                            : Navigator.pushNamed(context, RoutesName.app);
                       });
                     } on FirebaseAuthException catch (e) {
-                      setState(() {
-                        Utils.flushBarErrorMessage(e.message!, context);
-                      });
+                      // ignore: use_build_context_synchronously
+                      Utils.flushBarErrorMessage(e.message!, context);
                     }
                   }
                 },

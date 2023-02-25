@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:athlete_iq/resources/components/GoBtn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../data/riverpods/auth_pod.dart';
-import '../utils/routes/routes_name.dart';
+import '../resources/size.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -15,14 +16,22 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+
+  final ValueNotifier _courseIsStart = ValueNotifier<bool>(false);
+  final Set<Marker> _markers = Set();
+
   @override
   void initState() {
     super.initState();
     ref.read(authProvider);
   }
 
-  final Set<Marker> _markers = Set();
-  final double _zoom = 10;
+  @override
+  void dispose() {
+    super.dispose();
+    _courseIsStart.dispose();
+  }
+
   CameraPosition _initialPosition =
       CameraPosition(target: LatLng(26.8206, 30.8025));
   MapType _defaultMapType = MapType.normal;
@@ -42,46 +51,60 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AppSize appSize = AppSize(context);
+    final height = appSize.globalHeight;
+    final width = appSize.globalWidth;
+    final optionBtnHeigth =  height * .06;
+    final optionBtnWidth = width * .5;
     return Scaffold(
-      appBar:
-          AppBar(title: Text('Maps in Flutter'), centerTitle: true, actions: [
-        Consumer(builder: ((context, ref, child) {
-          final authNotifier = ref.watch(authProvider);
-          return IconButton(
-            icon: const Icon(Icons.logout_outlined),
-            onPressed: () {
-              authNotifier.logoutUser();
-              Navigator.pushNamed(context, RoutesName.login);
-            },
-          );
-        }))
-      ]),
       body: Stack(
-        children: <Widget>[
-          GoogleMap(
-            markers: _markers,
-            mapType: _defaultMapType,
-            myLocationEnabled: true,
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: _initialPosition,
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 80, right: 10),
-            alignment: Alignment.topRight,
-            child: Column(
-              children: <Widget>[
-                FloatingActionButton(
-                    child: Icon(Icons.layers),
-                    elevation: 5,
-                    backgroundColor: Colors.teal[200],
-                    onPressed: () {
-                      _changeMapType();
-                      print('Changing the Map Type');
-                    }),
-              ],
+          children: <Widget>[
+            GoogleMap(
+              markers: _markers,
+              mapType: _defaultMapType,
+              myLocationEnabled: true,
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: _initialPosition,
             ),
-          ),
-        ],
+            Positioned(
+              bottom: height * .14,
+              left:_courseIsStart.value? width * .5 - optionBtnWidth*.5 : width * .5 - (optionBtnWidth*.26)*.5,
+              child:  ValueListenableBuilder(
+                valueListenable: _courseIsStart,
+                builder: (context, value, child) {
+                  print( _courseIsStart.value);
+                  return GoBtn(
+                    optionBtnHeigth: optionBtnHeigth,
+                    optionBtnWidth: optionBtnWidth,
+                    isActive: _courseIsStart.value,
+                    onPress: (){
+                      setState(() {
+                        print("ok");
+                        _courseIsStart.value = !_courseIsStart.value;
+                      });
+
+                    }
+                );
+                },
+              )
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 80, right: 10),
+              alignment: Alignment.topRight,
+              child: Column(
+                children: <Widget>[
+                  FloatingActionButton(
+                      child: Icon(Icons.layers),
+                      elevation: 5,
+                      backgroundColor: Colors.teal[200],
+                      onPressed: () {
+                        _changeMapType();
+                        print('Changing the Map Type');
+                      }),
+                ],
+              ),
+            ),
+          ],
       ),
     );
   }

@@ -1,18 +1,21 @@
+import 'package:athlete_iq/utils/routes/customPopupRoute.dart';
 import 'package:athlete_iq/utils/routes/routes_name.dart';
 import 'package:athlete_iq/view/home_screen.dart';
 import 'package:athlete_iq/view/login_screen.dart';
 import 'package:athlete_iq/view/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../../app.dart';
+import '../../view/info_screen.dart';
 import '../../view/signup_screen.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final argu = settings.arguments;
     switch (settings.name) {
-      case RoutesName.home:
+      case RoutesName.app:
         return MaterialPageRoute(
-            builder: (BuildContext context) => HomeScreen());
+            builder: (BuildContext context) => App());
       case RoutesName.login:
         return MaterialPageRoute(
             builder: (BuildContext context) => LoginScreen());

@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/riverpods/auth_pod.dart';
 import '../data/riverpods/hive_pod.dart';
+import '../resources/components/authTextField.dart';
+import '../resources/components/authTextPassField.dart';
 import '../resources/components/round_button.dart';
 import '../utils/routes/routes_name.dart';
-import 'onboarding_screen.dart';
+
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -25,7 +27,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     ref.read(hiveProvider);
   }
 
-  final ValueNotifier _obsecurePassword = ValueNotifier<bool>(true);
+  final ValueNotifier _obscurePassword = ValueNotifier<bool>(true);
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -39,7 +41,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     _passwordController.dispose();
     emailFocusNode.dispose();
     passwordFocusNode.dispose();
-    _obsecurePassword.dispose();
+    _obscurePassword.dispose();
   }
 
   @override
@@ -49,7 +51,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final AppSize appSize = AppSize(context);
     final height = appSize.globalHeight;
     final width = appSize.globalWidth;
+    var loading = false;
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -58,8 +62,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             Container(
               height: height * .30,
               width: width,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(35),
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(35), bottomLeft: Radius.circular(35)),
                   color: AppColors.blueColor),
               child: Padding(
                 padding:
@@ -94,45 +98,44 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           SizedBox(
             height: height * .05,
           ),
-          TextFormField(
+          AuthTextField(
             controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
             focusNode: emailFocusNode,
-            decoration: const InputDecoration(
-                hintText: 'Email',
-                labelText: 'Email',
-                prefixIcon: Icon(Icons.alternate_email)),
-            onFieldSubmitted: (value) {
-              Utils.fieldFocusChange(
-                  context, emailFocusNode, passwordFocusNode);
-            },
+            keyboardType: TextInputType.emailAddress,
+            hintText: 'Email',
+            labelText: 'Email',
+            prefixIcon: const Icon(Icons.alternate_email),
+            nextFocus: passwordFocusNode,
           ),
           ValueListenableBuilder(
-              valueListenable: _obsecurePassword,
+              valueListenable: _obscurePassword,
               builder: (context, value, child) {
-                return TextFormField(
-                  controller: _passwordController,
-                  obscureText: _obsecurePassword.value,
-                  focusNode: passwordFocusNode,
-                  decoration: InputDecoration(
-                    hintText: 'Password',
-                    labelText: 'Password',
+                return AuthTextPassField(
+                    controller: _passwordController,
+                    obscureText: _obscurePassword,
+                    focusNode: passwordFocusNode,
+                    keyboardType: TextInputType.text,
+                    hintText: 'Mot de passe',
+                    labelText: 'Mot de passe',
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: InkWell(
                       onTap: () {
-                        _obsecurePassword.value = !_obsecurePassword.value;
+                        _obscurePassword.value = !_obscurePassword.value;
                       },
-                      child: Icon(_obsecurePassword.value
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility),
+                      child: Icon(
+                          _obscurePassword.value
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility
+                      ),
                     ),
-                  ),
+                    nextFocus: passwordFocusNode,
                 );
               }),
           SizedBox(
             height: height * .08,
           ),
           RoundButton(
+            loading: loading,
             title: 'Connexion',
             onPress: () async {
               if (_emailController.text.isEmpty) {
@@ -151,18 +154,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 bool firstTimeState = true;
                 firstTimeState = await hive.getHiveData('firstTime') ?? true;
                 try {
+                  setState(() {
+                    loading = true;
+                  });
                   await auth
                       .loginUserWithFirebase(
                           _emailController.text, _passwordController.text)
                       .then((value) {
+                    loading = false;
                     firstTimeState
                         ? Navigator.pushNamed(context, RoutesName.onboarding)
-                        : Navigator.pushNamed(context, RoutesName.home);
+                        : Navigator.pushNamed(context, RoutesName.app);
                   });
                 } on FirebaseAuthException catch (e) {
-                  setState(() {
-                    Utils.flushBarErrorMessage(e.message!, context);
-                  });
+                  // ignore: use_build_context_synchronously
+                  Utils.flushBarErrorMessage(e.message!, context);
                 }
               }
             },
