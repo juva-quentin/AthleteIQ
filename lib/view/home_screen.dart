@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:athlete_iq/data/riverpods/variable_pod.dart';
 import 'package:athlete_iq/resources/components/GoBtn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,21 +17,14 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-
-  final ValueNotifier _courseIsStart = ValueNotifier<bool>(false);
   final Set<Marker> _markers = Set();
 
   @override
   void initState() {
     super.initState();
-    ref.read(authProvider);
+    ref.read(courseStart);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _courseIsStart.dispose();
-  }
 
   CameraPosition _initialPosition =
       CameraPosition(target: LatLng(26.8206, 30.8025));
@@ -56,6 +50,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final width = appSize.globalWidth;
     final optionBtnHeigth =  height * .06;
     final optionBtnWidth = width * .5;
+    StateController<bool> _courseIsStart = ref.watch(courseStart.notifier);
     return Scaffold(
       body: Stack(
           children: <Widget>[
@@ -66,27 +61,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onMapCreated: _onMapCreated,
               initialCameraPosition: _initialPosition,
             ),
-            Positioned(
-              bottom: height * .14,
-              left:_courseIsStart.value? width * .5 - optionBtnWidth*.5 : width * .5 - (optionBtnWidth*.26)*.5,
-              child:  ValueListenableBuilder(
-                valueListenable: _courseIsStart,
-                builder: (context, value, child) {
-                  print( _courseIsStart.value);
-                  return GoBtn(
-                    optionBtnHeigth: optionBtnHeigth,
-                    optionBtnWidth: optionBtnWidth,
-                    isActive: _courseIsStart.value,
-                    onPress: (){
-                      setState(() {
-                        print("ok");
-                        _courseIsStart.value = !_courseIsStart.value;
-                      });
-
-                    }
+            Consumer(builder: (context, ref, _) {
+              var isStart = ref.watch(courseStart);
+              return AnimatedContainer(
+                  duration: Duration(milliseconds: 500),
+                  alignment: Alignment(0,!isStart? 0.7 : 0.9),
+                  // bottom: height * .14,
+                  // left:isStart? width * .5 - optionBtnWidth*.5 : width * .5 - (optionBtnWidth*.26)*.5,
+                  child: GoBtn(
+                        optionBtnHeigth: optionBtnHeigth,
+                        optionBtnWidth: optionBtnWidth,
+                        onPress: (){
+                            _courseIsStart.state = !_courseIsStart.state;
+                        }
+                    )
                 );
-                },
-              )
+              }
             ),
             Container(
               margin: EdgeInsets.only(top: 80, right: 10),
@@ -99,7 +89,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       backgroundColor: Colors.teal[200],
                       onPressed: () {
                         _changeMapType();
-                        print('Changing the Map Type');
                       }),
                 ],
               ),
