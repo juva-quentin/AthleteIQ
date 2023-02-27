@@ -1,8 +1,8 @@
 import 'package:athlete_iq/resources/components/animatedBar.dart';
 import 'package:athlete_iq/resources/size.dart';
+import 'package:athlete_iq/ui/home_screen.dart';
+import 'package:athlete_iq/ui/info_screen.dart';
 import 'package:athlete_iq/utils/rive_utils.dart';
-import 'package:athlete_iq/view/home_screen.dart';
-import 'package:athlete_iq/view/info_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

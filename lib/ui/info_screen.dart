@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-
-import '../data/riverpods/auth_pod.dart';
-import '../utils/routes/routes_name.dart';
+import '../utils/routes/root.dart';
+import 'auth/providers/auth_view_model_provider.dart';
 
 class InfoScreen extends ConsumerStatefulWidget {
   const InfoScreen({Key? key}) : super(key: key);
@@ -16,13 +15,12 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(authProvider);
   }
 
 
   @override
   Widget build(BuildContext context) {
-    final authNotifier = ref.read(authProvider);
+
     final top = MediaQuery.of(context).size.height * 0.22 -
         MediaQuery.of(context).size.height * 0.13 / 2;
     return Stack(clipBehavior: Clip.none, alignment: Alignment.center, children: [
@@ -37,8 +35,8 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
               size: 35,
             ),
             onPressed: () async {
-              authNotifier.logoutUser();
-              Navigator.pushNamed(context, RoutesName.login);
+              await ref.read(authViewModelProvider).logout();
+              Navigator.pushReplacementNamed(context, Root.route);
             }),
       ),
       Positioned(
