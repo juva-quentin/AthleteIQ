@@ -56,9 +56,9 @@ class User {
       'email': email,
       'friends': friends,
       'sex': sex,
-      'objectif': objectif,
+      'objectif': objectif.toDouble(),
       'createdAt': Timestamp.fromDate(createdAt),
-      'totalDist': totalDist,
+      'totalDist': totalDist.toDouble(),
     };
   }
 
@@ -71,9 +71,9 @@ class User {
       email: map['email'] ?? '',
       friends: map['friends'] ?? [],
       sex: map['sex'] ?? '',
-      objectif: map['objectif'] ?? 0,
+      objectif: map['objectif'].toDouble() ?? 0,
       createdAt: map['createdAt'].toDate(),
-      totalDist: map['totalDist'] ?? 0,
+      totalDist: map['totalDist'].toDouble() ?? 0,
     );
   }
 

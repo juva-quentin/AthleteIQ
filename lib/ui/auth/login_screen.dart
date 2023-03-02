@@ -109,8 +109,7 @@ class LoginScreen extends ConsumerWidget {
               ref.watch(provider);
               return InkWell(
                 onTap:  model.email.isNotEmpty &&
-                    model.password.isNotEmpty &&
-                    model.sex.isNotEmpty
+                    model.password.isNotEmpty 
                     ? () async {
                   if (_formKey.currentState!.validate()) {
                     try {

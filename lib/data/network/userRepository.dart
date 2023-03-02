@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../model/User.dart' as user;
 import '../../ui/auth/providers/auth_view_model_provider.dart';
 
-final UserRepositoryProvider = Provider((ref) => UserRepository());
+final userRepositoryProvider = Provider((ref) => UserRepository());
 
 class UserRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -40,12 +40,10 @@ class UserRepository {
     }
   }
 
-  Stream<user.User> get userStream => _firestore
+   Stream<DocumentSnapshot<Map<String, dynamic>>> get userStream => _firestore
       .collection('users').doc(_auth.currentUser!.uid)
-      .snapshots()
-      .map(
-        (event) => user.User.fromFirestore(event),
-  );
+      .snapshots();
+
 
   void delete(String id) {
     _firestore.collection("items").doc(id).delete();

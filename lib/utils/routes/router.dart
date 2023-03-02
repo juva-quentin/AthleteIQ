@@ -8,7 +8,6 @@ import '../../ui/auth/login_screen.dart';
 class AppRouter {
   static Route<MaterialPageRoute> onNavigate(RouteSettings settings) {
     late final Widget selectedPage;
-
     switch (settings.name) {
       case LoginScreen.route:
         selectedPage = LoginScreen();
@@ -18,6 +17,9 @@ class AppRouter {
         break;
       case EmailVerifyPage.route:
         selectedPage = EmailVerifyPage();
+        break;
+      case Root.route:
+        selectedPage = Root();
         break;
       default:
         selectedPage = const Root();

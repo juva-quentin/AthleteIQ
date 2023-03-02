@@ -1,13 +1,12 @@
 import 'dart:convert';
 
-import 'package:athlete_iq/ui/auth/login_screen.dart';
+import 'package:athlete_iq/utils/routes/root.dart';
 import 'package:athlete_iq/utils/routes/router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:json_theme/json_theme.dart';
 import 'firebase_options.dart';
 
@@ -21,7 +20,7 @@ Future<void> main() async {
   final themeStr = await rootBundle.loadString('assets/appainter_theme.json');
   final themeJson = jsonDecode(themeStr);
   final theme = ThemeDecoder.decodeThemeData(themeJson)!;
-  runApp(ProviderScope(child: MyApp(theme: theme,)));
+  runApp(ProviderScope(child: MyApp(theme: theme)));
 }
 
 class MyApp extends StatelessWidget {
@@ -29,14 +28,12 @@ class MyApp extends StatelessWidget {
   final ThemeData theme;
   @override
   Widget build(BuildContext context) {
-
-    print(FirebaseAuth.instance.currentUser);
     FlutterNativeSplash.remove();
     return MaterialApp(
       title: 'AthleteIQ',
       debugShowCheckedModeBanner: false,
       theme: theme,
-      initialRoute: LoginScreen.route,
+      initialRoute: Root.route,
       onGenerateRoute: AppRouter.onNavigate,
     );
   }

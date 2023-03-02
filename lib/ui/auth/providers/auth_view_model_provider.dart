@@ -24,7 +24,7 @@ class AuthViewModel extends ChangeNotifier {
 
   Stream<User?> get userStream => _auth.authStateChanges();
 
-  UserRepository _userReop = UserRepository();
+  final UserRepository _userRepo = UserRepository();
 
 
   String _pseudo = '';
@@ -143,7 +143,7 @@ class AuthViewModel extends ChangeNotifier {
         createdAt: DateTime.now(),
         totalDist: 0,
       );
-      await _userReop.writeUser(_user);
+      await _userRepo.writeUser(_user);
       sendEmail();
       _loading.end();
     } catch (e) {

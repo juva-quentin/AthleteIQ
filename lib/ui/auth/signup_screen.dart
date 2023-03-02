@@ -1,11 +1,9 @@
 import 'package:athlete_iq/ui/auth/providers/auth_view_model_provider.dart';
 import 'package:athlete_iq/utils/utils.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gender_selection/gender_selection.dart';
 import '../../resources/size.dart';
-import '../../utils/routes/root.dart';
 import '../providers/loading_provider.dart';
 import 'email_verify_page.dart';
 import 'login_screen.dart';
@@ -195,7 +193,8 @@ class SignupScreen extends ConsumerWidget {
                       return InkWell(
                         onTap: model.email.isNotEmpty &&
                             model.password.isNotEmpty &&
-                            model.confirmPassord.isNotEmpty
+                            model.confirmPassord.isNotEmpty &&
+                            model.sex.isNotEmpty
                             ? () async {
                           if (_formKey.currentState!.validate()) {
                             try {
