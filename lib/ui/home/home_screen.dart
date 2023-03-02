@@ -1,13 +1,10 @@
 import 'dart:async';
-
-import 'package:athlete_iq/data/riverpods/variable_pod.dart';
 import 'package:athlete_iq/resources/components/GoBtn.dart';
+import 'package:athlete_iq/ui/home/home_view_model_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../data/riverpods/auth_pod.dart';
-import '../resources/size.dart';
+import '../../resources/size.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -22,7 +19,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(courseStart);
+    ref.read(homeViewModelProvider);
   }
 
 
@@ -48,9 +45,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final AppSize appSize = AppSize(context);
     final height = appSize.globalHeight;
     final width = appSize.globalWidth;
-    final optionBtnHeigth =  height * .06;
-    final optionBtnWidth = width * .5;
-    StateController<bool> _courseIsStart = ref.watch(courseStart.notifier);
     return Scaffold(
       body: Stack(
           children: <Widget>[
@@ -62,19 +56,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               initialCameraPosition: _initialPosition,
             ),
             Consumer(builder: (context, ref, _) {
-              var isStart = ref.watch(courseStart);
+              var isStart = ref.watch(homeViewModelProvider).courseStart;
               return AnimatedContainer(
                   duration: Duration(milliseconds: 500),
                   alignment: Alignment(0,!isStart? 0.7 : 0.9),
                   // bottom: height * .14,
                   // left:isStart? width * .5 - optionBtnWidth*.5 : width * .5 - (optionBtnWidth*.26)*.5,
-                  child: GoBtn(
-                        optionBtnHeigth: optionBtnHeigth,
-                        optionBtnWidth: optionBtnWidth,
-                        onPress: (){
-                            _courseIsStart.state = !_courseIsStart.state;
-                        }
-                    )
+                  child: const GoBtn()
                 );
               }
             ),

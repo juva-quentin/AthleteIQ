@@ -1,8 +1,8 @@
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'abstract/firestorage_service.dart';
 
-class FirestorageServiceImpl implements FirestorageService{
+
+class FirestorageServiceImpl{
   FirebaseStorage storage = FirebaseStorage.instance;
   @override
   Future addDateToFirestorage() {
