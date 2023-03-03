@@ -3,9 +3,9 @@ class Assets {
   Assets._();
 
   static const String assetsAppainterTheme = 'assets/appainter_theme.json';
-  static const String imagesIMG1269 = 'assets/images/IMG_1269.jpeg';
-  static const String imagesIMG3372 = 'assets/images/IMG_3372.PNG';
+  static const String gifLoadingIcon = 'assets/gif/Loading_icon.gif';
+  static const String imagesError = 'assets/images/error.png';
   static const String imagesLogo = 'assets/images/logo.png';
-  static const String riveAssets12982487AnimatedIconSet1Color = 'assets/RiveAssets/icons.riv';
+  static const String riveAssetsIcons = 'assets/RiveAssets/icons.riv';
 
 }

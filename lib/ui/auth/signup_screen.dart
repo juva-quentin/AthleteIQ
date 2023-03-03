@@ -172,8 +172,8 @@ class SignupScreen extends ConsumerWidget {
                         model.sex = 'Femme';
                       }
                     },
-                    maleImage: const AssetImage("assets/images/IMG_3372.PNG"),
-                    femaleImage: const AssetImage("assets/images/IMG_1269.jpeg"),
+                    maleImage: const NetworkImage("https://cdn-icons-png.flaticon.com/512/18/18148.png"),
+                    femaleImage: const NetworkImage("https://cdn-icons-png.flaticon.com/512/9460/9460573.png"),
                     equallyAligned: true,
                     animationDuration: const Duration(milliseconds: 400),
                     isCircular: true,
@@ -202,7 +202,7 @@ class SignupScreen extends ConsumerWidget {
                               // ignore: use_build_context_synchronously
                               Navigator.pushNamedAndRemoveUntil(
                                 context,
-                                EmailVerifyPage.route,
+                                EmailVerifyScreen.route,
                                     (route) => false,
                               );
                             } catch (e) {

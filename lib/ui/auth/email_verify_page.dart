@@ -7,14 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../utils/routes/root.dart';
 import '../../utils/utils.dart';
 
-class EmailVerifyPage extends ConsumerStatefulWidget {
-  const EmailVerifyPage({Key? key}) : super(key: key);
+class EmailVerifyScreen extends ConsumerStatefulWidget {
+  const EmailVerifyScreen({Key? key}) : super(key: key);
   static const String route = "/verifyEmail";
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _EmailVerifyPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _EmailVerifyScreenState();
 }
 
-class _EmailVerifyPageState extends ConsumerState<EmailVerifyPage> {
+class _EmailVerifyScreenState extends ConsumerState<EmailVerifyScreen> {
   final provider = authViewModelProvider;
 
   void onDone(){

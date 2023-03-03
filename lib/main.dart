@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:athlete_iq/ui/providers/cache_provider.dart';
 import 'package:athlete_iq/utils/routes/root.dart';
 import 'package:athlete_iq/utils/routes/router.dart';
 import 'package:flutter/material.dart';
@@ -23,18 +24,52 @@ Future<void> main() async {
   runApp(ProviderScope(child: MyApp(theme: theme)));
 }
 
-class MyApp extends StatelessWidget {
+
+
+class MyApp extends ConsumerWidget {
   const MyApp({super.key, required this.theme});
   final ThemeData theme;
   @override
-  Widget build(BuildContext context) {
-    FlutterNativeSplash.remove();
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       title: 'AthleteIQ',
       debugShowCheckedModeBanner: false,
       theme: theme,
-      initialRoute: Root.route,
+      initialRoute: InitRoute.route,
       onGenerateRoute: AppRouter.onNavigate,
     );
   }
 }
+
+class InitRoute extends ConsumerStatefulWidget {
+  const InitRoute({Key? key}) : super(key: key);
+  static const String route = "/";
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _InitRouteState();
+}
+
+class _InitRouteState extends ConsumerState<InitRoute> {
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  void init() async {
+    await ref.read(cacheProvider.future);
+    await Future.delayed(const Duration(seconds: 1));
+    FlutterNativeSplash.remove();
+    if (!mounted) return;
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      Root.route,
+          (route) => false,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+  }

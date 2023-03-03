@@ -19,15 +19,15 @@ class OnboardingScreen extends HookConsumerWidget {
 
   static const List<OnboardingItem> _items = [
     OnboardingItem(
-        image: "assets/images/IMG_3372.PNG",
+        image: "https://www.alpesaventures.com/wp-content/uploads/2020/05/BASE-pdt-cours.webp",
         title: "titre1",
         description: "description"),
     OnboardingItem(
-        image: "assets/images/IMG_3372.PNG",
+        image: "https://www.alpesaventures.com/wp-content/uploads/2020/05/BASE-pdt-cours.webp",
         title: "titre1",
         description: "description"),
     OnboardingItem(
-        image: "assets/images/IMG_3372.PNG",
+        image: "https://www.alpesaventures.com/wp-content/uploads/2020/05/BASE-pdt-cours.webp",
         title: "titre1",
         description: "description"),
   ];
@@ -119,7 +119,7 @@ class OnboardingScreen extends HookConsumerWidget {
               children: [
                 Expanded(
                   flex: 32,
-                  child: Image.asset(e.image),
+                  child: Image.network(e.image),
                 ),
                 Text(
                   e.title,
