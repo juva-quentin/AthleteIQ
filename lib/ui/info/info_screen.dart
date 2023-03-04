@@ -1,12 +1,8 @@
 import 'package:athlete_iq/ui/info/provider/user_provider.dart';
 import 'package:athlete_iq/ui/settings_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:unicons/unicons.dart';
-import '../../model/User.dart';
-import '../../resources/components/middleAnimatedBar.dart';
 import 'components/TopInfo.dart';
 import 'components/middleNavComponent.dart';
 import 'info_view_model_provider.dart';
