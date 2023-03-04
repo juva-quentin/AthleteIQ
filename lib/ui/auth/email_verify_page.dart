@@ -11,13 +11,14 @@ class EmailVerifyScreen extends ConsumerStatefulWidget {
   const EmailVerifyScreen({Key? key}) : super(key: key);
   static const String route = "/verifyEmail";
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _EmailVerifyScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _EmailVerifyScreenState();
 }
 
 class _EmailVerifyScreenState extends ConsumerState<EmailVerifyScreen> {
   final provider = authViewModelProvider;
 
-  void onDone(){
+  void onDone() {
     if (!mounted) return;
     Navigator.pushReplacementNamed(context, Root.route);
   }
@@ -71,7 +72,8 @@ class _EmailVerifyScreenState extends ConsumerState<EmailVerifyScreen> {
                     onDone();
                   } else {
                     // ignore: use_build_context_synchronously
-                    Utils.flushBarErrorMessage("Votre email n'est pas vérifé", context);
+                    Utils.flushBarErrorMessage(
+                        "Votre email n'est pas vérifé", context);
                   }
                 },
                 child: const Text("OK"),
@@ -81,9 +83,10 @@ class _EmailVerifyScreenState extends ConsumerState<EmailVerifyScreen> {
               child: TextButton(
                 onPressed: () async {
                   try {
-                  await  model.sendEmail();
-                  // ignore: use_build_context_synchronously
-                  Utils.flushBarErrorMessage("Email de vérification réenvoyé", context);
+                    await model.sendEmail();
+                    // ignore: use_build_context_synchronously
+                    Utils.flushBarErrorMessage(
+                        "Email de vérification réenvoyé", context);
                   } catch (e) {
                     if (kDebugMode) {
                       print(e);
@@ -99,5 +102,4 @@ class _EmailVerifyScreenState extends ConsumerState<EmailVerifyScreen> {
       ),
     );
   }
-  }
-
+}
