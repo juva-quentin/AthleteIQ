@@ -19,7 +19,7 @@ class GoBtn extends ConsumerWidget {
       ref.watch(
           provider.select((value) => value.courseStart));
       return GestureDetector(
-          onTap: (){model.courseStart = !model.courseStart;},
+          onTap: (){model.courseStart = !model.courseStart; model.register();},
           child: AnimatedContainer(
               duration: const Duration(milliseconds: 500),
               decoration: BoxDecoration(

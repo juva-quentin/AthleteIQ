@@ -59,7 +59,6 @@ class _InitRouteState extends ConsumerState<InitRoute> {
   void init() async {
     await ref.read(cacheProvider.future);
     await Future.delayed(const Duration(seconds: 1));
-    FlutterNativeSplash.remove();
     if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(
       context,

@@ -1,5 +1,6 @@
 import 'package:athlete_iq/resources/components/GoBtn.dart';
 import 'package:athlete_iq/ui/home/home_view_model_provider.dart';
+import 'package:athlete_iq/ui/home/providers/timer_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -14,7 +15,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -43,12 +43,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             );
           }),
           Consumer(builder: (context, ref, child) {
+            final isStart = ref.watch(homeViewModelProvider).courseStart;
+            final chrono = ref.watch(timerProvider);
+            return Align(
+              alignment: const Alignment(0, -1),
+              child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 500),
+                  opacity: isStart ? 0.8 : 0,
+                  child: SafeArea(
+                    child: Container(
+                      alignment: const Alignment(0, 0),
+                      height: height*.03,
+                      width: width*.25,
+                      decoration: const BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.all(Radius.circular(20))
+                      ),
+                      child: Text(
+                        '${chrono.hour} : ${chrono.minute} : ${chrono.seconds} ',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  )),
+            );
+          }),
+          Consumer(builder: (context, ref, child) {
             var isStart = ref.watch(homeViewModelProvider).courseStart;
             return AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
                 alignment: Alignment(0, !isStart ? 0.7 : 0.9),
-                // bottom: height * .14,
-                // left:isStart? width * .5 - optionBtnWidth*.5 : width * .5 - (optionBtnWidth*.26)*.5,
                 child: const GoBtn());
           }),
           SafeArea(
@@ -67,19 +93,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         FloatingActionButton(
                           heroTag: "modeViewBtn",
                           onPressed: () {
-                            model.defaultMapType = model.defaultMapType == MapType.normal
-                                ? MapType.satellite
-                                : MapType.normal;
+                            model.defaultMapType =
+                                model.defaultMapType == MapType.normal
+                                    ? MapType.satellite
+                                    : MapType.normal;
                           },
                           child: const Icon(UniconsLine.layer_group),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         FloatingActionButton(
                           heroTag: "locateBtn",
                           onPressed: () {
                             model.setLocation();
                           },
-                          child: isLoading.loading? CircularProgressIndicator() :const Icon(UniconsLine.location_point),
+                          child: !model.courseStart?
+                          isLoading.loading
+                              ? const CircularProgressIndicator()
+                              : const Icon(Icons.my_location) : const Icon(Icons.my_location),
                         ),
                       ],
                     );
