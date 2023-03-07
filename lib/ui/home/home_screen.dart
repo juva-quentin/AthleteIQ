@@ -66,7 +66,7 @@ class HomeScreen extends ConsumerWidget {
           Consumer(builder: (context, ref, child) {
             var isStart = ref.watch(homeViewModelProvider).courseStart;
             return AnimatedContainer(
-                duration: const Duration(milliseconds: 500),
+                duration: const Duration(milliseconds: 300),
                 alignment: Alignment(0, !isStart ? 0.71 : 0.9),
                 child: const GoBtn());
           }),
