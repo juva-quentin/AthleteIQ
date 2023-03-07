@@ -20,14 +20,27 @@ class CustomPopupRoute extends PopupRoute {
 
   // 4
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 300);
-
-  // 5
-  @override
   Widget buildPage(
       BuildContext context,
       Animation<double> animation,
       Animation<double> secondaryAnimation,
-      ) => builder(context);
+      ) {
+    return builder(context);
+  }
 
+  @override
+  Widget buildTransitions(
+      BuildContext context,
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+      Widget child,
+      ) {
+    return  ScaleTransition(
+        scale: animation,
+        child: child,
+    );
+  }
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 400);
 }

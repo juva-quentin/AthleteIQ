@@ -16,7 +16,8 @@ class InfoScreen extends ConsumerWidget {
     final model = ref.read(infoViewModelProvider);
     final provider = infoViewModelProvider;
     final user = ref.watch(firestoreUserProvider);
-    final heigth = MediaQuery.of(context).size.height;
+    final height = MediaQuery.of(context).size.height;
+
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
@@ -24,7 +25,7 @@ class InfoScreen extends ConsumerWidget {
           child: Stack(children: [
             PositionedDirectional(
               end: width * .02,
-              bottom: heigth * .87,
+              bottom: height * .87,
               child: IconButton(
                 icon: Icon(
                   UniconsLine.setting,
@@ -37,8 +38,8 @@ class InfoScreen extends ConsumerWidget {
             ),
             Column(
               children: [
-                buildTopInfo(heigth, width, user, model),
-                buildMiddleNavInfo(heigth, provider, width, model),
+                buildTopInfo(height, width, user, model, context),
+                buildMiddleNavInfo(height, provider, width, model),
                 Expanded(
                   child: Consumer(builder: (context, ref, child) {
                     ref.watch(provider.select((value) => value.selectedIndex));

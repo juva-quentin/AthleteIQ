@@ -13,7 +13,8 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authViewModelProvider);
-    final heigth = MediaQuery.of(context).size.height;
+    final height = MediaQuery.of(context).size.height;
+
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(

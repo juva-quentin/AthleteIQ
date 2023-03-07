@@ -16,9 +16,8 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AppSize appSize = AppSize(context);
-    final width = appSize.globalWidth;
-    final height = appSize.globalHeight;
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     final appProvider = appViewModelProvider;
     final homeProvider = homeViewModelProvider;
     final appModel = ref.read(appViewModelProvider);
@@ -35,6 +34,7 @@ class App extends ConsumerWidget {
       ),
       bottomNavigationBar: Consumer(builder: (context, ref, child) {
           return SafeArea(
+              bottom: false,
               child: Consumer(
                   builder: (context, ref, child) {
                     ref.watch(
@@ -45,8 +45,8 @@ class App extends ConsumerWidget {
                     opacity: !homeModel.courseStart? 1.0 : 0,
                     duration: const Duration(seconds: 1),
                     child: !homeModel.courseStart? Container(
-                      padding: const EdgeInsets.only(bottom: 12, top: 12, left: 20, right: 20),
-                      margin: EdgeInsets.symmetric(horizontal: width*.06, vertical: height > 800? 0 : height*.01),
+                      padding: EdgeInsets.only(bottom: height*.01, top: height*.01, left: width*.05, right: width*.05),
+                      margin: EdgeInsets.symmetric(horizontal: width*.06, vertical: height*.04),
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor.withOpacity(0.8),
                         borderRadius: const BorderRadius.all(Radius.circular(24))
@@ -70,8 +70,8 @@ class App extends ConsumerWidget {
                               children: [
                                 AnimatedBar(isActive: bottomNavs[index] == appModel.selectedBottomNav),
                                 SizedBox(
-                                  height: 36,
-                                  width: 36,
+                                  height: 40,
+                                  width: 40,
                                   child: Opacity(
                                     opacity: bottomNavs[index] == appModel.selectedBottomNav ? 1 : 0.5,
                                     child: RiveAnimation.asset(

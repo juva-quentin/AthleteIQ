@@ -8,20 +8,11 @@ import 'package:unicons/unicons.dart';
 
 import '../providers/loading_provider.dart';
 
-class HomeScreen extends ConsumerStatefulWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({Key? key}) : super(key: key);
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends ConsumerState<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final model = ref.watch(homeViewModelProvider);
@@ -32,6 +23,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Consumer(builder: (context, ref, child) {
             ref.watch(provider);
             return GoogleMap(
+              polylines: model.polylines,
               indoorViewEnabled: true,
               trafficEnabled: true,
               myLocationButtonEnabled: false,
@@ -40,6 +32,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               myLocationEnabled: true,
               onMapCreated: model.onMapCreated,
               initialCameraPosition: model.initialPosition,
+                zoomControlsEnabled : false
             );
           }),
           Consumer(builder: (context, ref, child) {
@@ -55,9 +48,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       alignment: const Alignment(0, 0),
                       height: height*.03,
                       width: width*.25,
-                      decoration: const BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.all(Radius.circular(20))
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: const BorderRadius.all(Radius.circular(20))
                       ),
                       child: Text(
                         '${chrono.hour} : ${chrono.minute} : ${chrono.seconds} ',
@@ -74,7 +67,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             var isStart = ref.watch(homeViewModelProvider).courseStart;
             return AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
-                alignment: Alignment(0, !isStart ? 0.7 : 0.9),
+                alignment: Alignment(0, !isStart ? 0.71 : 0.9),
                 child: const GoBtn());
           }),
           SafeArea(
@@ -82,15 +75,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Align(
                 alignment: AlignmentDirectional.topEnd,
-                child: Container(
+                child: SizedBox(
                   width: width * .14,
-                  height: height * .15,
+                  height: height * .20,
                   child: Consumer(builder: (context, ref, child) {
                     ref.watch(provider);
                     final isLoading = ref.watch(loadingProvider);
                     return Column(
                       children: [
                         FloatingActionButton(
+                          backgroundColor: Theme.of(context).primaryColor,
                           heroTag: "modeViewBtn",
                           onPressed: () {
                             model.defaultMapType =
@@ -102,6 +96,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                         const Spacer(),
                         FloatingActionButton(
+                          backgroundColor: Theme.of(context).primaryColor,
                           heroTag: "locateBtn",
                           onPressed: () {
                             model.setLocation();
