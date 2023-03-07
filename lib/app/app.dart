@@ -48,7 +48,7 @@ class App extends ConsumerWidget {
                       padding: EdgeInsets.only(bottom: height*.01, top: height*.01, left: width*.05, right: width*.05),
                       margin: EdgeInsets.symmetric(horizontal: width*.06, vertical: height*.04),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor.withOpacity(0.8),
+                        color: Theme.of(context).primaryColor.withOpacity(0.9),
                         borderRadius: const BorderRadius.all(Radius.circular(24))
                       ),
                       child: Row(

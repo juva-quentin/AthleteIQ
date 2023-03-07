@@ -111,7 +111,7 @@ class HomeViewModel extends ChangeNotifier {
     await _getUserCurrentLocation().then((value) async {
       currentPosition = CameraPosition(
         target: LatLng(value.latitude, value.longitude),
-        zoom: 14,
+        zoom: 19,
       );
       _controller.animateCamera(
         CameraUpdate.newCameraPosition(currentPosition!),

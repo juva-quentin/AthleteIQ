@@ -32,11 +32,11 @@ class GoBtn extends ConsumerWidget {
           }
         },
         child: AnimatedContainer(
-            duration: const Duration(milliseconds: 500),
+            duration: const Duration(milliseconds: 300),
             decoration: BoxDecoration(
               color: !model.courseStart
-                  ? Theme.of(context).primaryColor.withOpacity(0.85)
-                  : Colors.red.withOpacity(0.85),
+                  ? Theme.of(context).primaryColor.withOpacity(0.9)
+                  : Colors.red.withOpacity(1),
               borderRadius: BorderRadius.circular(!model.courseStart ? 30 : 10),
             ),
             height: optionBtnheight,
