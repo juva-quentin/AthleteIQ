@@ -8,6 +8,7 @@ class User {
   final String image;
   final String email;
   final List friends;
+  final List groups;
   final String sex;
   final double objectif;
   final DateTime createdAt;
@@ -18,6 +19,7 @@ class User {
     required this.image,
     required this.email,
     required this.friends,
+    required this.groups,
     required this.sex,
     required this.objectif,
     required this.createdAt,
@@ -30,6 +32,7 @@ class User {
     String? image,
     String? email,
     List? friends,
+    List? groups,
     String? sex,
     double? objectif,
     DateTime? createdAt,
@@ -41,6 +44,7 @@ class User {
       image: image ?? this.image,
       email: email ?? this.email,
       friends: friends ?? this.friends,
+      groups: groups ?? this.groups,
       sex: sex ?? this.sex,
       objectif: objectif ?? this.objectif,
       createdAt: createdAt ?? this.createdAt,
@@ -55,6 +59,7 @@ class User {
       'image': image,
       'email': email,
       'friends': friends,
+      'groups': groups,
       'sex': sex,
       'objectif': objectif.toDouble(),
       'createdAt': Timestamp.fromDate(createdAt),
@@ -70,6 +75,7 @@ class User {
       image: map['image'] ?? '',
       email: map['email'] ?? '',
       friends: map['friends'] ?? [],
+      groups: map['groups'] ?? [],
       sex: map['sex'] ?? '',
       objectif: map['objectif'].toDouble() ?? 0,
       createdAt: map['createdAt'].toDate(),
@@ -83,6 +89,7 @@ class User {
     image: '',
     email: '',
     friends: [],
+    groups: [],
     sex: '',
     objectif: 0,
     createdAt: DateTime.now(),
