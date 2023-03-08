@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:athlete_iq/ui/home/providers/timer_provider.dart';
+import 'package:athlete_iq/ui/providers/position_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../providers/loading_provider.dart';
 
@@ -21,6 +23,8 @@ class HomeViewModel extends ChangeNotifier {
   Loading get _loading => _reader(loadingProvider);
 
   TimerClassProvider get _chrono => _reader(timerProvider);
+
+  PositionModel get _position => _reader(positionProvider);
 
   bool _courseStart = false;
   bool get courseStart => _courseStart;
@@ -40,13 +44,6 @@ class HomeViewModel extends ChangeNotifier {
   String get typeFilter => _typeFilter;
   set typeFilter(String typeFilter) {
     _typeFilter = typeFilter;
-    notifyListeners();
-  }
-
-  List<Position> _coursePosition = [];
-  List<Position> get coursePosition => _coursePosition;
-  set coursePosition(List<Position> coursePosition) {
-    _coursePosition = coursePosition;
     notifyListeners();
   }
 
@@ -88,63 +85,74 @@ class HomeViewModel extends ChangeNotifier {
 
   late GoogleMapController _controller;
 
-  void onMapCreated(GoogleMapController controller) {
+  Future<void> onMapCreated(GoogleMapController controller) async {
     _controller = controller;
     setLocation();
   }
 
-  Future<Position> _getUserCurrentLocation() async {
-    await Geolocator.requestPermission()
-        .then((value) {})
-        .onError((error, stackTrace) async {
-      await Geolocator.requestPermission();
-      if (kDebugMode) {
-        print("ERROR$error");
-      }
-    });
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-  }
-
   void setLocation() async {
     _loading.start();
-    await _getUserCurrentLocation().then((value) async {
-      currentPosition = CameraPosition(
-        target: LatLng(value.latitude, value.longitude),
-        zoom: 19,
+    await _position.getPosition().then((value) async {
+      _currentPosition = CameraPosition(
+        target: LatLng(value.latitude!, value.longitude!),
+        zoom: 18,
       );
       _controller.animateCamera(
-        CameraUpdate.newCameraPosition(currentPosition!),
+        CameraUpdate.newCameraPosition(_currentPosition!),
       );
     });
     _loading.end();
+    notifyListeners();
   }
 
-  void register() async {
-    _tempPolylines.clear();
-    _coursePosition.clear();
-    _chrono.startTimer();
-    await Future.delayed(const Duration(milliseconds: 500));
-    while (_courseStart) {
-      await _getUserCurrentLocation().then((value) {
-        _coursePosition.add(value);
-      });
-      setLocation();
-      await Future.delayed(const Duration(milliseconds: 300));
-    }
-    _chrono.stopTimer();
-    List<LatLng> points = <LatLng>[];
-    final latLng = _coursePosition
-        .map((position) => LatLng(position.latitude, position.longitude));
-    points.addAll(latLng);
-    _tempPolylines.add(
-      Polyline(
-        polylineId: const PolylineId("running"),
-        points: points,
-        width: 4,
-        color: Colors.blue,
-      ),
+  void setLocationDuringCours(LocationData location, LocationData lastLocation){
+    final calculatedRotation = Geolocator.bearingBetween(
+        lastLocation.latitude! ?? 0,
+        lastLocation.longitude! ?? 0,
+        location.latitude!,
+        location.longitude!);
+    print(calculatedRotation);
+    _currentPosition = CameraPosition(
+      target: LatLng(location.latitude!, location.longitude!),
+      zoom: location.speed!*3.6 > 50? 16 : 18,
+      bearing: calculatedRotation,
+      tilt: 50
     );
-    setLocation();
+    _controller.animateCamera(
+      CameraUpdate.newCameraPosition(_currentPosition!),
+    );
+  }
+
+  Future<bool> register() async {
+    if (_courseStart) {
+      _courseStart = false;
+      _chrono.stopTimer();
+      await _position.stopCourse();
+      List<LatLng> points = <LatLng>[];
+      final latLng = _position.allPostion
+          .map((position) => LatLng(position.latitude!, position.longitude!));
+      points.addAll(latLng);
+      _tempPolylines.add(
+        Polyline(
+          polylineId: const PolylineId("running"),
+          points: points,
+          width: 4,
+          color: Colors.blue,
+        ),
+      );
+      notifyListeners();
+      return false;
+    } else {
+      _courseStart = true;
+      _tempPolylines.clear();
+      _chrono.startTimer();
+      _position.startCourse();
+      notifyListeners();
+      await Future.delayed(const Duration(milliseconds: 500));
+      while (_courseStart) {
+        await Future.delayed(const Duration(milliseconds: 5));
+      }
+      return true;
+    }
   }
 }

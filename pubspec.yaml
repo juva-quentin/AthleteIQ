@@ -65,6 +65,7 @@ dependencies:
   image_picker: ^0.8.5+3
   flat_icons_flutter: ^1.0.2
   unicons: ^2.1.0
+  location: ^4.4.0
 
 dev_dependencies:
   hive_generator: ^1.1.1

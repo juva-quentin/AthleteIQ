@@ -21,14 +21,14 @@ class GoBtn extends ConsumerWidget {
       return GestureDetector(
         onTap: () async {
           if (!model.courseStart) {
-            model.courseStart = true;
-            model.register();
-          }else{
-            model.courseStart = false;
-            await Future.delayed(const Duration(seconds: 1));
-            Navigator.of(context).push(
-                CustomPopupRoute(builder: (BuildContext context) { return RegisterScreen();})
-            );
+            await model.register();
+          } else {
+            await model.register().then(
+                  (value) => Navigator.of(context)
+                      .push(CustomPopupRoute(builder: (BuildContext context) {
+                    return RegisterScreen();
+                  })),
+                );
           }
         },
         child: AnimatedContainer(
@@ -40,7 +40,7 @@ class GoBtn extends ConsumerWidget {
               borderRadius: BorderRadius.circular(!model.courseStart ? 30 : 10),
             ),
             height: optionBtnheight,
-            width: !model.courseStart ? optionBtnWidth : width*.50,
+            width: !model.courseStart ? optionBtnWidth : width * .50,
             child: Center(
                 child: Text(
               !model.courseStart ? 'GO' : 'STOP',
