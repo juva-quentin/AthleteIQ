@@ -115,7 +115,7 @@ class HomeScreen extends ConsumerWidget {
                       Padding(
                         padding: EdgeInsets.all(width * .007),
                         child: FloatingActionButton(
-                          backgroundColor: model.traffic ? Colors.lightGreen :Theme.of(context).cardColor,
+                          backgroundColor: Theme.of(context).cardColor,
                           heroTag: "traficBtn",
                           onPressed: () {
                             model.traffic =
@@ -123,7 +123,7 @@ class HomeScreen extends ConsumerWidget {
                                 ? true
                                 : false;
                           },
-                          child: const Icon(UniconsLine.traffic_light),
+                          child: Icon(UniconsLine.traffic_light, color: model.traffic ? Colors.lightGreen : Colors.red,),
                         ),
                       ),
                     ],
