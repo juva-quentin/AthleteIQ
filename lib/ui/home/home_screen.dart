@@ -22,12 +22,12 @@ class HomeScreen extends ConsumerWidget {
         children: <Widget>[
           Consumer(builder: (context, ref, child) {
             ref.watch(provider);
+            final courseStart = ref.watch(homeViewModelProvider).courseStart;
             return GoogleMap(
-              polylines: model.polylines,
+              polylines: courseStart? model.tempPolylines : model.polylines,
               indoorViewEnabled: true,
               trafficEnabled: true,
               myLocationButtonEnabled: false,
-              compassEnabled: true,
               mapType: model.defaultMapType,
               myLocationEnabled: true,
               onMapCreated: model.onMapCreated,
@@ -81,6 +81,7 @@ class HomeScreen extends ConsumerWidget {
                   child: Consumer(builder: (context, ref, child) {
                     ref.watch(provider);
                     final isLoading = ref.watch(loadingProvider);
+                    final courseStart = ref.watch(homeViewModelProvider).courseStart;
                     return Column(
                       children: [
                         FloatingActionButton(
@@ -101,7 +102,7 @@ class HomeScreen extends ConsumerWidget {
                           onPressed: () {
                             model.setLocation();
                           },
-                          child: !model.courseStart?
+                          child: !courseStart?
                           isLoading.loading
                               ? const CircularProgressIndicator()
                               : const Icon(Icons.my_location) : const Icon(Icons.my_location),

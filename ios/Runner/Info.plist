@@ -12,13 +12,9 @@
 		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
-		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>Need location when in use</string>
 		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 		<string>Always and when in use!</string>
 		<key>NSLocationUsageDescription</key>
-		<string>Older devices need location.</string>
-		<key>NSLocationAlwaysUsageDescription</key>
 		<string>Older devices need location.</string>
 		<key>CFBundleName</key>
 		<string>athlete_iq</string>
@@ -57,9 +53,18 @@
 		<true/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
-		<key>UIBackgroundModes</key>
-		<string>location</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>This app needs access to location.</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+        <string>This app needs access to location.</string>
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>This app needs access to location.</string>
+        <key>UIBackgroundModes</key>
+        <array>
+        	<string>fetch</string>
+        	<string>location</string>
+        </array>
 	</dict>
 </plist>
