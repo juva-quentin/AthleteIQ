@@ -33,6 +33,13 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _traffic = false;
+  bool get traffic => _traffic;
+  set traffic(bool traffic) {
+    _traffic = traffic;
+    notifyListeners();
+  }
+
   String _visibilityFilter = '';
   String get visibilityFilter => _visibilityFilter;
   set visibilityFilter(String visibilityFilter) {

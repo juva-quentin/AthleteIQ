@@ -24,16 +24,15 @@ class HomeScreen extends ConsumerWidget {
             ref.watch(provider);
             final courseStart = ref.watch(homeViewModelProvider).courseStart;
             return GoogleMap(
-              polylines: courseStart? model.tempPolylines : model.polylines,
-              indoorViewEnabled: true,
-              trafficEnabled: true,
-              myLocationButtonEnabled: false,
-              mapType: model.defaultMapType,
-              myLocationEnabled: true,
-              onMapCreated: model.onMapCreated,
-              initialCameraPosition: model.initialPosition,
-                zoomControlsEnabled : false
-            );
+                polylines: courseStart ? model.tempPolylines : model.polylines,
+                indoorViewEnabled: true,
+                trafficEnabled: model.traffic,
+                myLocationButtonEnabled: false,
+                mapType: model.defaultMapType,
+                myLocationEnabled: true,
+                onMapCreated: model.onMapCreated,
+                initialCameraPosition: model.initialPosition,
+                zoomControlsEnabled: false);
           }),
           Consumer(builder: (context, ref, child) {
             final isStart = ref.watch(homeViewModelProvider).courseStart;
@@ -46,12 +45,12 @@ class HomeScreen extends ConsumerWidget {
                   child: SafeArea(
                     child: Container(
                       alignment: const Alignment(0, 0),
-                      height: height*.03,
-                      width: width*.25,
+                      height: height * .03,
+                      width: width * .25,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: const BorderRadius.all(Radius.circular(20))
-                      ),
+                          color: Theme.of(context).primaryColor,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(20))),
                       child: Text(
                         '${chrono.hour} : ${chrono.minute} : ${chrono.seconds} ',
                         style: const TextStyle(
@@ -75,17 +74,17 @@ class HomeScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(8.0),
               child: Align(
                 alignment: AlignmentDirectional.topEnd,
-                child: SizedBox(
-                  width: width * .14,
-                  height: height * .20,
-                  child: Consumer(builder: (context, ref, child) {
-                    ref.watch(provider);
-                    final isLoading = ref.watch(loadingProvider);
-                    final courseStart = ref.watch(homeViewModelProvider).courseStart;
-                    return Column(
-                      children: [
-                        FloatingActionButton(
-                          backgroundColor: Theme.of(context).primaryColor,
+                child: Consumer(builder: (context, ref, child) {
+                  ref.watch(provider);
+                  final isLoading = ref.watch(loadingProvider);
+                  final courseStart =
+                      ref.watch(homeViewModelProvider).courseStart;
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(width * .007),
+                        child: FloatingActionButton(
+                          backgroundColor: Theme.of(context).cardColor,
                           heroTag: "modeViewBtn",
                           onPressed: () {
                             model.defaultMapType =
@@ -95,25 +94,44 @@ class HomeScreen extends ConsumerWidget {
                           },
                           child: const Icon(UniconsLine.layer_group),
                         ),
-                        const Spacer(),
-                        FloatingActionButton(
-                          backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(width * .007),
+                        child: FloatingActionButton(
+                          backgroundColor: Theme.of(context).cardColor,
                           heroTag: "locateBtn",
                           onPressed: () {
                             model.setLocation();
                           },
-                          child: !courseStart?
-                          isLoading.loading
-                              ? const CircularProgressIndicator()
-                              : const Icon(Icons.my_location) : const Icon(Icons.my_location),
+                          child: !courseStart
+                              ? isLoading.loading
+                                  ? CircularProgressIndicator(
+                                      color: Theme.of(context).primaryColor,
+                                    )
+                                  : const Icon(Icons.my_location)
+                              : const Icon(Icons.my_location),
                         ),
-                      ],
-                    );
-                  }),
-                ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(width * .007),
+                        child: FloatingActionButton(
+                          backgroundColor: model.traffic ? Colors.lightGreen :Theme.of(context).cardColor,
+                          heroTag: "traficBtn",
+                          onPressed: () {
+                            model.traffic =
+                            model.traffic == false
+                                ? true
+                                : false;
+                          },
+                          child: const Icon(UniconsLine.traffic_light),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
