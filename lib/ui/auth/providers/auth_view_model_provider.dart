@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../model/User.dart' as userModel;
+
 import '../../providers/loading_provider.dart';
 
 final authViewModelProvider = ChangeNotifierProvider(

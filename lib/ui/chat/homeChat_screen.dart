@@ -2,15 +2,14 @@ import 'package:athlete_iq/ui/chat/search_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:unicons/unicons.dart';
 
+import '../../model/Groups.dart';
 import '../../model/User.dart';
 import '../../utils/routes/customPopupRoute.dart';
-import '../auth/login_screen.dart';
-import '../auth/providers/auth_view_model_provider.dart';
 import '../info/provider/user_provider.dart';
 import '../register/register_screen.dart';
 import 'createGroup_screen.dart';
+import 'group_tile.dart';
 
 class HomeChatScreen extends ConsumerWidget {
   const HomeChatScreen({Key, key}) : super(key: key);
@@ -18,12 +17,9 @@ class HomeChatScreen extends ConsumerWidget {
   static const route = "/groups";
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final auth = ref.watch(authViewModelProvider);
-    final height = MediaQuery.of(context).size.height;
     final user = ref.watch(firestoreUserProvider);
+    final groups = ref.watch(firestoreUserProvider);
 
-
-    final width = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: AppBar(
           actions: [
@@ -39,12 +35,8 @@ class HomeChatScreen extends ConsumerWidget {
          if(user.groups.isEmpty) {
             return noGroupWidget();
           } else {
-           return Text(
-             user.groups.toString(),
-             style: const TextStyle(
-                 fontWeight: FontWeight.bold,
-                 fontSize: 26),
-           );
+           return Text("Coucou");
+            //TODO Afficher les groupes mais je galère
           }
          }, error: (Object error, StackTrace? stackTrace) { return Text(error.toString()); }, loading: () { return const Text('Loading'); })]),
       floatingActionButton: Padding(padding: const EdgeInsets.only(bottom: 100.0), child: FloatingActionButton(onPressed: () {
