@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:location/location.dart';
 
+import '../../utils/visibility.dart';
 import '../home/home_view_model_provider.dart';
 import '../home/providers/timer_provider.dart';
 import '../providers/loading_provider.dart';
@@ -26,6 +27,8 @@ class RegisterViewModel extends ChangeNotifier {
   HomeViewModel get _homeProvier => _reader(homeViewModelProvider);
 
   PositionModel get _position => _reader(positionProvider);
+
+  ParcourVisibility visibility = ParcourVisibility.Public;
 
   String _title = '';
   String get title => _title;
@@ -118,6 +121,22 @@ class RegisterViewModel extends ChangeNotifier {
     final result = _totalDistance/totalInHour;
 
     return result;
+  }
+
+  void changeVisibility(){
+    if (visibility == ParcourVisibility.Public ){
+      visibility = ParcourVisibility.Protected;
+      notifyListeners();
+      return;
+    }else if( visibility == ParcourVisibility.Protected ){
+      visibility = ParcourVisibility.Private;
+      notifyListeners();
+      return;
+    }else{
+      visibility = ParcourVisibility.Public;
+      notifyListeners();
+      return;
+    }
   }
 
 }

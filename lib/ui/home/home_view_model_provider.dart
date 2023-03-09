@@ -112,17 +112,11 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setLocationDuringCours(LocationData location, LocationData lastLocation){
-    final calculatedRotation = Geolocator.bearingBetween(
-        lastLocation.latitude! ?? 0,
-        lastLocation.longitude! ?? 0,
-        location.latitude!,
-        location.longitude!);
-    print(calculatedRotation);
+  void setLocationDuringCours(LocationData location){
     _currentPosition = CameraPosition(
       target: LatLng(location.latitude!, location.longitude!),
       zoom: location.speed!*3.6 > 50? 16 : 18,
-      bearing: calculatedRotation,
+      bearing: location.heading!,
       tilt: 50
     );
     _controller.animateCamera(
