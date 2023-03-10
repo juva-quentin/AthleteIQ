@@ -46,7 +46,7 @@ class UserRepository {
 
 
   void delete(String id) {
-    _firestore.collection("items").doc(id).delete();
+    _firestore.collection("users").doc(id).delete();
   }
 
 }

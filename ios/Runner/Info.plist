@@ -66,5 +66,9 @@
         	<string>fetch</string>
         	<string>location</string>
         </array>
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>Photo Library Access Warning</string>
+        <key>NSCameraUsageDescription</key>
+        <string>Camera Library Access Warning</string>
 	</dict>
 </plist>

@@ -45,9 +45,8 @@ class Groups {
     );
   }
 
-  Map<String, dynamic> toMap(dynamic id) {
+  Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'admin': admin,
       'groupIcon': groupIcon,
       'groupName': groupName,
