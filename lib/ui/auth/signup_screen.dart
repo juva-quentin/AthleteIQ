@@ -137,7 +137,7 @@ class SignupScreen extends ConsumerWidget {
                       ),
                       onChanged: (v) => model.confirmPassord = v,
                       validator: (v) =>
-                      v != model.password ? "Les mot de passes ne correspondes pas" : null,
+                      v != model.password ? "Les mots de passe ne correspondent pas" : null,
                     );
                   },
                 ),

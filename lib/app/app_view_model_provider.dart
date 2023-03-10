@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../model/rive_asset.dart';
+import '../ui/chat/homeChat_screen.dart';
 import '../ui/home/home_screen.dart';
 import '../ui/info/info_screen.dart';
 
@@ -35,10 +36,7 @@ class appViewModel extends ChangeNotifier {
 
 
   static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
+    HomeChatScreen(),
     HomeScreen(),
     InfoScreen()
   ];
