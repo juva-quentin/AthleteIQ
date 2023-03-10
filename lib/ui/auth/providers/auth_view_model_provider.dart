@@ -139,7 +139,6 @@ class AuthViewModel extends ChangeNotifier {
         image: sex == 'Homme'? "https://cdn-icons-png.flaticon.com/512/4139/4139981.png" : "https://cdn-icons-png.flaticon.com/512/219/219969.png",
         email: email,
         friends:[],
-        groups:[],
         sex: sex,
         objectif: 0,
         createdAt: DateTime.now(),
