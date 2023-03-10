@@ -1,0 +1,1 @@
+enum ParcourVisibility { Public, Private, Protected }
