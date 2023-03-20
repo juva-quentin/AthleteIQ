@@ -49,7 +49,7 @@ class HomeChatScreen extends ConsumerWidget {
                 itemBuilder: (context, index) {
                   print(groups);
                   return groupTile(
-                      groups[index]);
+                      groups[index], context, ref);
                 });
           }
         }, error: (Object error, StackTrace? stackTrace) {
