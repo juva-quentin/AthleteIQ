@@ -10,7 +10,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../model/Parcour.dart';
 import '../providers/loading_provider.dart';
+import '../providers/parcoursStream_provider.dart';
 
 final homeViewModelProvider = ChangeNotifierProvider(
   (ref) => HomeViewModel(ref.read),
@@ -25,6 +27,9 @@ class HomeViewModel extends ChangeNotifier {
   TimerClassProvider get _chrono => _reader(timerProvider);
 
   PositionModel get _position => _reader(positionProvider);
+
+  Stream<List<Parcours>> get _publiParcour =>
+      _reader(PublicParcourProvider.stream);
 
   bool _courseStart = false;
   bool get courseStart => _courseStart;
@@ -47,7 +52,7 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _typeFilter = '';
+  String _typeFilter = 'public';
   String get typeFilter => _typeFilter;
   set typeFilter(String typeFilter) {
     _typeFilter = typeFilter;
@@ -95,6 +100,29 @@ class HomeViewModel extends ChangeNotifier {
   Future<void> onMapCreated(GoogleMapController controller) async {
     _controller = controller;
     setLocation();
+    getParcourt();
+  }
+
+  void getParcourt() {
+    switch (typeFilter) {
+      case "public":
+        _publiParcour.listen((value) {
+          print("ok");
+          polylines.clear();
+          value.map(
+            (e) => polylines.add(
+              Polyline(
+                polylineId: PolylineId(e.id),
+                points: e.allPoints.map((position) => LatLng(position.latitude!, position.longitude!)).toList(),
+                width: 4,
+                color: Colors.blue,
+              ),
+            ),
+          );
+          print(polylines.length);
+          notifyListeners();
+        });
+    }
   }
 
   void setLocation() async {
@@ -112,19 +140,12 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setLocationDuringCours(LocationData location, LocationData lastLocation){
-    final calculatedRotation = Geolocator.bearingBetween(
-        lastLocation.latitude! ?? 0,
-        lastLocation.longitude! ?? 0,
-        location.latitude!,
-        location.longitude!);
-    print(calculatedRotation);
+  void setLocationDuringCours(LocationData location) {
     _currentPosition = CameraPosition(
-      target: LatLng(location.latitude!, location.longitude!),
-      zoom: location.speed!*3.6 > 50? 16 : 18,
-      bearing: calculatedRotation,
-      tilt: 50
-    );
+        target: LatLng(location.latitude!, location.longitude!),
+        zoom: location.speed! * 3.6 > 50 ? 16 : 18,
+        bearing: location.heading!,
+        tilt: 50);
     _controller.animateCamera(
       CameraUpdate.newCameraPosition(_currentPosition!),
     );

@@ -102,6 +102,7 @@ class PositionModel extends ChangeNotifier {
     if (!hasPermission) return Future.error('no location permission');
     return await location.getLocation()
         .catchError((e) {
+          return Future.error(e);
       Utils.toastMessage(e);
       debugPrint(e);
     });
@@ -118,18 +119,11 @@ class PositionModel extends ChangeNotifier {
   Future<void> startCourse() async {
     _allPosition.clear();
     final Stream<LocationData> stream;
-    LocationData? lastLocation;
-    bool onTime = false;
     try{ stream =  await _getStreamPosition();
     _streamPosition = stream.listen((LocationData currentLocation) {
-      if (!onTime){
-        lastLocation = currentLocation;
-        onTime = true;
-      }
       _speed = currentLocation.speed!;
       _allPosition.add(currentLocation);
-      homeProvider.setLocationDuringCours(currentLocation, lastLocation!);
-      lastLocation = currentLocation;
+      homeProvider.setLocationDuringCours(currentLocation);
       notifyListeners();
     });
     }catch(e){

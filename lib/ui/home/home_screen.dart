@@ -32,7 +32,8 @@ class HomeScreen extends ConsumerWidget {
                 myLocationEnabled: true,
                 onMapCreated: model.onMapCreated,
                 initialCameraPosition: model.initialPosition,
-                zoomControlsEnabled: false);
+                zoomControlsEnabled: false,
+            );
           }),
           Consumer(builder: (context, ref, child) {
             final isStart = ref.watch(homeViewModelProvider).courseStart;

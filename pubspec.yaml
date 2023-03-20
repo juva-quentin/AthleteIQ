@@ -66,6 +66,7 @@ dependencies:
   flat_icons_flutter: ^1.0.2
   unicons: ^2.1.0
   location: ^4.4.0
+  workmanager: ^0.5.1
 
 dev_dependencies:
   hive_generator: ^1.1.1
