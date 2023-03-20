@@ -66,7 +66,6 @@ class GroupsRepository {
   }
 
   sendMessage(String groupId, Map<String, dynamic> chatMessageData) async {
-    print("PROUT");
     groupCollection.doc(groupId).collection("messages").add(chatMessageData);
     groupCollection.doc(groupId).update({
       "recentMessage": chatMessageData['message'],

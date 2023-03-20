@@ -1,21 +1,26 @@
-
 import 'package:athlete_iq/data/network/groupsRepository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../data/network/userRepository.dart';
 import 'active_groups_provider.dart';
 
 final chatViewModelProvider = ChangeNotifierProvider(
-      (ref) => ChatViewModel(ref.read),
+  (ref) => ChatViewModel(ref.read),
 );
 
 class ChatViewModel extends ChangeNotifier {
   final Reader _reader;
+
   String get groupId => _reader(activeGroupeProvider);
-  ChatViewModel(this._reader)
-  {
+
+  final UserRepository _userRepo = UserRepository();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  ChatViewModel(this._reader) {
     getChatAndAdmin();
   }
 
@@ -41,28 +46,33 @@ class ChatViewModel extends ChangeNotifier {
     _username = username;
     notifyListeners();
   }
+
   getChatAndAdmin() {
     GroupsRepository().getChats(groupId).then((val) {
-        chats = val;
-        notifyListeners();
+      chats = val;
+      notifyListeners();
     });
     GroupsRepository().getGroupAdmin(groupId).then((val) {
-        admin = val;
-        notifyListeners();
+      admin = val;
+      notifyListeners();
     });
   }
 
-  sendMessage() {
+  sendMessage() async {
     if (messageController.text.isNotEmpty) {
-      Map<String, dynamic> chatMessageMap = {
-        "message": messageController.text,
-        "sender": _username,
-        "time": DateTime.now(),
-      };
-
-      GroupsRepository().sendMessage(groupId, chatMessageMap);
+      await _userRepo
+          .getUserWithId(userId: _auth.currentUser!.uid)
+          .then((value) {
+        _username = value.pseudo;
+        Map<String, dynamic> chatMessageMap = {
+          "message": messageController.text,
+          "sender": _username,
+          "time": DateTime.now(),
+        };
+        GroupsRepository().sendMessage(groupId, chatMessageMap);
         messageController.clear();
         notifyListeners();
+      });
     }
   }
 }

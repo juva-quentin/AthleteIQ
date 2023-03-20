@@ -1,7 +1,9 @@
+import 'package:athlete_iq/model/User.dart';
 import 'package:athlete_iq/ui/chat/providers/active_groups_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../data/network/userRepository.dart';
 import '../../model/Groups.dart';
 
 class GroupInfo extends ConsumerWidget {
@@ -86,7 +88,7 @@ class GroupInfo extends ConsumerWidget {
                       const SizedBox(
                         height: 5,
                       ),
-                      Text("Admin: ${data.admin}")
+                      Text("Admin: id")
                     ],
                   )
                 ],
@@ -103,31 +105,50 @@ class GroupInfo extends ConsumerWidget {
     return Consumer(
     builder: (BuildContext context, WidgetRef ref, Widget? child) {
       final group = ref.watch(streamGroupsProvider(id));
+      final userRepo = UserRepository();
       return group.when(data: (data) {
         return ListView.builder(
           itemCount: data.members.length,
           shrinkWrap: true,
           itemBuilder: (context, index) {
-            return Container(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-              child: ListTile(
-                leading: CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Theme.of(context).primaryColor,
-                  child: Text(
-                    data.members[index]
-                        .substring(0, 1)
-                        .toUpperCase(),
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-                title: Text("Sylvain"),
-                subtitle: Text('Utilisateur'),
-              ),
+            return FutureBuilder<User>(
+              future: userRepo.getUserWithId(userId: data.members[index]),
+              builder: (context,AsyncSnapshot<User> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    return const Text('Error');
+                  } else if (snapshot.hasData) {
+                    return Container(
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Theme
+                              .of(context)
+                              .primaryColor,
+                          child: Text(
+                            snapshot.data!.pseudo.substring(0, 1)
+                                .toUpperCase(),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        title: Text(snapshot.data!.pseudo),
+                        subtitle: const Text('Utilisateur'),
+                      ),
+                    );
+                  } else {
+                    return const Text('Empty data');
+                  }
+                } else {
+                  return Text('State: ${snapshot.connectionState}');
+                }
+              }
             );
           },
         );
@@ -136,3 +157,4 @@ class GroupInfo extends ConsumerWidget {
     );
   }
 }
+

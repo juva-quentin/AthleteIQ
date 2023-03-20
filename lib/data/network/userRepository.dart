@@ -51,9 +51,11 @@ class UserRepository {
   }
 
   Future<user.User> getUserWithId({required String userId}) async {
+    print(userId);
     var docRef = _firestore.collection('users').doc(userId);
-    return docRef.get().then((value) => user.User.fromFirestore(value));
-
+    final result = docRef.get().then((value) => user.User.fromFirestore(value));
+    return result;
+  }
 
   void delete(String id) {
     _firestore.collection("users").doc(id).delete();
