@@ -24,10 +24,13 @@ class GoBtn extends ConsumerWidget {
             await model.register();
           } else {
             await model.register().then(
-                  (value) => Navigator.of(context)
-                      .push(CustomPopupRoute(builder: (BuildContext context) {
-                    return RegisterScreen();
-                  })),
+                  (value) => Navigator.of(context).push(
+                    CustomPopupRoute(
+                      builder: (BuildContext context) {
+                        return RegisterScreen();
+                      },
+                    ),
+                  ),
                 );
           }
         },
