@@ -20,7 +20,9 @@ class ChatViewModel extends ChangeNotifier {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  ChatViewModel(this._reader) {
+  ChatViewModel(this._reader);
+
+  void init(){
     getChatAndAdmin();
   }
 
@@ -48,6 +50,7 @@ class ChatViewModel extends ChangeNotifier {
   }
 
   getChatAndAdmin() {
+    print("groupeId$groupId");
     GroupsRepository().getChats(groupId).then((val) {
       chats = val;
       notifyListeners();

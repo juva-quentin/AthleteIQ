@@ -47,7 +47,7 @@ class HomeChatScreen extends ConsumerWidget {
             return ListView.builder(
                 itemCount: groups.length,
                 itemBuilder: (context, index) {
-                  print(groups);
+                  print(groups[index].members);
                   return groupTile(
                       groups[index], context, ref);
                 });

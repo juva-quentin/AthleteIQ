@@ -52,6 +52,7 @@ class GroupsRepository {
   }
 
   getChats(String groupId) async {
+    print(groupId);
     return groupCollection
         .doc(groupId)
         .collection("messages")
