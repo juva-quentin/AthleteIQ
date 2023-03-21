@@ -1,5 +1,7 @@
 import 'package:athlete_iq/main.dart';
 import 'package:athlete_iq/ui/auth/signup_screen.dart';
+import 'package:athlete_iq/ui/chat/chat_page.dart';
+import 'package:athlete_iq/ui/chat/group_info.dart';
 import 'package:athlete_iq/ui/chat/homeChat_screen.dart';
 import 'package:athlete_iq/ui/chat/search_page.dart';
 import 'package:athlete_iq/utils/routes/root.dart';
@@ -34,6 +36,12 @@ class AppRouter {
         break;
       case SearchPage.route:
         selectedPage = SearchPage();
+        break;
+      case ChatPage.route:
+        selectedPage = ChatPage();
+        break;
+      case GroupInfo.route:
+        selectedPage = GroupInfo();
         break;
       default:
         selectedPage = const Root();
