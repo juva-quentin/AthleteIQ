@@ -22,7 +22,7 @@ class ChatViewModel extends ChangeNotifier {
 
   ChatViewModel(this._reader);
 
-  void init(){
+  void init() {
     getChatAndAdmin();
   }
 
@@ -49,7 +49,7 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  getChatAndAdmin() {
+  getChatAndAdmin() async {
     print("groupeId$groupId");
     GroupsRepository().getChats(groupId).then((val) {
       chats = val;
@@ -58,6 +58,9 @@ class ChatViewModel extends ChangeNotifier {
     GroupsRepository().getGroupAdmin(groupId).then((val) {
       admin = val;
       notifyListeners();
+    });
+    await _userRepo.getUserWithId(userId: _auth.currentUser!.uid).then((value) {
+      _username = value.pseudo;
     });
   }
 
