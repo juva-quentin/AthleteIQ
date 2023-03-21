@@ -39,7 +39,7 @@ class HomeChatScreen extends ConsumerWidget {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(width*.01, height*.01, width*.01, height*.01),
+        padding: EdgeInsets.fromLTRB(width*.01, 0, width*.01, height*.01),
         child: groups.when(data: (List<Groups> groups) {
           if (groups.isEmpty) {
             return noGroupWidget(ref, context);

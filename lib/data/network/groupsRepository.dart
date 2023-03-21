@@ -33,6 +33,7 @@ class GroupsRepository {
 
   Stream<List<Groups>> get groupsStream => _firestore
       .collection('groups')
+      .orderBy('recentMessageTime', descending: true)
       .where('members', arrayContains: _auth.currentUser?.uid)
       .snapshots()
       .map((event) => event.docs
