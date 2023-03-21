@@ -2,6 +2,7 @@ import 'package:athlete_iq/model/User.dart';
 import 'package:athlete_iq/ui/chat/providers/active_groups_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:unicons/unicons.dart';
 
 import '../../data/network/userRepository.dart';
 import '../../model/Groups.dart';
@@ -13,13 +14,21 @@ class GroupInfo extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final id = ref.watch(activeGroupeProvider);
+    final width = MediaQuery.of(context).size.width;
     final group = ref.watch(streamGroupsProvider(id));
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
-        title: const Text("Group Info"),
+        leading: IconButton(
+          icon: Icon(UniconsLine.arrow_left,size: width*.1, color: Colors.white,),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: const Text("Information", style: TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.w600,
+            color: Colors.white)),
         actions: [
           IconButton(
               onPressed: () {
@@ -51,7 +60,7 @@ class GroupInfo extends ConsumerWidget {
                       );
                     });
               },
-              icon: const Icon(Icons.exit_to_app))
+              icon: Icon(Icons.exit_to_app,size: width*.1,  color: Colors.white))
         ],
       ),
       body: group.when(data: (data) {return Container(
