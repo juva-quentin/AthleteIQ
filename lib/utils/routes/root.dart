@@ -16,13 +16,11 @@ class Root extends ConsumerWidget {
     FlutterNativeSplash.remove();
     final seen =
         ref.read(cacheProvider).value?.getBool("seen") ?? false;
-    final auth = ref.read(authViewModelProvider);
+    final auth = ref.watch(authViewModelProvider);
     print("seen $seen");
-    print("auth $auth");
-    return !seen
-        ? const OnboardingScreen()
-        : auth.user != null
-            ? const App()
+    print("auth ${auth.user}");
+    return auth.user != null
+            ? !seen ? const OnboardingScreen() : const App()
             : LoginScreen();
   }
 }

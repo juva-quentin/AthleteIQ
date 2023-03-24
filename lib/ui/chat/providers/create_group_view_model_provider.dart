@@ -9,7 +9,7 @@ import '../../../model/Groups.dart';
 import '../../providers/loading_provider.dart';
 
 final creatGroupViewModelProvider =
-ChangeNotifierProvider((ref) => CreatGroupViewModel(ref.read));
+ChangeNotifierProvider.autoDispose((ref) => CreatGroupViewModel(ref.read));
 
 class CreatGroupViewModel extends ChangeNotifier {
   final Reader _reader;

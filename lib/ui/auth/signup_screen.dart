@@ -18,8 +18,8 @@ class SignupScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = authViewModelProvider;
-    final model = ref.read(provider);
+    final model = ref.watch(authViewModelProvider);
+    final isLoading = ref.watch(loadingProvider);
     final AppSize appSize = AppSize(context);
     final height = appSize.globalHeight;
     final width = appSize.globalWidth;
@@ -74,7 +74,7 @@ class SignupScreen extends ConsumerWidget {
             child: Column(
               children: [
                 TextFormField(
-                  initialValue: model.email,
+                  initialValue: model.pseudo,
                   keyboardType: TextInputType.name,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.account_circle_outlined),
@@ -92,11 +92,8 @@ class SignupScreen extends ConsumerWidget {
                   onChanged: (v) => model.email = v,
                   validator: (v) => model.emailValidate(v!),
                 ),
-                Consumer(
-                  builder: (context, ref, child) {
-                    ref.watch(
-                        provider.select((value) => value.obscurePassword));
-                    return TextFormField(
+
+                    TextFormField(
                       obscureText: model.obscurePassword,
                       initialValue: model.password,
                       decoration: InputDecoration(
@@ -112,14 +109,8 @@ class SignupScreen extends ConsumerWidget {
                         ),
                       ),
                       onChanged: (v) => model.password = v,
-                    );
-                  },
-                ),
-                Consumer(
-                  builder: (context, ref, child) {
-                    ref.watch(provider
-                        .select((value) => value.obscureConfirmPassword));
-                    return TextFormField(
+                    ),
+                 TextFormField(
                       obscureText: model.obscureConfirmPassword,
                       initialValue: model.confirmPassord,
                       decoration: InputDecoration(
@@ -138,9 +129,7 @@ class SignupScreen extends ConsumerWidget {
                       onChanged: (v) => model.confirmPassord = v,
                       validator: (v) =>
                       v != model.password ? "Les mots de passe ne correspondent pas" : null,
-                    );
-                  },
-                ),
+                    ),
                 SizedBox(
                   height: height * .01,
                 ),
@@ -186,11 +175,7 @@ class SignupScreen extends ConsumerWidget {
                 SizedBox(
                   height: height * .015,
                 ),
-                Consumer(
-                    builder: (context, ref, child) {
-                      final isLoading = ref.watch(loadingProvider);
-                      ref.watch(provider);
-                      return InkWell(
+                InkWell(
                         onTap: model.email.isNotEmpty &&
                             model.password.isNotEmpty &&
                             model.confirmPassord.isNotEmpty &&
@@ -226,8 +211,7 @@ class SignupScreen extends ConsumerWidget {
                                   "Créer un compte",
                                   style: TextStyle(color: Theme.of(context).colorScheme.background),
                                 ))),
-                      );
-                    }
+
                 ),
                 SizedBox(
                   height: height * .02,

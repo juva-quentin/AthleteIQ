@@ -13,16 +13,16 @@ class InfoScreen extends ConsumerWidget {
   static const route = "/info";
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final model = ref.read(infoViewModelProvider);
+    final model = ref.watch(infoViewModelProvider);
     final provider = infoViewModelProvider;
     final user = ref.watch(firestoreUserProvider);
     final height = MediaQuery.of(context).size.height;
-
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
-          maintainBottomViewPadding: true,
-          child: Stack(children: [
+        maintainBottomViewPadding: true,
+        child: Stack(
+          children: [
             PositionedDirectional(
               end: width * .02,
               bottom: height * .87,
@@ -38,17 +38,15 @@ class InfoScreen extends ConsumerWidget {
             ),
             Column(
               children: [
-                buildTopInfo(height, width, user, model, context),
-                buildMiddleNavInfo(height, provider, width, model),
+                buildTopInfo(height, width, user, context),
+                buildMiddleNavInfo(height, width),
                 Expanded(
-                  child: Consumer(builder: (context, ref, child) {
-                    ref.watch(provider.select((value) => value.selectedIndex));
-                    return model.widgetOptions.elementAt(model.selectedIndex);
-                  }),
-                ),
+                    child: model.widgetOptions.elementAt(model.selectedIndex)),
               ],
             ),
-          ])),
+          ],
+        ),
+      ),
     );
   }
 }

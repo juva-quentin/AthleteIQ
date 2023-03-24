@@ -7,9 +7,11 @@ import 'package:athlete_iq/model/Timer.dart';
 import 'package:athlete_iq/ui/providers/position_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:location/location.dart';
+import 'package:unicons/unicons.dart';
 
 import '../../data/network/parcoursRepository.dart';
 import '../../model/User.dart' as userModel;
@@ -19,7 +21,8 @@ import '../home/providers/timer_provider.dart';
 import '../info/provider/user_provider.dart';
 import '../providers/loading_provider.dart';
 
-final registerViewModelProvider = ChangeNotifierProvider(
+final registerViewModelProvider =
+    ChangeNotifierProvider.autoDispose<RegisterViewModel>(
   (ref) => RegisterViewModel(ref.read),
 );
 
@@ -182,18 +185,41 @@ class RegisterViewModel extends ChangeNotifier {
     }
   }
 
+  String switchCaseVisibility() {
+    switch (visibility) {
+      case ParcourVisibility.Public:
+        return "Public";
+      case ParcourVisibility.Private:
+        return "Privé";
+      case ParcourVisibility.Protected:
+        return "Entre amis";
+      default:
+        return "Public";
+    }
+  }
+
+  IconData switchCaseIconVisibility(){
+    switch (visibility) {
+      case ParcourVisibility.Public:
+        return UniconsLine.globe;
+      case ParcourVisibility.Private:
+        return UniconsLine.lock;
+      case ParcourVisibility.Protected:
+        return Icons.shield;
+      default:
+        return UniconsLine.globe;
+    }
+  }
+
   void addRemoveFriend(bool? value, String uid) {
     if (value ?? false) {
-      _share.add(
-          uid);
+      _share.add(uid);
     } else {
-      _share.remove(
-          uid);
+      _share.remove(uid);
     }
     print(_share);
     notifyListeners();
   }
-
 
   void register() async {
     final CustomTimer timer = CustomTimer.empty();
@@ -201,25 +227,24 @@ class RegisterViewModel extends ChangeNotifier {
     timer.minutes = _chrono.minute;
     timer.seconds = _chrono.seconds;
     final newParcour = initial.copyWith(
-        title: title,
-        description: description,
-        owner: user?.uid,
-        type: visibility.name,
-        shareTo: share,
-        timer: timer,
-        VM: VM,
-        totalDistance: totalDistance,
-        allPoints: coursePosition,
+      title: title,
+      description: description,
+      owner: user?.uid,
+      type: visibility.name,
+      shareTo: share,
+      timer: timer,
+      VM: VM,
+      totalDistance: totalDistance,
+      allPoints: coursePosition,
     );
     print(newParcour.timer.hours);
     _loading.start();
     try {
-      print("ok");
       await _parcourRepo.writeParcours(newParcour);
       _homeProvier.setLocation();
       _loading.end();
     } catch (e) {
-      print(e);
+      Future.error(e);
     }
   }
 }

@@ -7,7 +7,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import '../../../model/User.dart';
 import '../info_view_model_provider.dart';
 
-Widget buildTopInfo(double height, double width, AsyncValue<User> user, InfoViewModel model, BuildContext context) {
+Widget buildTopInfo(double height, double width, AsyncValue<User> user, BuildContext context) {
   return SizedBox(
     height: height * .22,
     child: Row(
@@ -61,6 +61,7 @@ Widget buildTopInfo(double height, double width, AsyncValue<User> user, InfoView
                 SizedBox(height: height * .02),
                 user.when(
                   data: (user) {
+                    print(user.pseudo);
                     return Row(
                         mainAxisAlignment:
                         MainAxisAlignment.spaceBetween,
@@ -81,8 +82,9 @@ Widget buildTopInfo(double height, double width, AsyncValue<User> user, InfoView
                                   )))
                         ]);
                   },
-                  error: (error, stackTrace) =>
-                      Text(error.toString()),
+                  error: (error, stackTrace) {
+                    print(error.toString());
+                      return Text(error.toString());},
                   loading: () =>
                   const CircularProgressIndicator(),
                 ),
@@ -100,8 +102,13 @@ Widget buildTopInfo(double height, double width, AsyncValue<User> user, InfoView
                                     fontSize: 18,
                                     fontWeight: FontWeight.w700,
                                   ))),
-                          Text(
-                              "plus que ${model.nbrDays()} jours...")
+                          Consumer(
+                              builder: (context, ref, child) {
+                                final model = ref.watch(infoViewModelProvider);
+                                return Text(
+                                  "plus que ${model.nbrDays()} jours...");
+                            }
+                          )
                         ]);
                   },
                   error: (error, stackTrace) =>
@@ -109,27 +116,32 @@ Widget buildTopInfo(double height, double width, AsyncValue<User> user, InfoView
                   loading: () =>
                   const CircularProgressIndicator(),
                 ),
-                user.when(
-                  data: (user) {
-                    return LinearPercentIndicator(
-                      animation: true,
-                      lineHeight: height * .025,
-                      animationDuration: 2500,
-                      padding:EdgeInsets.zero,
-                      percent: model.advencement(
-                          user.objectif.toInt(),
-                          user.totalDist.toInt()),
-                      barRadius: const Radius.circular(16),
-                      center: Text(
-                          "${((model.advencement(user.objectif.toInt(), user.totalDist.toInt())) * 100).toStringAsFixed(2)}%"),
-                      progressColor: Theme.of(context).primaryColor,
-                      backgroundColor:Theme.of(context).highlightColor,
+                Consumer(
+                  builder: (context, ref, child) {
+                    final model = ref.watch(infoViewModelProvider);
+                    return user.when(
+                      data: (user) {
+                        return LinearPercentIndicator(
+                          animation: true,
+                          lineHeight: height * .025,
+                          animationDuration: 2500,
+                          padding:EdgeInsets.zero,
+                          percent: model.advencement(
+                              user.objectif.toInt(),
+                              user.totalDist.toInt()),
+                          barRadius: const Radius.circular(16),
+                          center: Text(
+                              "${((model.advencement(user.objectif.toInt(), user.totalDist.toInt())) * 100).toStringAsFixed(2)}%"),
+                          progressColor: Theme.of(context).primaryColor,
+                          backgroundColor:Theme.of(context).highlightColor,
+                        );
+                      },
+                      error: (error, stackTrace) =>
+                          Text(error.toString()),
+                      loading: () =>
+                      const CircularProgressIndicator(),
                     );
-                  },
-                  error: (error, stackTrace) =>
-                      Text(error.toString()),
-                  loading: () =>
-                  const CircularProgressIndicator(),
+                  }
                 )
               ],
             ),

@@ -9,96 +9,90 @@ import 'package:rive/rive.dart';
 import '../model/rive_asset.dart';
 import 'app_view_model_provider.dart';
 
-
 class App extends ConsumerWidget {
   const App({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    final appProvider = appViewModelProvider;
-    final homeProvider = homeViewModelProvider;
-    final appModel = ref.read(appViewModelProvider);
-    final homeModel = ref.read(homeViewModelProvider);
+    final appModel = ref.watch(appViewModelProvider);
+    final homeModel = ref.watch(homeViewModelProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       extendBody: true,
-      body: Consumer(
-          builder: (context, ref, child) {
-            ref.watch(
-                appProvider.select((value) => value.selectedIndex));
-            return appModel.widgetOptions.elementAt(appModel.selectedIndex);
-        }
-      ),
-      bottomNavigationBar: Consumer(builder: (context, ref, child) {
-          return SafeArea(
-              bottom: false,
-              child: Consumer(
-                  builder: (context, ref, child) {
-                    ref.watch(
-                        appProvider.select((value) => value.selectedIndex));
-                    ref.watch(
-                        homeProvider.select((value) => value.courseStart));
-                  return AnimatedOpacity(
-                    opacity: !homeModel.courseStart? 1.0 : 0,
-                    duration: const Duration(seconds: 1),
-                    child: !homeModel.courseStart? Container(
-                      padding: EdgeInsets.only(bottom: height*.01, top: height*.01, left: width*.05, right: width*.05),
-                      margin: EdgeInsets.symmetric(horizontal: width*.06, vertical: height*.04),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor.withOpacity(0.9),
-                        borderRadius: const BorderRadius.all(Radius.circular(24))
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ...List.generate(bottomNavs.length, (index) =>   GestureDetector(
-                            onTap: (){
-                              bottomNavs[index].input!.change(true);
-                              if (bottomNavs[index] != appModel.selectedBottomNav) {
-                                appModel.selectedBottomNav = bottomNavs[index];
-                                appModel.selectedIndex = index;
-                              }
-                              Future.delayed(const Duration(seconds: 1), (){
-                                bottomNavs[index].input!.change(false);
-                              });
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                AnimatedBar(isActive: bottomNavs[index] == appModel.selectedBottomNav),
-                                SizedBox(
-                                  height: 40,
-                                  width: 40,
-                                  child: Opacity(
-                                    opacity: bottomNavs[index] == appModel.selectedBottomNav ? 1 : 0.5,
-                                    child: RiveAnimation.asset(
-                                      bottomNavs[1].src,
+      body: appModel.widgetOptions.elementAt(appModel.selectedIndex),
+      bottomNavigationBar: SafeArea(
+        bottom: false,
+        child: AnimatedOpacity(
+          opacity: !homeModel.courseStart ? 1.0 : 0,
+          duration: const Duration(seconds: 1),
+          child: !homeModel.courseStart
+              ? Container(
+                  padding: EdgeInsets.only(
+                      bottom: height * .01,
+                      top: height * .01,
+                      left: width * .05,
+                      right: width * .05),
+                  margin: EdgeInsets.symmetric(
+                      horizontal: width * .06, vertical: height * .04),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor.withOpacity(0.9),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(24))),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ...List.generate(
+                        bottomNavs.length,
+                        (index) => GestureDetector(
+                          onTap: () {
+                            bottomNavs[index].input!.change(true);
+                            if (bottomNavs[index] !=
+                                appModel.selectedBottomNav) {
+                              appModel.selectedBottomNav = bottomNavs[index];
+                              appModel.selectedIndex = index;
+                            }
+                            Future.delayed(const Duration(seconds: 1), () {
+                              bottomNavs[index].input!.change(false);
+                            });
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AnimatedBar(
+                                  isActive: bottomNavs[index] ==
+                                      appModel.selectedBottomNav),
+                              SizedBox(
+                                height: 40,
+                                width: 40,
+                                child: Opacity(
+                                  opacity: bottomNavs[index] ==
+                                          appModel.selectedBottomNav
+                                      ? 1
+                                      : 0.5,
+                                  child: RiveAnimation.asset(bottomNavs[1].src,
                                       artboard: bottomNavs[index].artboard,
-                                      onInit: (artboard){
-                                        StateMachineController controller =
-                                          RiveUtils.getRiveController(artboard,
-                                              stateMachineName:
-                                                  bottomNavs[index].stateMachineName);
-                                        bottomNavs[index].input = controller.findSMI("active") as SMIBool;
-                                      }
-                                    ),
-                                  )
+                                      onInit: (artboard) {
+                                    StateMachineController controller =
+                                        RiveUtils.getRiveController(artboard,
+                                            stateMachineName: bottomNavs[index]
+                                                .stateMachineName);
+                                    bottomNavs[index].input =
+                                        controller.findSMI("active") as SMIBool;
+                                  }),
                                 ),
-                              ],
-                            ),
-                          ))
-                        ],
-                      ),
-                    ) : SizedBox(),
-                  );
-                }
-              ),
-            );
-        }
-      )
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              : SizedBox(),
+        ),
+      ),
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:athlete_iq/data/network/parcoursRepository.dart';
 import 'package:athlete_iq/ui/home/providers/timer_provider.dart';
 import 'package:athlete_iq/ui/providers/position_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,13 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:location/location.dart';
-import 'package:geolocator/geolocator.dart';
 
 import '../../model/Parcour.dart';
 import '../providers/loading_provider.dart';
-import '../providers/parcoursStream_provider.dart';
 
-final homeViewModelProvider = ChangeNotifierProvider(
+final homeViewModelProvider = ChangeNotifierProvider.autoDispose<HomeViewModel>(
   (ref) => HomeViewModel(ref.read),
 );
 
@@ -28,8 +26,7 @@ class HomeViewModel extends ChangeNotifier {
 
   PositionModel get _position => _reader(positionProvider);
 
-  Stream<List<Parcours>> get _publiParcour =>
-      _reader(PublicParcourProvider.stream);
+  ParcourRepository get _parcourRepo => _reader(parcourRepositoryProvider);
 
   bool _courseStart = false;
   bool get courseStart => _courseStart;
@@ -95,34 +92,83 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Stream<List<Parcours>>? _parcours;
+  Stream<List<Parcours>>? get parcours => _parcours;
+  set parcours(Stream<List<Parcours>>? parcours) {
+    _parcours = parcours;
+    notifyListeners();
+  }
+
+  StreamSubscription<List<Parcours>>? subStreamParcours;
+
   late GoogleMapController _controller;
 
   Future<void> onMapCreated(GoogleMapController controller) async {
     _controller = controller;
     setLocation();
     getParcourt();
+    notifyListeners();
   }
 
-  void getParcourt() {
+  Future<void> getParcourt() async {
     switch (typeFilter) {
       case "public":
-        _publiParcour.listen((value) {
-          print("ok");
-          polylines.clear();
-          value.map(
-            (e) => polylines.add(
-              Polyline(
-                polylineId: PolylineId(e.id),
-                points: e.allPoints.map((position) => LatLng(position.latitude!, position.longitude!)).toList(),
-                width: 4,
-                color: Colors.blue,
-              ),
-            ),
-          );
-          print(polylines.length);
-          notifyListeners();
-        });
+        polylines.clear();
+        try {
+          parcours = await _parcourRepo.parcoursPublicStream;
+          streamParcours();
+        } catch (e) {
+          print(e);
+        }
+        break;
+      case "protected":
+        polylines.clear();
+        try {
+          parcours = await _parcourRepo.parcoursProtectedStream;
+          streamParcours();
+        } catch (e) {
+          print(e);
+        }
+        break;
+      case "private":
+        polylines.clear();
+        try {
+          parcours = await _parcourRepo.parcoursProtectedStream;
+          streamParcours();
+        } catch (e) {
+          print(e);
+        }
+        break;
+      default:
+        polylines.clear();
+        parcours = await _parcourRepo.parcoursPublicStream;
+        streamParcours();
+        break;
     }
+  }
+
+  void streamParcours() async{
+    subStreamParcours = parcours!.listen((List<Parcours> parcours) {
+      for (var i = 0; i<parcours.length; i++){
+          final newPolilyne = Polyline(
+            polylineId: PolylineId(parcours[i].id),
+            points: parcours[i].allPoints
+                .map((position) =>
+                LatLng(position.latitude!, position.longitude!))
+                .toList(),
+            width: 4,
+            color: typeFilter == "public"
+                ? Colors.green
+                : typeFilter == "protected"
+                ? Colors.orange
+                : Colors.red,
+          );
+          if (!polylines.contains(newPolilyne)) {
+            polylines.add(newPolilyne);
+            notifyListeners();
+          }
+        };
+    });
   }
 
   void setLocation() async {

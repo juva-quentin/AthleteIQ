@@ -23,6 +23,7 @@ class HomeChatScreen extends ConsumerWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+          automaticallyImplyLeading: false,
         actions: [
           IconButton(
               onPressed: () {

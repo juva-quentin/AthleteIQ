@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../model/User.dart' as user;
 import '../../ui/auth/providers/auth_view_model_provider.dart';
 
-final userRepositoryProvider = Provider((ref) => UserRepository());
+final userRepositoryProvider = Provider.autoDispose((ref) => UserRepository());
 
 class UserRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -44,7 +44,7 @@ class UserRepository {
   }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> get userStream =>
-      _firestore.collection('users').doc(_auth.currentUser!.uid).snapshots();
+      _firestore.collection('users').doc(_auth.currentUser?.uid).snapshots();
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStreamWithID(String userId){
     return  _firestore.collection('users').doc(userId).snapshots();

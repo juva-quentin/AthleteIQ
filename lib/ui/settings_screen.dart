@@ -17,24 +17,32 @@ class SettingsScreen extends ConsumerWidget {
 
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: const Text("Paramètres", style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),),
-        leading: IconButton(
-          icon: Icon(UniconsLine.arrow_left,size: width*.1),
-          onPressed: () => Navigator.of(context).pop(),
+        appBar: AppBar(
+          centerTitle: false,
+          title: const Text(
+            "Paramètres",
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+          ),
+          leading: IconButton(
+            icon: Icon(UniconsLine.arrow_left, size: width * .1),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          actions: [
+            IconButton(
+                onPressed: () {
+                 try { auth
+                      .logout();
+                      Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            LoginScreen.route,
+                            (route) => true);}catch(e){
+                   print(e);
+                 }
+
+                },
+                icon: Icon(UniconsLine.exit, size: width * .1)),
+          ],
         ),
-        actions: [
-          IconButton(onPressed: () async {
-          await auth.logout();
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            LoginScreen.route,
-                (route) => false,
-          );
-        }, icon: Icon(UniconsLine.exit, size: width*.1)),],
-      ),
-      body:Container()
-    );
+        body: Container());
   }
 }

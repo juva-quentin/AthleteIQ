@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../data/network/userRepository.dart';
 import 'active_groups_provider.dart';
 
-final chatViewModelProvider = ChangeNotifierProvider(
+final chatViewModelProvider = ChangeNotifierProvider.autoDispose(
   (ref) => ChatViewModel(ref.read),
 );
 
