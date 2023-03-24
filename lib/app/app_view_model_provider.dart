@@ -6,15 +6,15 @@ import '../ui/chat/homeChat_screen.dart';
 import '../ui/home/home_screen.dart';
 import '../ui/info/info_screen.dart';
 
-final appViewModelProvider = ChangeNotifierProvider(
-      (ref) => appViewModel(ref.read),
+final appViewModelProvider = ChangeNotifierProvider.autoDispose<AppViewModel>(
+      (ref) => AppViewModel(ref.read),
 );
 
 
-class appViewModel extends ChangeNotifier {
+class AppViewModel extends ChangeNotifier {
   final Reader _reader;
 
-  appViewModel(this._reader);
+  AppViewModel(this._reader);
 
 
   int _selectedIndex = 1;

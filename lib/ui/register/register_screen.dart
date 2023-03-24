@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
+import '../../utils/utils.dart';
 import '../home/providers/timer_provider.dart';
 import '../info/provider/user_provider.dart';
 
@@ -16,9 +17,8 @@ class RegisterScreen extends ConsumerWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final model = ref.watch(registerViewModelProvider);
-    final provider = registerViewModelProvider;
-    final chronoProv = timerProvider;
     final modelChrono = ref.watch(timerProvider);
+    final user = ref.watch(firestoreUserProvider);
     return SafeArea(
       child: AnimatedPadding(
         padding: EdgeInsets.only(right: width * .04, left: width * .04),
@@ -132,12 +132,8 @@ class RegisterScreen extends ConsumerWidget {
                                           SizedBox(
                                             height: height * .02,
                                           ),
-                                          Consumer(
-                                              builder: (context, ref, child) {
-                                            ref.watch(chronoProv);
-                                            return Text(
-                                                "${modelChrono.hour.toString().padLeft(2, '0')}:${modelChrono.minute.toString().padLeft(2, '0')}:${modelChrono.seconds.toString().padLeft(2, '0')}");
-                                          }),
+                                          Text(
+                                              "${modelChrono.hour.toString().padLeft(2, '0')}:${modelChrono.minute.toString().padLeft(2, '0')}:${modelChrono.seconds.toString().padLeft(2, '0')}"),
                                         ],
                                       ),
                                     ),
@@ -162,12 +158,8 @@ class RegisterScreen extends ConsumerWidget {
                                           SizedBox(
                                             height: height * .02,
                                           ),
-                                          Consumer(
-                                              builder: (context, ref, child) {
-                                            ref.watch(provider);
-                                            return Text(
-                                                "${model.totalDistance.toStringAsFixed(2)} KM");
-                                          }),
+                                          Text(
+                                              "${model.totalDistance.toStringAsFixed(2)} KM"),
                                         ],
                                       ),
                                     )
@@ -196,46 +188,14 @@ class RegisterScreen extends ConsumerWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
-                                            Consumer(
-                                                builder: (context, ref, child) {
-                                              ref.watch(provider);
-                                              switch (model.visibility) {
-                                                case ParcourVisibility.Public:
-                                                  return const Text("Public");
-                                                case ParcourVisibility.Private:
-                                                  return const Text("Privé");
-                                                case ParcourVisibility
-                                                    .Protected:
-                                                  return const Text(
-                                                      "Entre amis");
-                                                default:
-                                                  return const Text("Public");
-                                              }
-                                            }),
+                                            Text(model.switchCaseVisibility()),
                                             SizedBox(
                                               height: height * .01,
                                             ),
-                                            Consumer(
-                                                builder: (context, ref, child) {
-                                              ref.watch(chronoProv);
-                                              switch (model.visibility) {
-                                                case ParcourVisibility.Public:
-                                                  return Icon(
-                                                    UniconsLine.globe,
-                                                    size: height * .05,
-                                                  );
-                                                case ParcourVisibility.Private:
-                                                  return Icon(UniconsLine.lock,
-                                                      size: height * .05);
-                                                case ParcourVisibility
-                                                    .Protected:
-                                                  return Icon(Icons.shield,
-                                                      size: height * .05);
-                                                default:
-                                                  return Icon(UniconsLine.globe,
-                                                      size: height * .05);
-                                              }
-                                            }),
+                                            Icon(
+                                              model.switchCaseIconVisibility(),
+                                              size: height * .05,
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -261,12 +221,8 @@ class RegisterScreen extends ConsumerWidget {
                                           SizedBox(
                                             height: height * .02,
                                           ),
-                                          Consumer(
-                                              builder: (context, ref, child) {
-                                            ref.watch(provider);
-                                            return Text(
-                                                "${model.VM.toStringAsFixed(1)} Km/h");
-                                          }),
+                                          Text(
+                                              "${model.VM.toStringAsFixed(1)} Km/h"),
                                         ],
                                       ),
                                     )
@@ -278,62 +234,54 @@ class RegisterScreen extends ConsumerWidget {
                           SizedBox(
                             height: height * .01,
                           ),
-                          Consumer(builder: (context, watch, child) {
-                            final user = ref.watch(firestoreUserProvider);
-                            return model.visibility ==
-                                    ParcourVisibility.Protected
-                                ? Container(
-                                    padding: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor,
-                                        borderRadius:
-                                            BorderRadius.circular(30)),
-                                    height: height * .15,
-                                    child: user.when(
-                                      data: (user) {
-                                        return user.friends.isNotEmpty
-                                            ? ListView.builder(
-                                                itemCount: user.friends.length,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  final friend = ref.watch(
-                                                      firestoreUserFriendsProvider(
-                                                          user.friends[index]));
-                                                  return CheckboxListTile(
-                                                    tileColor: Colors.white,
-                                                    title: friend.when(
-                                                      data: (data) {
-                                                        return Text(
-                                                            data.pseudo);
-                                                      },
-                                                      error: (error,
-                                                              stackTrace) =>
-                                                          Text(
-                                                              error.toString()),
-                                                      loading: () =>
-                                                          const CircularProgressIndicator(),
-                                                    ),
-                                                    value: model.share.contains(
-                                                        user.friends[index]),
-                                                    onChanged: (bool? value) {
-                                                      model.addRemoveFriend(
-                                                          value,
-                                                          user.friends[index]);
+                          model.visibility == ParcourVisibility.Protected
+                              ? Container(
+                                  padding: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.circular(30)),
+                                  height: height * .15,
+                                  child: user.when(
+                                    data: (user) {
+                                      return user.friends.isNotEmpty
+                                          ? ListView.builder(
+                                              itemCount: user.friends.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                final friend = ref.watch(
+                                                    firestoreUserFriendsProvider(
+                                                        user.friends[index]));
+                                                return CheckboxListTile(
+                                                  tileColor: Colors.white,
+                                                  title: friend.when(
+                                                    data: (data) {
+                                                      return Text(data.pseudo);
                                                     },
-                                                  );
-                                                },
-                                              )
-                                            : const Text(
-                                                'Vous n avez pas encore d amis');
-                                      },
-                                      error: (error, stackTrace) =>
-                                          Text(error.toString()),
-                                      loading: () =>
-                                          const CircularProgressIndicator(),
-                                    ))
-                                : const SizedBox();
-                          }),
+                                                    error: (error,
+                                                            stackTrace) =>
+                                                        Text(error.toString()),
+                                                    loading: () =>
+                                                        const CircularProgressIndicator(),
+                                                  ),
+                                                  value: model.share.contains(
+                                                      user.friends[index]),
+                                                  onChanged: (bool? value) {
+                                                    model.addRemoveFriend(value,
+                                                        user.friends[index]);
+                                                  },
+                                                );
+                                              },
+                                            )
+                                          : const Text(
+                                              'Vous n avez pas encore d amis');
+                                    },
+                                    error: (error, stackTrace) =>
+                                        Text(error.toString()),
+                                    loading: () =>
+                                        const CircularProgressIndicator(),
+                                  ))
+                              : const SizedBox(),
                           SizedBox(
                             height: height * .01,
                           ),
@@ -365,8 +313,12 @@ class RegisterScreen extends ConsumerWidget {
                                   child: const Text('Valider'),
                                 ),
                                 onTap: () async {
-                                  model.register();
-                                  Navigator.of(context).pop();
+                                  try{
+                                    model.register();
+                                    Navigator.of(context).pop();
+                                  }catch(e){
+                                    Utils.flushBarErrorMessage(e.toString(), context);
+                                  }
                                 },
                               )
                             ],

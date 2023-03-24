@@ -50,6 +50,7 @@ class InitRoute extends ConsumerStatefulWidget {
 }
 
 class _InitRouteState extends ConsumerState<InitRoute> {
+
   @override
   void initState() {
     super.initState();

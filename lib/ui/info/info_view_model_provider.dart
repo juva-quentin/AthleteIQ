@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 import 'dart:io';
 import '../../model/User.dart';
 
-final infoViewModelProvider = ChangeNotifierProvider(
+final infoViewModelProvider = ChangeNotifierProvider.autoDispose<InfoViewModel>(
       (ref) => InfoViewModel(ref.read),
 );
 

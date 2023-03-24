@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../model/Groups.dart' as groupsModel;
 import '../../providers/loading_provider.dart';
 
-final groupsViewModelProvider = ChangeNotifierProvider(
+final groupsViewModelProvider = ChangeNotifierProvider.autoDispose(
       (ref) => GroupsViewModel(ref.read),
 );
 

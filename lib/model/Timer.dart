@@ -33,8 +33,7 @@ class CustomTimer {
     };
   }
 
-  factory CustomTimer.fromFirestore(DocumentSnapshot doc) {
-    final Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
+  factory CustomTimer.fromFirestore(Map<String, dynamic> map) {
     return CustomTimer(
       hours: map['hours'] ?? 0,
       minutes: map['minutes'] ?? 0,

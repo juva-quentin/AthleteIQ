@@ -95,7 +95,11 @@ class Parcours {
   }
 
   factory Parcours.fromFirestore(QueryDocumentSnapshot doc) {
-    final Map<String, dynamic> map = doc as Map<String, dynamic>;
+
+    final Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
+    final list =  map['allPoints'];
+    List<LocationData> listLocation = [];
+    list.map((value){listLocation.add(LocationData.fromMap(value));});
     return Parcours(
       id: doc.id,
       owner: map['owner'] as String,
@@ -103,11 +107,11 @@ class Parcours {
       description: map['description'] as String,
       type: map['type'] as String,
       shareTo: map['shareTo'] as List,
-      timer: map['timer'] as CustomTimer,
+      timer: CustomTimer.fromFirestore(map['timer']),
       createdAt: map['createdAt'].toDate(),
       VM: map['VM'] as double,
       totalDistance: map['totalDistance'] as double,
-      allPoints: map['allPoints'] as List<LocationData>,
+      allPoints: listLocation
     );
   }
 

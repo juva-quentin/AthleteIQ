@@ -7,20 +7,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../utils/routes/root.dart';
 import '../providers/loading_provider.dart';
 
-
 class LoginScreen extends ConsumerWidget {
   LoginScreen({Key, key}) : super(key: key);
   final _formKey = GlobalKey<FormState>();
   static const route = "/login";
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = authViewModelProvider;
-    final model = ref.read(authViewModelProvider);
+    final model = ref.watch(authViewModelProvider);
+    final isLoading = ref.watch(loadingProvider);
     final AppSize appSize = AppSize(context);
     final height = appSize.globalHeight;
     final width = appSize.globalWidth;
     return Scaffold(
-      resizeToAvoidBottomInset : false,
+      resizeToAvoidBottomInset: false,
       body: Form(
         key: _formKey,
         child: Column(
@@ -32,16 +31,19 @@ class LoginScreen extends ConsumerWidget {
                 height: height * .30,
                 width: width,
                 decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(bottomRight: Radius.circular(35), bottomLeft: Radius.circular(35)),
+                    borderRadius: const BorderRadius.only(
+                        bottomRight: Radius.circular(35),
+                        bottomLeft: Radius.circular(35)),
                     color: Theme.of(context).colorScheme.primary),
                 child: Padding(
-                  padding:
-                      EdgeInsets.only(left: (width * .05), bottom: (width * .06)),
+                  padding: EdgeInsets.only(
+                      left: (width * .05), bottom: (width * .06)),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.asset("assets/images/logo.png", height: height * .15),
+                      Image.asset("assets/images/logo.png",
+                          height: height * .15),
                       SizedBox(
                         height: height * .01,
                       ),
@@ -70,6 +72,7 @@ class LoginScreen extends ConsumerWidget {
             TextFormField(
               initialValue: model.email,
               keyboardType: TextInputType.emailAddress,
+              autocorrect: false,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.email_outlined),
                 labelText: "Email",
@@ -77,53 +80,42 @@ class LoginScreen extends ConsumerWidget {
               onChanged: (v) => model.email = v,
               validator: (v) => model.emailValidate(v!),
             ),
-            Consumer(
-              builder: (context, ref, child) {
-                ref.watch(
-                    provider.select((value) => value.obscurePassword));
-                return TextFormField(
-                  obscureText: model.obscurePassword,
-                  initialValue: model.password,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.lock_outline_rounded),
-                    labelText: "Mot de passe",
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        model.obscurePassword = !model.obscurePassword;
-                      },
-                      icon: Icon(model.obscurePassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined),
-                    ),
-                  ),
-                  onChanged: (v) => model.password = v,
-                );
-              },
+            TextFormField(
+              obscureText: model.obscurePassword,
+              initialValue: model.password,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.lock_outline_rounded),
+                labelText: "Mot de passe",
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    model.obscurePassword = !model.obscurePassword;
+                  },
+                  icon: Icon(model.obscurePassword
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined),
+                ),
+              ),
+              onChanged: (v) => model.password = v,
             ),
             SizedBox(
               height: height * .08,
             ),
-            Consumer(
-            builder: (context, ref, child) {
-              final isLoading = ref.watch(loadingProvider);
-              ref.watch(provider);
-              return InkWell(
-                onTap:  model.email.isNotEmpty &&
-                    model.password.isNotEmpty 
-                    ? () async {
-                  if (_formKey.currentState!.validate()) {
-                    try {
-                      await model.login();
-                      // ignore: use_build_context_synchronously
-                      Navigator.pushReplacementNamed(
-                        context,
-                        Root.route,
-                      );
-                    } catch (e) {
-                      Utils.flushBarErrorMessage(e.toString(), context);
+            InkWell(
+              onTap: model.email.isNotEmpty && model.password.isNotEmpty
+                  ? () async {
+                      if (_formKey.currentState!.validate()) {
+                        try {
+                          await model.login();
+                          // ignore: use_build_context_synchronously
+                          Navigator.pushReplacementNamed(
+                            context,
+                            Root.route,
+                          );
+                        } catch (e) {
+                          Utils.flushBarErrorMessage(e.toString(), context);
+                        }
+                      }
                     }
-                  }
-                }
                   : null,
               child: Container(
                   height: 40,
@@ -134,26 +126,25 @@ class LoginScreen extends ConsumerWidget {
                   child: Center(
                       child: isLoading.loading
                           ? const CircularProgressIndicator(
-                        color: Colors.white,
-                      )
+                              color: Colors.white,
+                            )
                           : Text(
-                        "Connexion",
-                        style: TextStyle(color: Theme.of(context).colorScheme.background),
-                      ))),
-            );
-          }
-      ),
+                              "Connexion",
+                              style: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.background),
+                            ))),
+            ),
             SizedBox(
               height: height * .02,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Vous avez un compte ?"),
+                const Text("Vous n'avez pas de compte ?"),
                 InkWell(
                   onTap: () {
-                    Navigator.pushReplacementNamed(
-                        context, SignupScreen.route);
+                    Navigator.pushReplacementNamed(context, SignupScreen.route);
                   },
                   child: const Text(
                     "Creer un comte",

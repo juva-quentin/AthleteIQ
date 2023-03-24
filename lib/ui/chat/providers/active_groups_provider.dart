@@ -6,7 +6,7 @@ final activeGroupeProvider = StateProvider<String>(
       (ref) => '',
 );
 
-final streamGroupsProvider = StreamProvider.family<Groups, String>((ref, id) {
+final streamGroupsProvider = StreamProvider.autoDispose.family<Groups, String>((ref, id) {
   final stream = ref.read(GroupsRepositoryProvider).getGroupsStreamById(id);
   return stream.map((snapshot) => Groups.fromFirestore(snapshot));
 });

@@ -5,11 +5,11 @@ import '../../../resources/components/middleAnimatedBar.dart';
 import '../info_screen.dart';
 import '../info_view_model_provider.dart';
 
-Widget buildMiddleNavInfo(double height, ChangeNotifierProvider<InfoViewModel> provider, double width, InfoViewModel model) {
+Widget buildMiddleNavInfo(double height, double width) {
   return SizedBox(
     height: height * .05,
     child: Consumer(builder: (context, ref, child) {
-      ref.watch(provider.select((value) => value.selectedIndex));
+      final model = ref.watch(infoViewModelProvider);
       return Padding(
         padding: EdgeInsets.only(
             right: width * .03, left: width * .03),

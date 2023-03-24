@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../model/Groups.dart';
 
-final GroupsRepositoryProvider = Provider((ref) => GroupsRepository());
+final GroupsRepositoryProvider = Provider.autoDispose((ref) => GroupsRepository());
 
 class GroupsRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

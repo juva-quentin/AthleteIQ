@@ -7,13 +7,10 @@ import '../../../model/User.dart' as userModel;
 
 import '../../providers/loading_provider.dart';
 
-final authViewModelProvider = ChangeNotifierProvider(
+final authViewModelProvider = ChangeNotifierProvider.autoDispose<AuthViewModel>(
   (ref) => AuthViewModel(ref.read),
 );
 
-final userProvider = StreamProvider<User?>(
-  (ref) => ref.read(authViewModelProvider).userStream,
-);
 
 class AuthViewModel extends ChangeNotifier {
   final Reader _reader;
@@ -23,10 +20,7 @@ class AuthViewModel extends ChangeNotifier {
 
   User? get user => _auth.currentUser;
 
-  Stream<User?> get userStream => _auth.authStateChanges();
-
   final UserRepository _userRepo = UserRepository();
-
 
   String _pseudo = '';
   String get pseudo => _pseudo;
@@ -96,7 +90,8 @@ class AuthViewModel extends ChangeNotifier {
       _loading.stop();
 
       if (e.code == "wrong-password") {
-        return Future.error("Mauvais mot de passe! Veuiller entre un mot de passe valide");
+        return Future.error(
+            "Mauvais mot de passe! Veuiller entre un mot de passe valide");
       } else if (e.code == "user-not-found") {
         return Future.error("Utilisateur non trouvé");
       } else {
@@ -136,9 +131,11 @@ class AuthViewModel extends ChangeNotifier {
       userModel.User _user = userModel.User(
         id: _auth.currentUser!.uid,
         pseudo: pseudo,
-        image: sex == 'Homme'? "https://cdn-icons-png.flaticon.com/512/4139/4139981.png" : "https://cdn-icons-png.flaticon.com/512/219/219969.png",
+        image: sex == 'Homme'
+            ? "https://cdn-icons-png.flaticon.com/512/4139/4139981.png"
+            : "https://cdn-icons-png.flaticon.com/512/219/219969.png",
         email: email,
-        friends:[],
+        friends: [],
         sex: sex,
         objectif: 0,
         createdAt: DateTime.now(),
@@ -156,7 +153,13 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    await _auth.signOut();
+    try {
+      await _auth.signOut();
+    } on FirebaseAuthException catch (e) {
+      print('Failed with error code: ${e.code}');
+      print(e.message);
+      rethrow;
+    }
   }
 
   Future<void> reload() async {
@@ -184,7 +187,6 @@ class AuthViewModel extends ChangeNotifier {
     });
   }
 
-
   String? verficationId;
 
   int? resendToken;
@@ -193,5 +195,4 @@ class AuthViewModel extends ChangeNotifier {
 
   final formatter = MaskTextInputFormatter(
       mask: '# - # - # - # - # - #', filter: {"#": RegExp(r'[0-9]')});
-
 }

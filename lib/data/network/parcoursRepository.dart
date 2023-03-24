@@ -8,21 +8,21 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final parcourRepositoryProvider = Provider((ref) => ParcourRepository());
+final parcourRepositoryProvider = Provider.autoDispose((ref) => ParcourRepository());
 
 class ParcourRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   Future<void> writeParcours(Parcours parcours) async {
     final ref =
     _firestore.collection("parcours").doc(parcours.id.isEmpty ? null : parcours.id);
-
     try {
       await ref.set(
         parcours.toMap(),
         SetOptions(merge: true),
       );
     } catch (e) {
-      print(e);
+      rethrow;
     }
   }
 
@@ -36,14 +36,14 @@ class ParcourRepository {
     }
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> get parcoursPublicStream =>
-      _firestore.collection('parcours').where('type', isEqualTo: "public").snapshots();
+  Future<Stream<List<Parcours>>> get parcoursPublicStream async =>
+     await _firestore.collection('parcours').where('type', isEqualTo: "Public").snapshots().map((snapshot) => snapshot.docs.map((e) => Parcours.fromFirestore(e)).toList());
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> get parcoursProtectedStream =>
-      _firestore.collection('parcours').where('type', isEqualTo: "protected").snapshots();
+  Future<Stream<List<Parcours>>> get parcoursProtectedStream async=>
+      await _firestore.collection('parcours').where('owner', isEqualTo: _auth.currentUser?.uid).where('type', isEqualTo: "Protected").snapshots().map((snapshot) => snapshot.docs.map((e) => Parcours.fromFirestore(e)).toList());
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> get parcoursPrivateStream =>
-      _firestore.collection('parcours').where('type', isEqualTo: "private").snapshots();
+  Future<Stream<List<Parcours>>> get parcoursPrivateStream async =>
+      await _firestore.collection('parcours').where('type', isEqualTo: "Private").snapshots().map((snapshot) => snapshot.docs.map((e) => Parcours.fromFirestore(e)).toList());
 
 
   void delete(String id) {
