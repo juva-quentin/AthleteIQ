@@ -1,3 +1,5 @@
+import 'package:athlete_iq/data/network/groupsRepository.dart';
+import 'package:athlete_iq/data/network/parcoursRepository.dart';
 import 'package:athlete_iq/data/network/userRepository.dart';
 import 'package:athlete_iq/ui/auth/providers/auth_view_model_provider.dart';
 import 'package:athlete_iq/ui/info/info_screen.dart';
@@ -8,7 +10,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
+import '../../model/Parcour.dart';
 import '../../model/User.dart';
+import 'courses_list_screen.dart';
 
 final infoViewModelProvider = ChangeNotifierProvider.autoDispose<InfoViewModel>(
       (ref) => InfoViewModel(ref.read),
@@ -18,6 +22,8 @@ class InfoViewModel extends ChangeNotifier {
   final Reader _reader;
   InfoViewModel(this._reader);
   UserRepository get _repository => _reader(userRepositoryProvider);
+  ParcourRepository get parcourRepository => _reader(parcourRepositoryProvider);
+
   dynamic _file;
   File get file => _file;
   set file(File file) {
@@ -40,9 +46,7 @@ class InfoViewModel extends ChangeNotifier {
   }
 
   static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'un truc '
-    ),
+    CoursesListScreen(),
     Text(
         'un autre truc '
     ),

@@ -1,10 +1,8 @@
 import 'package:athlete_iq/resources/components/animatedBar.dart';
-import 'package:athlete_iq/resources/size.dart';
 import 'package:athlete_iq/ui/home/home_view_model_provider.dart';
 import 'package:athlete_iq/utils/rive_utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rive/rive.dart';
 import '../model/rive_asset.dart';
 import 'app_view_model_provider.dart';
@@ -90,7 +88,7 @@ class App extends ConsumerWidget {
                     ],
                   ),
                 )
-              : SizedBox(),
+              : const SizedBox(),
         ),
       ),
     );

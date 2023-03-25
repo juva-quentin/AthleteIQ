@@ -96,10 +96,6 @@ class Parcours {
 
   factory Parcours.fromFirestore(QueryDocumentSnapshot doc) {
     final Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
-    // List<LocationData> listLocation = [];
-    // list.map((value) {
-    //   listLocation.add(LocationData.fromMap(value));
-    // });
     List<LocationData> mapLocationData(List<dynamic> list){
       List<LocationData> result = [];
       for(var i = 0; i< list.length; i++){
@@ -107,7 +103,6 @@ class Parcours {
       }
       return result;
     }
-    print(map['allPoints'].runtimeType);
     return Parcours(
       id: doc.id,
       owner: map['owner'] as String,

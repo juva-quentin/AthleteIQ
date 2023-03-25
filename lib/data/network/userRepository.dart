@@ -29,16 +29,15 @@ class UserRepository {
         SetOptions(merge: true),
       );
     } catch (e) {
-      print(e);
+      rethrow;
     }
   }
 
   Future updateDataToFirestore(
-      Map<String, dynamic> data, String collectionName, String docName) async {
+      Map<String, dynamic> data) async {
     try {
-      await _firestore.collection(collectionName).doc(docName).update(data);
+      await _firestore.collection('users').doc(_auth.currentUser?.uid).update(data);
     } catch (e) {
-      print(e.toString());
       throw Exception(e.toString());
     }
   }
@@ -51,7 +50,6 @@ class UserRepository {
   }
 
   Future<user.User> getUserWithId({required String userId}) async {
-    print(userId);
     var docRef = _firestore.collection('users').doc(userId);
     final result = docRef.get().then((value) => user.User.fromFirestore(value));
     return result;

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:location/location.dart';
+import 'package:unicons/unicons.dart';
 
 import '../../model/Parcour.dart';
 import '../providers/loading_provider.dart';
@@ -106,6 +107,13 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  IconData _filterParcourIcon = UniconsLine.globe;
+  IconData get filterParcourIcon => _filterParcourIcon;
+  set filterParcourIcon(IconData filterParcourIcon) {
+    _filterParcourIcon = filterParcourIcon;
+    notifyListeners();
+  }
+
   StreamSubscription<List<Parcours>>? _subStreamParcours;
 
   BitmapDescriptor _markerIcon = BitmapDescriptor.defaultMarker;
@@ -121,6 +129,40 @@ class HomeViewModel extends ChangeNotifier {
     _controller = controller;
     setLocation();
     notifyListeners();
+  }
+
+  Future<void> changeFilterParcour() async {
+    final provVal = _typeFilter;
+    if (_typeFilter == "public") {
+      _filterParcourIcon = Icons.shield;
+      _typeFilter = "protected";
+    }else if (_typeFilter == "protected"){
+      _filterParcourIcon = UniconsLine.lock;
+      _typeFilter = "private";
+    }else{
+      _filterParcourIcon = UniconsLine.globe;
+      _typeFilter = "public";
+    }
+    try {
+      await getParcourt();
+    } catch (e) {
+      _typeFilter = provVal;
+      switch (provVal) {
+        case "public":
+          _filterParcourIcon = UniconsLine.globe;
+          break;
+        case "private":
+          _filterParcourIcon = UniconsLine.lock;
+          break;
+        case "protected":
+          _filterParcourIcon = Icons.shield;
+          break;
+        default:
+          _filterParcourIcon = UniconsLine.globe;
+          break;
+      }
+      return Future.error(e);
+    }
   }
 
   Future<void> getParcourt() async {
@@ -223,16 +265,6 @@ class HomeViewModel extends ChangeNotifier {
       _loading.end();
       notifyListeners();
     }
-  }
-
-  void addCustomIcon() {
-    BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(), "assets/Location_marker.png")
-        .then(
-      (icon) {
-        _markerIcon = icon;
-      },
-    );
   }
 
   void setLocationDuringCours(LocationData location) {

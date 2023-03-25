@@ -1,10 +1,9 @@
 import 'package:athlete_iq/ui/register/register_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../ui/home/home_view_model_provider.dart';
 import '../../utils/routes/customPopupRoute.dart';
 import '../../utils/utils.dart';
-import '../size.dart';
 
 class GoBtn extends ConsumerWidget {
   const GoBtn({Key? key}) : super(key: key);

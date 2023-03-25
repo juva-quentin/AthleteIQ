@@ -71,8 +71,25 @@ class HomeScreen extends ConsumerWidget {
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Align(
-                alignment: AlignmentDirectional.topEnd,
+              child: FloatingActionButton(
+                backgroundColor: Theme.of(context).cardColor,
+                heroTag: "modeParcourBtn",
+                onPressed: () async {
+                  try {
+                    await model.changeFilterParcour();
+                    Utils.toastMessage(
+                        "Chargement des parcours ${model.typeFilter == "public" ? 'public' : model.typeFilter == "protected" ? "protégé" : model.typeFilter == "private" ? "privé" : "public"}");
+                  } catch (e) {
+                    Utils.flushBarErrorMessage(e.toString(), context);
+                  }
+                },
+                child: Icon(model.filterParcourIcon),
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Align(
+                alignment: Alignment(0.97, 0),
                 child: Column(
                   children: [
                     Padding(
@@ -85,8 +102,8 @@ class HomeScreen extends ConsumerWidget {
                               model.defaultMapType == MapType.normal
                                   ? MapType.satellite
                                   : MapType.normal;
-                          Utils.toastMessage("Mode ${model.defaultMapType == MapType.normal
-                              ? 'normal': 'satellite'} activé");
+                          Utils.toastMessage(
+                              "Mode ${model.defaultMapType == MapType.normal ? 'normal' : 'satellite'} activé");
                         },
                         child: const Icon(UniconsLine.layer_group),
                       ),
@@ -116,8 +133,8 @@ class HomeScreen extends ConsumerWidget {
                         heroTag: "traficBtn",
                         onPressed: () {
                           model.traffic = model.traffic == false ? true : false;
-                          Utils.toastMessage("Trafic ${model.traffic == false
-                              ? 'désactivé': 'activé'}");
+                          Utils.toastMessage(
+                              "Trafic ${model.traffic == false ? 'désactivé' : 'activé'}");
                         },
                         child: Icon(
                           UniconsLine.traffic_light,
@@ -128,7 +145,7 @@ class HomeScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-            ),
+
           ),
         ],
       ),
