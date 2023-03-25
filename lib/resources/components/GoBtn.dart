@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../ui/home/home_view_model_provider.dart';
 import '../../utils/routes/customPopupRoute.dart';
+import '../../utils/utils.dart';
 import '../size.dart';
 
 class GoBtn extends ConsumerWidget {
@@ -21,17 +22,25 @@ class GoBtn extends ConsumerWidget {
       return GestureDetector(
         onTap: () async {
           if (!model.courseStart) {
-            await model.register();
+            try {
+              await model.register();
+            } catch (e) {
+              Utils.flushBarErrorMessage(e.toString(), context);
+            }
           } else {
-            await model.register().then(
-                  (value) => Navigator.of(context).push(
-                    CustomPopupRoute(
-                      builder: (BuildContext context) {
-                        return RegisterScreen();
-                      },
+            try {
+              await model.register().then(
+                    (value) => Navigator.of(context).push(
+                      CustomPopupRoute(
+                        builder: (BuildContext context) {
+                          return RegisterScreen();
+                        },
+                      ),
                     ),
-                  ),
-                );
+                  );
+            } catch (e) {
+              Utils.flushBarErrorMessage(e.toString(), context);
+            }
           }
         },
         child: AnimatedContainer(

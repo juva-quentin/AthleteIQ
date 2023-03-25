@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
+import '../../utils/utils.dart';
 import '../providers/loading_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -22,14 +23,20 @@ class HomeScreen extends ConsumerWidget {
       body: Stack(
         children: <Widget>[
           GoogleMap(
-            polylines:
-                model.courseStart ? model.tempPolylines : model.polylines,
+            polylines: model.polylines,
+            markers: model.markers,
             indoorViewEnabled: true,
             trafficEnabled: model.traffic,
             myLocationButtonEnabled: false,
             mapType: model.defaultMapType,
             myLocationEnabled: true,
-            onMapCreated: model.onMapCreated,
+            onMapCreated: (controller) {
+              try {
+                model.onMapCreated(controller);
+              } catch (e) {
+                Utils.flushBarErrorMessage(e.toString(), context);
+              }
+            },
             initialCameraPosition: model.initialPosition,
             zoomControlsEnabled: false,
           ),
@@ -42,13 +49,13 @@ class HomeScreen extends ConsumerWidget {
                   child: Container(
                     alignment: const Alignment(0, 0),
                     height: height * .03,
-                    width: width * .25,
+                    width: width * .31,
                     decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
                         borderRadius:
                             const BorderRadius.all(Radius.circular(20))),
                     child: Text(
-                      '${chrono.hour} : ${chrono.minute} : ${chrono.seconds} ',
+                      '${chrono.hour.toString().padLeft(2, '0')} : ${chrono.minute.toString().padLeft(2, '0')} : ${chrono.seconds.toString().padLeft(2, '0')} ',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -78,6 +85,8 @@ class HomeScreen extends ConsumerWidget {
                               model.defaultMapType == MapType.normal
                                   ? MapType.satellite
                                   : MapType.normal;
+                          Utils.toastMessage("Mode ${model.defaultMapType == MapType.normal
+                              ? 'normal': 'satellite'} activé");
                         },
                         child: const Icon(UniconsLine.layer_group),
                       ),
@@ -89,6 +98,7 @@ class HomeScreen extends ConsumerWidget {
                         heroTag: "locateBtn",
                         onPressed: () {
                           model.setLocation();
+                          Utils.toastMessage("Localisation en cours...");
                         },
                         child: !model.courseStart
                             ? isLoading.loading
@@ -106,6 +116,8 @@ class HomeScreen extends ConsumerWidget {
                         heroTag: "traficBtn",
                         onPressed: () {
                           model.traffic = model.traffic == false ? true : false;
+                          Utils.toastMessage("Trafic ${model.traffic == false
+                              ? 'désactivé': 'activé'}");
                         },
                         child: Icon(
                           UniconsLine.traffic_light,

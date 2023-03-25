@@ -2,6 +2,7 @@ import 'package:athlete_iq/ui/chat/providers/create_group_view_model_provider.da
 import 'package:athlete_iq/ui/chat/providers/groups_provider.dart';
 import 'package:athlete_iq/ui/chat/search_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -48,12 +49,14 @@ class HomeChatScreen extends ConsumerWidget {
             return ListView.builder(
                 itemCount: groups.length,
                 itemBuilder: (context, index) {
-                  print(groups[index].members);
                   return groupTile(
                       groups[index], context, ref);
                 });
           }
         }, error: (Object error, StackTrace? stackTrace) {
+          if (kDebugMode) {
+            print(error.toString());
+          }
           return Text(error.toString());
         }, loading: () {
           return const Text('Loading');

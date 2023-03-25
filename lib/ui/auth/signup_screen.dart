@@ -83,6 +83,7 @@ class SignupScreen extends ConsumerWidget {
                   onChanged: (v) => model.pseudo = v,
                 ),
                 TextFormField(
+                  autocorrect: false,
                   initialValue: model.email,
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
@@ -155,11 +156,7 @@ class SignupScreen extends ConsumerWidget {
                     selectedGenderIconBackgroundColor: Colors.indigo,
                     checkIconAlignment: Alignment.centerRight,
                     onChanged: (Gender gender) {
-                      if (gender == Gender.Male) {
-                        model.sex = 'Homme';
-                      } else {
-                        model.sex = 'Femme';
-                      }
+                      model.changeSex(gender);
                     },
                     maleImage: const NetworkImage("https://cdn-icons-png.flaticon.com/512/18/18148.png"),
                     femaleImage: const NetworkImage("https://cdn-icons-png.flaticon.com/512/9460/9460573.png"),

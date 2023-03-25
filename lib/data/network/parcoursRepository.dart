@@ -31,7 +31,6 @@ class ParcourRepository {
     try {
       await _firestore.collection(collectionName).doc(docName).update(data);
     } catch (e) {
-      print(e.toString());
       throw Exception(e.toString());
     }
   }

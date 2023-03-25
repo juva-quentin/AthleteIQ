@@ -2,6 +2,7 @@ import 'package:athlete_iq/data/network/userRepository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gender_selection/gender_selection.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../model/User.dart' as userModel;
 
@@ -68,6 +69,15 @@ class AuthViewModel extends ChangeNotifier {
   String get sex => _sex;
   set sex(String sex) {
     _sex = sex;
+    notifyListeners();
+  }
+
+  changeSex(Gender gender){
+    if (gender == Gender.Male) {
+      _sex = 'Homme';
+    } else {
+      _sex = 'Femme';
+    }
     notifyListeners();
   }
 
