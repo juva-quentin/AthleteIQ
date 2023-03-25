@@ -1,9 +1,9 @@
 import 'package:athlete_iq/ui/auth/providers/auth_view_model_provider.dart';
 import 'package:athlete_iq/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:gender_selection/gender_selection.dart';
-import '../../resources/size.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../providers/loading_provider.dart';
 import 'email_verify_page.dart';
 import 'login_screen.dart';
@@ -20,9 +20,8 @@ class SignupScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final model = ref.watch(authViewModelProvider);
     final isLoading = ref.watch(loadingProvider);
-    final AppSize appSize = AppSize(context);
-    final height = appSize.globalHeight;
-    final width = appSize.globalWidth;
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset : false,
       body: Column(

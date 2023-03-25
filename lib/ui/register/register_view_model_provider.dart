@@ -198,7 +198,7 @@ class RegisterViewModel extends ChangeNotifier {
     }
   }
 
-  IconData switchCaseIconVisibility(){
+  IconData switchCaseIconVisibility() {
     switch (visibility) {
       case ParcourVisibility.Public:
         return UniconsLine.globe;
@@ -241,6 +241,15 @@ class RegisterViewModel extends ChangeNotifier {
     _loading.start();
     try {
       await _parcourRepo.writeParcours(newParcour);
+      userModel.User user =
+          await _userRepo.getUserWithId(userId: _auth.currentUser!.uid);
+      user.copyWith(totalDist: user.totalDist + totalDistance);
+      try {
+        await _userRepo.updateDataToFirestore(user.toMap());
+      } catch (e) {
+        print("erreur add distance ${e.toString()}");
+        rethrow;
+      }
       _homeProvier.setLocation();
       _loading.end();
     } catch (e) {
