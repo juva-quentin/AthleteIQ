@@ -35,12 +35,6 @@ class ChatViewModel extends ChangeNotifier {
 
   TextEditingController messageController = TextEditingController();
 
-  String _admin = "";
-  String get admin => _admin;
-  set admin(String admin) {
-    _admin = admin;
-    notifyListeners();
-  }
 
   String _username = "";
   String get username => _username;
@@ -53,10 +47,6 @@ class ChatViewModel extends ChangeNotifier {
     print("groupeId$groupId");
     GroupsRepository().getChats(groupId).then((val) {
       chats = val;
-      notifyListeners();
-    });
-    GroupsRepository().getGroupAdmin(groupId).then((val) {
-      admin = val;
       notifyListeners();
     });
     await _userRepo.getUserWithId(userId: _auth.currentUser!.uid).then((value) {

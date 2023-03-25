@@ -17,8 +17,6 @@ class Root extends ConsumerWidget {
     final seen =
         ref.read(cacheProvider).value?.getBool("seen") ?? false;
     final auth = ref.watch(authViewModelProvider);
-    print("seen $seen");
-    print("auth ${auth.user}");
     return auth.user != null
             ? !seen ? const OnboardingScreen() : const App()
             : LoginScreen();

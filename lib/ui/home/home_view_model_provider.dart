@@ -78,10 +78,17 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Set<Polyline> _polylines = {};
+  Set<Polyline> _polylines = <Polyline>{};
   Set<Polyline> get polylines => _polylines;
   set polylines(Set<Polyline> polylines) {
     _polylines = polylines;
+    notifyListeners();
+  }
+
+  Set<Marker> _markers = <Marker>{};
+  Set<Marker> get markers => _markers;
+  set markers(Set<Marker> markers) {
+    _markers = markers;
     notifyListeners();
   }
 
@@ -99,91 +106,133 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  StreamSubscription<List<Parcours>>? subStreamParcours;
+  StreamSubscription<List<Parcours>>? _subStreamParcours;
+
+  BitmapDescriptor _markerIcon = BitmapDescriptor.defaultMarker;
 
   late GoogleMapController _controller;
 
   Future<void> onMapCreated(GoogleMapController controller) async {
+    try {
+      getParcourt();
+    } catch (e) {
+      rethrow;
+    }
     _controller = controller;
     setLocation();
-    getParcourt();
     notifyListeners();
   }
 
   Future<void> getParcourt() async {
     switch (typeFilter) {
       case "public":
-        polylines.clear();
         try {
           parcours = await _parcourRepo.parcoursPublicStream;
+          polylines.clear();
+          markers.clear();
           streamParcours();
         } catch (e) {
-          print(e);
+          rethrow;
         }
         break;
       case "protected":
-        polylines.clear();
         try {
           parcours = await _parcourRepo.parcoursProtectedStream;
+          polylines.clear();
+          markers.clear();
           streamParcours();
         } catch (e) {
-          print(e);
+          rethrow;
         }
         break;
       case "private":
-        polylines.clear();
         try {
           parcours = await _parcourRepo.parcoursProtectedStream;
+          polylines.clear();
+          markers.clear();
           streamParcours();
         } catch (e) {
-          print(e);
+          rethrow;
         }
         break;
       default:
-        polylines.clear();
-        parcours = await _parcourRepo.parcoursPublicStream;
-        streamParcours();
+        try {
+          parcours = await _parcourRepo.parcoursPublicStream;
+          polylines.clear();
+          markers.clear();
+          streamParcours();
+        } catch (e) {
+          rethrow;
+        }
         break;
     }
   }
 
-  void streamParcours() async{
-    subStreamParcours = parcours!.listen((List<Parcours> parcours) {
-      for (var i = 0; i<parcours.length; i++){
-          final newPolilyne = Polyline(
-            polylineId: PolylineId(parcours[i].id),
-            points: parcours[i].allPoints
-                .map((position) =>
-                LatLng(position.latitude!, position.longitude!))
-                .toList(),
-            width: 4,
-            color: typeFilter == "public"
-                ? Colors.green
-                : typeFilter == "protected"
-                ? Colors.orange
-                : Colors.red,
-          );
-          if (!polylines.contains(newPolilyne)) {
-            polylines.add(newPolilyne);
-            notifyListeners();
-          }
-        };
+  void streamParcours() async {
+    _subStreamParcours = parcours!.listen((List<Parcours> parcours) {
+      for (var i = 0; i < parcours.length; i++) {
+        final newPolilyne = Polyline(
+          polylineId: PolylineId(parcours[i].id),
+          points: parcours[i]
+              .allPoints
+              .map(
+                  (position) => LatLng(position.latitude!, position.longitude!))
+              .toList(),
+          width: 3,
+          color: typeFilter == "public"
+              ? Colors.green
+              : typeFilter == "protected"
+                  ? Colors.orange
+                  : Colors.red,
+        );
+        final newMarker = Marker(
+            markerId: MarkerId(parcours[i].id),
+            position: LatLng(parcours[i].allPoints.first.latitude!,
+                parcours[i].allPoints.first.longitude!),
+            infoWindow: InfoWindow(
+                title: parcours[i].title,
+                snippet: parcours[i].description.isNotEmpty
+                    ? parcours[i].description
+                    : 'Pas de description'));
+        if (!polylines.contains(newPolilyne)) {
+          polylines.add(newPolilyne);
+        }
+        if (!markers.contains(newMarker)) {
+          markers.add(newMarker);
+        }
+        notifyListeners();
+      }
     });
   }
 
   void setLocation() async {
     _loading.start();
-    await _position.getPosition().then((value) async {
-      _currentPosition = CameraPosition(
-        target: LatLng(value.latitude!, value.longitude!),
-        zoom: 18,
-      );
-      _controller.animateCamera(
-        CameraUpdate.newCameraPosition(_currentPosition!),
-      );
-    });
-    _loading.end();
-    notifyListeners();
+    try {
+      await _position.getPosition().then((value) async {
+        _currentPosition = CameraPosition(
+          target: LatLng(value.latitude!, value.longitude!),
+          zoom: 18,
+        );
+        _controller.animateCamera(
+          CameraUpdate.newCameraPosition(_currentPosition!),
+        );
+      });
+      _loading.end();
+      notifyListeners();
+    } catch (e) {
+      _loading.end();
+      notifyListeners();
+    }
+  }
+
+  void addCustomIcon() {
+    BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(), "assets/Location_marker.png")
+        .then(
+      (icon) {
+        _markerIcon = icon;
+      },
+    );
   }
 
   void setLocationDuringCours(LocationData location) {
@@ -206,7 +255,7 @@ class HomeViewModel extends ChangeNotifier {
       final latLng = _position.allPostion
           .map((position) => LatLng(position.latitude!, position.longitude!));
       points.addAll(latLng);
-      _tempPolylines.add(
+      tempPolylines.add(
         Polyline(
           polylineId: const PolylineId("running"),
           points: points,
@@ -218,9 +267,15 @@ class HomeViewModel extends ChangeNotifier {
       return false;
     } else {
       _courseStart = true;
-      _tempPolylines.clear();
+      tempPolylines.clear();
       _chrono.startTimer();
-      _position.startCourse();
+      try {
+        _position.startCourse();
+      } catch (e) {
+        _courseStart = false;
+        _chrono.stopTimer();
+        rethrow;
+      }
       notifyListeners();
       await Future.delayed(const Duration(milliseconds: 500));
       while (_courseStart) {

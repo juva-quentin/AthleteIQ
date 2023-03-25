@@ -21,7 +21,11 @@ Future<void> main() async {
   final themeStr = await rootBundle.loadString('assets/appainter_theme.json');
   final themeJson = jsonDecode(themeStr);
   final theme = ThemeDecoder.decodeThemeData(themeJson)!;
-  runApp(ProviderScope(child: MyApp(theme: theme)));
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]).then((value) => runApp(ProviderScope(child: MyApp(theme: theme))));
+
 }
 
 

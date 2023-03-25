@@ -11,7 +11,12 @@ class Utils {
   }
 
   static toastMessage(String message) {
-    Fluttertoast.showToast(msg: message);
+    Fluttertoast.showToast(
+      msg: message,
+      backgroundColor: Colors.white,
+      textColor: Colors.black,
+      gravity: ToastGravity.TOP,
+    );
   }
 
   static void flushBarErrorMessage(String message, BuildContext context) {
