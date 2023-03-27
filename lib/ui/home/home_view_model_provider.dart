@@ -189,7 +189,7 @@ class HomeViewModel extends ChangeNotifier {
         break;
       case "private":
         try {
-          parcours = await _parcourRepo.parcoursProtectedStream;
+          parcours = await _parcourRepo.parcoursPrivateStream;
           polylines.clear();
           markers.clear();
           streamParcours();
