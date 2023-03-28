@@ -13,6 +13,8 @@ class CoursesListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final model = ref.watch(infoViewModelProvider);
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: StreamBuilder(
         stream: model.parcourRepository.parcoursStream,
@@ -26,6 +28,7 @@ class CoursesListScreen extends ConsumerWidget {
             } else if (snapshot.hasData) {
               List<Parcours> parcours = snapshot.data;
               return ListView.builder( itemCount: parcours.length,
+                  padding: EdgeInsets.symmetric(vertical: height *.02, horizontal: width*.02),
                   itemBuilder: (context, index) {
                     return parcourTile(
                         parcours[index], context, ref);
