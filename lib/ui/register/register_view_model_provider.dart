@@ -243,9 +243,8 @@ class RegisterViewModel extends ChangeNotifier {
       await _parcourRepo.writeParcours(newParcour);
       userModel.User user =
           await _userRepo.getUserWithId(userId: _auth.currentUser!.uid);
-      user.copyWith(totalDist: user.totalDist + totalDistance);
       try {
-        await _userRepo.updateDataToFirestore(user.toMap());
+        await _userRepo.updateDataToFirestore({'totalDist' : user.totalDist + totalDistance});
       } catch (e) {
         print("erreur add distance ${e.toString()}");
         rethrow;
