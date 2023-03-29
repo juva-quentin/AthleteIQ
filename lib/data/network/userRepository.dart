@@ -45,6 +45,9 @@ class UserRepository {
   Stream<DocumentSnapshot<Map<String, dynamic>>> get userStream =>
       _firestore.collection('users').doc(_auth.currentUser?.uid).snapshots();
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> get usersStream =>
+      _firestore.collection('users').snapshots();
+
   Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStreamWithID(String userId){
     return  _firestore.collection('users').doc(userId).snapshots();
   }

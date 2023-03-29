@@ -68,6 +68,7 @@ dependencies:
   location: ^4.4.0
   workmanager: ^0.5.1
   wakelock: ^0.6.2
+  rxdart: ^0.27.7
 
 dev_dependencies:
   hive_generator: ^1.1.1
