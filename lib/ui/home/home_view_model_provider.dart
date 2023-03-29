@@ -9,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:location/location.dart';
 import 'package:unicons/unicons.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../../model/Parcour.dart';
 import '../providers/loading_provider.dart';
@@ -296,9 +297,11 @@ class HomeViewModel extends ChangeNotifier {
         ),
       );
       notifyListeners();
+      Wakelock.disable();
       return false;
     } else {
       _courseStart = true;
+      Wakelock.enable();
       tempPolylines.clear();
       _chrono.startTimer();
       try {
