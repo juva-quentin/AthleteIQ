@@ -49,7 +49,7 @@ class CreatGroupViewModel extends ChangeNotifier {
 
   Loading get _loading => _reader(loadingProvider);
 
-  GroupsRepository get _repository => _reader(GroupsRepositoryProvider);
+  GroupsRepository get _repository => _reader(groupsRepositoryProvider);
 
   Future<void> write() async {
     final updated = initial.copyWith(

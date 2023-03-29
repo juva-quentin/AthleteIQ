@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../model/Groups.dart';
 
-final GroupsRepositoryProvider = Provider.autoDispose((ref) => GroupsRepository());
+final groupsRepositoryProvider = Provider.autoDispose((ref) => GroupsRepository());
 
 class GroupsRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -31,7 +31,7 @@ class GroupsRepository {
     );
   }
 
-  Stream<List<Groups>> get groupsStream => _firestore
+  Stream<List<Groups>> get myGroupsStream => _firestore
       .collection('groups')
       .orderBy('recentMessageTime', descending: true)
       .where('members', arrayContains: _auth.currentUser?.uid)
@@ -46,11 +46,15 @@ class GroupsRepository {
     _firestore.collection("groups").doc(id).delete();
   }
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> getGroupsStreamById(String id) {
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getmyGroupsStreamById(String id) {
     return _firestore
         .collection('groups').doc(id)
         .snapshots();
   }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> get groupsStream =>
+      _firestore.collection('groups').snapshots();
+
 
   getChats(String groupId) async {
     print(groupId);
