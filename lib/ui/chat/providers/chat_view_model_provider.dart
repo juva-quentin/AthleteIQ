@@ -52,6 +52,7 @@ class ChatViewModel extends ChangeNotifier {
     await _userRepo.getUserWithId(userId: _auth.currentUser!.uid).then((value) {
       _username = value.pseudo;
     });
+    notifyListeners();
   }
 
   sendMessage() async {

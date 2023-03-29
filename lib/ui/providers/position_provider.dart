@@ -61,6 +61,7 @@ class PositionModel extends ChangeNotifier {
           "Votre service de localisation est pour toujours refusé nous ne pouvons pas la demander");
       return false;
     }
+    location.enableBackgroundMode(enable: true);
     return true;
   }
 

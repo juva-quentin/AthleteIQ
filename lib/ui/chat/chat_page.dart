@@ -93,6 +93,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                   GestureDetector(
                     onTap: () {
                       model.sendMessage();
+                      FocusManager.instance.primaryFocus?.unfocus();
                     },
                     child: Container(
                       height: 40,
