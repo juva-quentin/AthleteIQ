@@ -69,6 +69,11 @@ dependencies:
   workmanager: ^0.5.1
   wakelock: ^0.6.2
   rxdart: ^0.27.7
+  flutter_background_service: ^2.4.6
+  flutter_background_service_ios: ^2.4.0
+  flutter_background_service_android: ^3.0.3
+  permission_handler: ^10.2.0
+  flutter_local_notifications: ^13.0.0
 
 dev_dependencies:
   hive_generator: ^1.1.1
