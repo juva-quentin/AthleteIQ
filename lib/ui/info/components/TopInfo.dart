@@ -73,7 +73,7 @@ Widget buildTopInfo(double height, double width, AsyncValue<User> user, BuildCon
                                     fontSize: 17,
                                     fontWeight: FontWeight.normal,
                                   ))),
-                          Text("${user.objectif.toString()}KM",
+                          Text("${user.objectif.toString()}Km",
                               style: GoogleFonts.sen(
                                   textStyle: TextStyle(
                                     color: Theme.of(context).primaryColor,
@@ -94,7 +94,7 @@ Widget buildTopInfo(double height, double width, AsyncValue<User> user, BuildCon
                         mainAxisAlignment:
                         MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("${user.totalDist.toString()}KM",
+                          Text("${user.totalDist.toStringAsFixed(2)}Km",
                               style: GoogleFonts.sen(
                                   textStyle: const TextStyle(
                                     color:

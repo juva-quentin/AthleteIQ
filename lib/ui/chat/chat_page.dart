@@ -51,7 +51,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               data: (data) {
                 return Text(
                   data.groupName,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w600,
                       color: Colors.white),
@@ -65,7 +65,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         body: Stack(
           children: <Widget>[
             // chat messages here
-            Padding(padding: EdgeInsets.only(bottom: 60), child:chatMessages(),),
+            Padding(padding: EdgeInsets.only(bottom: 100), child:chatMessages(),),
             Container(
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width,

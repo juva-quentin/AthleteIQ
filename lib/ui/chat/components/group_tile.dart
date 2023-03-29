@@ -7,8 +7,12 @@ import '../providers/active_groups_provider.dart';
 Widget groupTile(Groups group, BuildContext context, WidgetRef ref) {
   return Padding(
     padding: const EdgeInsets.only(top: 10.0),
-    child: Card(
-      color: Colors.white,
+    child: Material(
+      elevation: 3.0,
+      shadowColor: Colors.black,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: ListTile(
         onTap: () {
           ref.read(activeGroupeProvider.notifier).state = group.id;

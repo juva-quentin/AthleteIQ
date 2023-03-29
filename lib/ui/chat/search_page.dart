@@ -26,7 +26,9 @@ class SearchPage extends ConsumerWidget {
         title: Card(
             child: TextField(
                 decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.search), hintText: "Rechercher...", border: InputBorder.none),
+                    prefixIcon: Icon(Icons.search),
+                    hintText: "Rechercher...",
+                    border: InputBorder.none),
                 onChanged: (val) => model.name = val)),
       ),
       body: StreamBuilder(
@@ -56,30 +58,40 @@ class SearchPage extends ConsumerWidget {
                   var data = mappedData[index];
                   var isUser = data.keys.contains('pseudo');
                   if (model.name.isEmpty) {
-                    return ListTile(
-                      title: Text(
-                        isUser ? data['pseudo'] : data['groupName'],
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Material(
+                        elevation: 3.0,
+                        shadowColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            isUser ? data['pseudo'] : data['groupName'],
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(isUser ? "Utilisateur" : "Groupe",
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(
+                                isUser ? data['image'] : data['groupIcon']),
+                          ),
+                          trailing: IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                isUser
+                                    ? UniconsLine.user_plus
+                                    : UniconsLine.angle_right_b,
+                                color: isUser ? Colors.green : Colors.grey,
+                              )),
+                        ),
                       ),
-                      subtitle: Text(isUser ? "Utilisateur" : "Groupe",
-                          maxLines: 1, overflow: TextOverflow.ellipsis),
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            isUser ? data['image'] : data['groupIcon']),
-                      ),
-                      trailing: IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            isUser
-                                ? UniconsLine.user_plus
-                                : UniconsLine.angle_right_b,
-                            color: isUser ? Colors.green : Colors.grey,
-                          )),
                     );
                   }
                   if (data['pseudo']
@@ -90,30 +102,40 @@ class SearchPage extends ConsumerWidget {
                           .toString()
                           .toLowerCase()
                           .startsWith(model.name.toLowerCase())) {
-                    return ListTile(
-                      title: Text(
-                        isUser ? data['pseudo'] : data['groupName'],
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Material(
+                        elevation: 3.0,
+                        shadowColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            isUser ? data['pseudo'] : data['groupName'],
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(isUser ? "Utilisateur" : "Groupe",
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(
+                                isUser ? data['image'] : data['groupIcon']),
+                          ),
+                          trailing: IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                isUser
+                                    ? UniconsLine.user_plus
+                                    : UniconsLine.angle_right_b,
+                                color: isUser ? Colors.green : Colors.grey,
+                              )),
+                        ),
                       ),
-                      subtitle: Text(isUser ? "Utilisateur" : "Groupe",
-                          maxLines: 1, overflow: TextOverflow.ellipsis),
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            isUser ? data['image'] : data['groupIcon']),
-                      ),
-                      trailing: IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            isUser
-                                ? UniconsLine.user_plus
-                                : UniconsLine.angle_right_b,
-                            color: isUser ? Colors.green : Colors.grey,
-                          )),
                     );
                   }
                   return Container();

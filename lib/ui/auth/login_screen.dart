@@ -145,7 +145,7 @@ class LoginScreen extends ConsumerWidget {
                     Navigator.pushReplacementNamed(context, SignupScreen.route);
                   },
                   child: const Text(
-                    "Creer un comte",
+                    "Créer un compte",
                     style: TextStyle(color: Color.fromARGB(255, 0, 152, 240)),
                   ),
                 ),

@@ -73,18 +73,18 @@ Widget parcourTile(Parcours parcour, BuildContext context, WidgetRef ref) {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(parcour.title.toString(), style: const TextStyle(color: Colors.black45, fontSize: 20, fontWeight: FontWeight.w600),),
+                    Text(parcour.title.toString(), style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("${parcour.totalDistance.toStringAsFixed(2)}Km", style: const TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500)),
-                        Text("${parcour.VM.toStringAsFixed(2)}Km/h", style: const TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500)),
+                        Text("${parcour.totalDistance.toStringAsFixed(2)}Km", style: const TextStyle(color: Colors.black45, fontSize: 17, fontWeight: FontWeight.w500)),
+                        Text("${parcour.VM.toStringAsFixed(2)}Km/h", style: const TextStyle(color: Colors.black45, fontSize: 17, fontWeight: FontWeight.w500)),
                       ],
                     ),
                     Row(
                       children: [
                         Text(
-                            "${parcour.timer.hours.toString().padLeft(2, '0')}:${parcour.timer.minutes.toString().padLeft(2, '0')}:${parcour.timer.seconds.toString().padLeft(2, '0')}", style: const TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500)),
+                            "${parcour.timer.hours.toString().padLeft(2, '0')}:${parcour.timer.minutes.toString().padLeft(2, '0')}:${parcour.timer.seconds.toString().padLeft(2, '0')}", style: const TextStyle(color: Colors.black45, fontSize: 17, fontWeight: FontWeight.w500)),
                       ],
                     )
                   ],
