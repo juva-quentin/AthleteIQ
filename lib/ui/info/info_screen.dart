@@ -14,7 +14,6 @@ class InfoScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final model = ref.watch(infoViewModelProvider);
-    final provider = infoViewModelProvider;
     final user = ref.watch(firestoreUserProvider);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;

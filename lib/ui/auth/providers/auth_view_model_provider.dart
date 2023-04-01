@@ -164,11 +164,12 @@ class AuthViewModel extends ChangeNotifier {
 
   Future<void> logout() async {
     try {
+      await Future.delayed(Duration(seconds: 2));
       await _auth.signOut();
     } on FirebaseAuthException catch (e) {
       print('Failed with error code: ${e.code}');
       print(e.message);
-      rethrow;
+      Future.error(e);
     }
   }
 

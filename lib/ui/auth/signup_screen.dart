@@ -8,22 +8,30 @@ import '../providers/loading_provider.dart';
 import 'email_verify_page.dart';
 import 'login_screen.dart';
 
-
-class SignupScreen extends ConsumerWidget {
+class SignupScreen extends ConsumerStatefulWidget {
   SignupScreen({Key? key}) : super(key: key);
-
   static const String route = "/register";
-  final _formKey = GlobalKey<FormState>();
-
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  SignupScreenState createState() => SignupScreenState();
+}
+
+class SignupScreenState extends ConsumerState<SignupScreen> {
+  @override
+  void initState() {
+    super.initState();
+    ref.read(authViewModelProvider);
+  }
+
+  final _formRegisterKey = GlobalKey<FormState>();
+
+  Widget build(BuildContext context) {
     final model = ref.watch(authViewModelProvider);
     final isLoading = ref.watch(loadingProvider);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      resizeToAvoidBottomInset : false,
+      resizeToAvoidBottomInset: false,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -33,7 +41,9 @@ class SignupScreen extends ConsumerWidget {
               height: height * .30,
               width: width,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(35), bottomLeft: Radius.circular(35)),
+                  borderRadius: BorderRadius.only(
+                      bottomRight: Radius.circular(35),
+                      bottomLeft: Radius.circular(35)),
                   color: Theme.of(context).colorScheme.primary),
               child: Padding(
                 padding:
@@ -69,7 +79,7 @@ class SignupScreen extends ConsumerWidget {
             height: height * .05,
           ),
           Form(
-            key: _formKey,
+            key: _formRegisterKey,
             child: Column(
               children: [
                 TextFormField(
@@ -92,44 +102,44 @@ class SignupScreen extends ConsumerWidget {
                   onChanged: (v) => model.email = v,
                   validator: (v) => model.emailValidate(v!),
                 ),
-
-                    TextFormField(
-                      obscureText: model.obscurePassword,
-                      initialValue: model.password,
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.lock_outline_rounded),
-                        labelText: "Mot de passe",
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            model.obscurePassword = !model.obscurePassword;
-                          },
-                          icon: Icon(model.obscurePassword
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined),
-                        ),
-                      ),
-                      onChanged: (v) => model.password = v,
+                TextFormField(
+                  obscureText: model.obscurePassword,
+                  initialValue: model.password,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.lock_outline_rounded),
+                    labelText: "Mot de passe",
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        model.obscurePassword = !model.obscurePassword;
+                      },
+                      icon: Icon(model.obscurePassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined),
                     ),
-                 TextFormField(
-                      obscureText: model.obscureConfirmPassword,
-                      initialValue: model.confirmPassord,
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.lock_outline_rounded),
-                        labelText: "Confirmer le mot de passe",
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            model.obscureConfirmPassword =
+                  ),
+                  onChanged: (v) => model.password = v,
+                ),
+                TextFormField(
+                  obscureText: model.obscureConfirmPassword,
+                  initialValue: model.confirmPassord,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.lock_outline_rounded),
+                    labelText: "Confirmer le mot de passe",
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        model.obscureConfirmPassword =
                             !model.obscureConfirmPassword;
-                          },
-                          icon: Icon(model.obscureConfirmPassword
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined),
-                        ),
-                      ),
-                      onChanged: (v) => model.confirmPassord = v,
-                      validator: (v) =>
-                      v != model.password ? "Les mots de passe ne correspondent pas" : null,
+                      },
+                      icon: Icon(model.obscureConfirmPassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined),
                     ),
+                  ),
+                  onChanged: (v) => model.confirmPassord = v,
+                  validator: (v) => v != model.password
+                      ? "Les mots de passe ne correspondent pas"
+                      : null,
+                ),
                 SizedBox(
                   height: height * .01,
                 ),
@@ -157,8 +167,10 @@ class SignupScreen extends ConsumerWidget {
                     onChanged: (Gender gender) {
                       model.changeSex(gender);
                     },
-                    maleImage: const NetworkImage("https://cdn-icons-png.flaticon.com/512/18/18148.png"),
-                    femaleImage: const NetworkImage("https://cdn-icons-png.flaticon.com/512/9460/9460573.png"),
+                    maleImage: const NetworkImage(
+                        "https://cdn-icons-png.flaticon.com/512/18/18148.png"),
+                    femaleImage: const NetworkImage(
+                        "https://cdn-icons-png.flaticon.com/512/9460/9460573.png"),
                     equallyAligned: true,
                     animationDuration: const Duration(milliseconds: 400),
                     isCircular: true,
@@ -172,42 +184,47 @@ class SignupScreen extends ConsumerWidget {
                   height: height * .015,
                 ),
                 InkWell(
-                        onTap: model.email.isNotEmpty &&
-                            model.password.isNotEmpty &&
-                            model.confirmPassord.isNotEmpty &&
-                            model.sex.isNotEmpty
-                            ? () async {
-                          if (_formKey.currentState!.validate()) {
+                  onTap: model.email.isNotEmpty &&
+                          model.password.isNotEmpty &&
+                          model.confirmPassord.isNotEmpty &&
+                          model.sex.isNotEmpty
+                      ? () async {
+                          if (_formRegisterKey.currentState!.validate()) {
                             try {
                               await model.register();
                               // ignore: use_build_context_synchronously
                               Navigator.pushNamedAndRemoveUntil(
                                 context,
                                 EmailVerifyScreen.route,
-                                    (route) => false,
+                                (route) => false,
                               );
                             } catch (e) {
                               Utils.flushBarErrorMessage(e.toString(), context);
                             }
                           }
                         }
-                            : null,
-                        child: Container(
-                            height: 40,
-                            width: 200,
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).buttonTheme.colorScheme!.primary,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Center(
-                                child: isLoading.loading
-                                    ? const CircularProgressIndicator(
+                      : null,
+                  child: Container(
+                      height: 40,
+                      width: 200,
+                      decoration: BoxDecoration(
+                          color: Theme.of(context)
+                              .buttonTheme
+                              .colorScheme!
+                              .primary,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Center(
+                          child: isLoading.loading
+                              ? const CircularProgressIndicator(
                                   color: Colors.white,
                                 )
-                                    : Text(
+                              : Text(
                                   "Créer un compte",
-                                  style: TextStyle(color: Theme.of(context).colorScheme.background),
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background),
                                 ))),
-
                 ),
                 SizedBox(
                   height: height * .02,
@@ -223,7 +240,8 @@ class SignupScreen extends ConsumerWidget {
                       },
                       child: const Text(
                         "Connexion",
-                        style: TextStyle(color: Color.fromARGB(255, 0, 152, 240)),
+                        style:
+                            TextStyle(color: Color.fromARGB(255, 0, 152, 240)),
                       ),
                     ),
                   ],

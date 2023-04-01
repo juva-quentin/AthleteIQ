@@ -9,7 +9,7 @@ import 'app_view_model_provider.dart';
 
 class App extends ConsumerWidget {
   const App({Key? key}) : super(key: key);
-
+  static const String route = "/home";
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final height = MediaQuery.of(context).size.height;

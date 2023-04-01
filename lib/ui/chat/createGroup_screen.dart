@@ -21,7 +21,7 @@ class CreateGroupScreen extends ConsumerWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final provider = creatGroupViewModelProvider;
-    final model = ref.read(creatGroupViewModelProvider);
+    final model = ref.watch(creatGroupViewModelProvider);
     return SafeArea(
       child: LoadingLayer(
         child: AlertDialog(
