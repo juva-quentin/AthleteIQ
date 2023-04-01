@@ -8,7 +8,7 @@ import '../providers/loading_provider.dart';
 
 class LoginScreen extends ConsumerWidget {
   LoginScreen({Key, key}) : super(key: key);
-  final _formKey = GlobalKey<FormState>();
+  final _formLoginKey = GlobalKey<FormState>();
   static const route = "/login";
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,7 +19,7 @@ class LoginScreen extends ConsumerWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Form(
-        key: _formKey,
+        key: _formLoginKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,9 +68,11 @@ class LoginScreen extends ConsumerWidget {
               height: height * .05,
             ),
             TextFormField(
-              initialValue: model.email,
               keyboardType: TextInputType.emailAddress,
+              initialValue: model.email,
               autocorrect: false,
+              textCapitalization: TextCapitalization.none,
+              textInputAction: TextInputAction.next,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.email_outlined),
                 labelText: "Email",
@@ -80,6 +82,7 @@ class LoginScreen extends ConsumerWidget {
             ),
             TextFormField(
               obscureText: model.obscurePassword,
+              keyboardType: TextInputType.visiblePassword,
               initialValue: model.password,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.lock_outline_rounded),
@@ -101,7 +104,7 @@ class LoginScreen extends ConsumerWidget {
             InkWell(
               onTap: model.email.isNotEmpty && model.password.isNotEmpty
                   ? () async {
-                      if (_formKey.currentState!.validate()) {
+                      if (_formLoginKey.currentState!.validate()) {
                         try {
                           await model.login();
                           // ignore: use_build_context_synchronously

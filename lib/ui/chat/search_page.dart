@@ -35,7 +35,7 @@ class SearchPage extends ConsumerWidget {
         stream: streams,
         builder: (context, snapshots) {
           if (snapshots.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           } else {
@@ -71,7 +71,7 @@ class SearchPage extends ConsumerWidget {
                             isUser ? data['pseudo'] : data['groupName'],
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold),
@@ -115,7 +115,7 @@ class SearchPage extends ConsumerWidget {
                             isUser ? data['pseudo'] : data['groupName'],
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold),

@@ -11,7 +11,7 @@ import '../info/provider/user_provider.dart';
 
 class RegisterScreen extends ConsumerWidget {
   RegisterScreen({Key, key}) : super(key: key);
-  final _formKey = GlobalKey<FormState>();
+  final _formRegisterKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final height = MediaQuery.of(context).size.height;
@@ -34,7 +34,7 @@ class RegisterScreen extends ConsumerWidget {
             padding: EdgeInsets.only(bottom: height * .02),
             child: SingleChildScrollView(
               child: Form(
-                key: _formKey,
+                key: _formRegisterKey,
                 child: Column(
                   children: [
                     SizedBox(

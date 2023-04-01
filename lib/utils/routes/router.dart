@@ -7,6 +7,7 @@ import 'package:athlete_iq/ui/chat/search_page.dart';
 import 'package:athlete_iq/utils/routes/root.dart';
 import 'package:flutter/material.dart';
 
+import '../../app/app.dart';
 import '../../ui/auth/email_verify_page.dart';
 import '../../ui/auth/login_screen.dart';
 import '../../ui/settings_screen.dart';
@@ -30,6 +31,9 @@ class AppRouter {
         break;
       case SettingsScreen.route:
         selectedPage = SettingsScreen();
+        break;
+      case App.route:
+        selectedPage = App();
         break;
       case HomeChatScreen.route:
         selectedPage = HomeChatScreen();
