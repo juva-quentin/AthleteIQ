@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-
 final timerProvider = ChangeNotifierProvider((ref) => TimerClassProvider());
+
 class TimerClassProvider extends ChangeNotifier {
   late Timer _timer;
   int _hour = 0;
@@ -72,7 +72,6 @@ class TimerClassProvider extends ChangeNotifier {
           _minute++;
         }
       }
-
       notifyListeners();
     });
   }

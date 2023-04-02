@@ -1,5 +1,7 @@
 import 'package:athlete_iq/ui/info/components/parcourTileComponent.dart';
+import 'package:athlete_iq/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -20,11 +22,15 @@ class CoursesListScreen extends ConsumerWidget {
         stream: model.parcourRepository.parcoursStream,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.connectionState == ConnectionState.active ||
               snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
-              return const Text('Error');
+              if (kDebugMode) {
+                print(snapshot.error.toString());
+              }
+              Utils.flushBarErrorMessage(snapshot.error.toString(), context);
+              return const Center(child:Text("Une érreure c'est produite ⚠️"));
             } else if (snapshot.hasData) {
               List<Parcours> parcours = snapshot.data;
               return ListView.builder( itemCount: parcours.length,
@@ -34,10 +40,10 @@ class CoursesListScreen extends ConsumerWidget {
                         parcours[index], context, ref);
                   });
             } else {
-              return const Text('Empty data');
+              return const Center(child: Text("Vous n'avez pas de parcours enregistré"));
             }
           } else {
-            return Text('State: ${snapshot.connectionState}');
+            return Center(child: Text('Avancement: ${snapshot.connectionState}'));
           }
         },
       ),
