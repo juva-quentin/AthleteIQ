@@ -12,6 +12,7 @@ import 'package:unicons/unicons.dart';
 import 'package:wakelock/wakelock.dart';
 
 import '../../model/Parcour.dart';
+import '../../utils/map_utils.dart';
 import '../providers/loading_provider.dart';
 
 final homeViewModelProvider = ChangeNotifierProvider.autoDispose<HomeViewModel>(
@@ -221,12 +222,18 @@ class HomeViewModel extends ChangeNotifier {
               .map(
                   (position) => LatLng(position.latitude!, position.longitude!))
               .toList(),
-          width: 3,
+          width: 5,
           color: typeFilter == "public"
-              ? Colors.green
+              ? const Color(0xC005FF0C)
               : typeFilter == "protected"
-                  ? Colors.orange
-                  : Colors.red,
+                  ? const Color(0xFFFFF200)
+                  : const Color(0xFFFF2100),
+          onTap: () async {
+           await  _controller.animateCamera(CameraUpdate.newLatLngBounds(
+                MapUtils.boundsFromLatLngList(parcours[i].allPoints.map((e) => LatLng(e.latitude!, e.longitude!)).toList()),12
+            ));
+           notifyListeners();
+          }
         );
         final newMarker = Marker(
             markerId: MarkerId(parcours[i].id),

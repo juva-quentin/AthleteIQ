@@ -53,7 +53,7 @@ Widget buildTopInfo(
                       ),
                       fit: BoxFit.fill),
                 ),
-                child: const Icon(Icons.image_search),
+                child: const Icon(Icons.image_search, color: Colors.white,),
               ),
             );
           }),

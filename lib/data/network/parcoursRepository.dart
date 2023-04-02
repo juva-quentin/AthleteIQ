@@ -45,7 +45,7 @@ class ParcourRepository {
       await _firestore.collection('parcours').where('owner', isEqualTo: _auth.currentUser?.uid).where('type', isEqualTo: "Private").snapshots().map((snapshot) => snapshot.docs.map((e) => Parcours.fromFirestore(e)).toList());
 
   Stream<List<Parcours>> get parcoursStream =>
-      _firestore.collection('parcours').where('owner', isEqualTo: _auth.currentUser?.uid).snapshots().map((snapshot) => snapshot.docs.map((e) => Parcours.fromFirestore(e)).toList());
+      _firestore.collection('parcours').orderBy('createdAt', descending: true).where('owner', isEqualTo: _auth.currentUser?.uid).snapshots().map((snapshot) => snapshot.docs.map((e) => Parcours.fromFirestore(e)).toList());
 
 
   void delete(String id) {
