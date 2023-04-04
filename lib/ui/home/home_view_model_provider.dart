@@ -171,7 +171,7 @@ class HomeViewModel extends ChangeNotifier {
     switch (typeFilter) {
       case "public":
         try {
-          parcours = await _parcourRepo.parcoursPublicStream;
+          parcours = _parcourRepo.parcoursPublicStream;
           polylines.clear();
           markers.clear();
           streamParcours();
@@ -181,7 +181,7 @@ class HomeViewModel extends ChangeNotifier {
         break;
       case "protected":
         try {
-          parcours = await _parcourRepo.parcoursProtectedStream;
+          parcours = _parcourRepo.parcoursProtectedStream();
           polylines.clear();
           markers.clear();
           streamParcours();
@@ -191,7 +191,7 @@ class HomeViewModel extends ChangeNotifier {
         break;
       case "private":
         try {
-          parcours = await _parcourRepo.parcoursPrivateStream;
+          parcours = _parcourRepo.parcoursPrivateStream;
           polylines.clear();
           markers.clear();
           streamParcours();
