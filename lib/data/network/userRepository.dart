@@ -42,11 +42,21 @@ class UserRepository {
     }
   }
 
+  Future updateFriendToFirestore(String userId,
+      Map<String, dynamic> dataUserFriend, Map<String, dynamic> dataUser) async {
+    try {
+      await _firestore.collection('users').doc(userId).update(dataUserFriend);
+      await _firestore.collection('users').doc(_auth.currentUser?.uid).update(dataUser);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
   Stream<DocumentSnapshot<Map<String, dynamic>>> get userStream =>
       _firestore.collection('users').doc(_auth.currentUser?.uid).snapshots();
 
   Stream<QuerySnapshot<Map<String, dynamic>>> get usersStream =>
-      _firestore.collection('users').snapshots();
+      _firestore.collection('users').where('id', isNotEqualTo: _auth.currentUser?.uid).snapshots();
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStreamWithID(String userId){
     return  _firestore.collection('users').doc(userId).snapshots();

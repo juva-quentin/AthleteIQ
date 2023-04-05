@@ -11,7 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
-import '../../model/Parcour.dart';
 import '../../model/User.dart' as userModel;
 import 'courses_list_screen.dart';
 
