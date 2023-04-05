@@ -146,6 +146,7 @@ class AuthViewModel extends ChangeNotifier {
             : "https://cdn-icons-png.flaticon.com/512/219/219969.png",
         email: email,
         friends: [],
+        awaitFriends: [],
         sex: sex,
         objectif: 0,
         createdAt: DateTime.now(),

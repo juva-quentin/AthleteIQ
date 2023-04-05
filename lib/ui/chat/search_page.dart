@@ -3,8 +3,8 @@ import 'dart:ffi';
 import 'package:athlete_iq/data/network/groupsRepository.dart';
 import 'package:athlete_iq/data/network/userRepository.dart';
 import 'package:athlete_iq/ui/chat/search_page_view_model_provider.dart';
-import 'package:athlete_iq/ui/info/provider/user_provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../model/User.dart' as userModel;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
@@ -17,10 +17,7 @@ class SearchPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final model = ref.watch(searchPageViewModelProvider);
-    final usersFirestore = ref.watch(userRepositoryProvider);
-    final groupsFirestore = ref.watch(groupsRepositoryProvider);
-    var streams = CombineLatestStream.list(
-        [usersFirestore.usersStream, groupsFirestore.groupsStream]);
+    final FirebaseAuth _auth = FirebaseAuth.instance;
     return Scaffold(
       appBar: AppBar(
         title: Card(
@@ -32,31 +29,18 @@ class SearchPage extends ConsumerWidget {
                 onChanged: (val) => model.name = val)),
       ),
       body: StreamBuilder(
-        stream: streams,
+        stream: model.combineStream(),
         builder: (context, snapshots) {
           if (snapshots.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           } else {
-            List<QuerySnapshot> querySnapshot = snapshots.data!.toList();
-
-            List<QueryDocumentSnapshot> documentSnapshot = [];
-
-            querySnapshot.forEach((query) {
-              documentSnapshot.addAll(query.docs);
-            });
-
-            List<Map<String, dynamic>> mappedData = [];
-
-            for (QueryDocumentSnapshot doc in documentSnapshot) {
-              mappedData.add(doc.data()! as Map<String, dynamic>);
-            }
             return ListView.builder(
-                itemCount: mappedData.length,
+                itemCount: snapshots.data.length,
                 itemBuilder: (context, index) {
-                  var data = mappedData[index];
-                  var isUser = data.keys.contains('pseudo');
+                  var data = snapshots.data[index];
+                  var isUser = data.runtimeType == userModel.User;
                   if (model.name.isEmpty) {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -68,7 +52,7 @@ class SearchPage extends ConsumerWidget {
                         ),
                         child: ListTile(
                           title: Text(
-                            isUser ? data['pseudo'] : data['groupName'],
+                            isUser ? data.pseudo : data.groupName,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
@@ -80,25 +64,39 @@ class SearchPage extends ConsumerWidget {
                               maxLines: 1, overflow: TextOverflow.ellipsis),
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(
-                                isUser ? data['image'] : data['groupIcon']),
+                                isUser ? data.image : data.groupIcon),
                           ),
-                          trailing: IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                isUser
-                                    ? UniconsLine.user_plus
-                                    : UniconsLine.angle_right_b,
-                                color: isUser ? Colors.green : Colors.grey,
-                              )),
+                          trailing: isUser &&
+                                  data.awaitFriends
+                                      .contains(_auth.currentUser?.uid)
+                              ? const Text('En attente')
+                              : IconButton(
+                                  onPressed: () {
+                                    isUser
+                                        ? model.addFriend(data.id)
+                                        : data.members.contains(
+                                                _auth.currentUser?.uid)
+                                            ? model.removeUserToGroup(data)
+                                            : model.addUserToGroup(data);
+                                  },
+                                  icon: Icon(
+                                    isUser
+                                        ? UniconsLine.user_plus
+                                        : data.members.contains(
+                                                _auth.currentUser?.uid)
+                                            ? UniconsLine.exit
+                                            : UniconsLine.angle_right_b,
+                                    color: isUser ? Colors.green : Colors.grey,
+                                  )),
                         ),
                       ),
                     );
                   }
-                  if (data['pseudo']
+                  if (data.pseudo
                           .toString()
                           .toLowerCase()
                           .startsWith(model.name.toLowerCase()) ||
-                      data['groupName']
+                      data.groupName
                           .toString()
                           .toLowerCase()
                           .startsWith(model.name.toLowerCase())) {
@@ -112,7 +110,7 @@ class SearchPage extends ConsumerWidget {
                         ),
                         child: ListTile(
                           title: Text(
-                            isUser ? data['pseudo'] : data['groupName'],
+                            isUser ? data.pseudo : data.groupName,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
@@ -124,16 +122,30 @@ class SearchPage extends ConsumerWidget {
                               maxLines: 1, overflow: TextOverflow.ellipsis),
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(
-                                isUser ? data['image'] : data['groupIcon']),
+                                isUser ? data.image : data.groupIcon),
                           ),
-                          trailing: IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                isUser
-                                    ? UniconsLine.user_plus
-                                    : UniconsLine.angle_right_b,
-                                color: isUser ? Colors.green : Colors.grey,
-                              )),
+                          trailing: isUser &&
+                                  data.awaitFriends
+                                      .contains(_auth.currentUser?.uid)
+                              ? const Text('En attente')
+                              : IconButton(
+                                  onPressed: () {
+                                    isUser
+                                        ? model.addFriend(data.id)
+                                        : data.members.contains(
+                                                _auth.currentUser?.uid)
+                                            ? model.removeUserToGroup(data)
+                                            : model.addUserToGroup(data);
+                                  },
+                                  icon: Icon(
+                                    isUser
+                                        ? UniconsLine.user_plus
+                                        : data.members.contains(
+                                                _auth.currentUser?.uid)
+                                            ? UniconsLine.exit
+                                            : UniconsLine.angle_right_b,
+                                    color: isUser ? Colors.green : Colors.grey,
+                                  )),
                         ),
                       ),
                     );

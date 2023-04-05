@@ -6,6 +6,7 @@ class User {
   final String image;
   final String email;
   final List friends;
+  final List awaitFriends;
   final String sex;
   final double objectif;
   final DateTime createdAt;
@@ -16,6 +17,7 @@ class User {
     required this.image,
     required this.email,
     required this.friends,
+    required this.awaitFriends,
     required this.sex,
     required this.objectif,
     required this.createdAt,
@@ -28,6 +30,7 @@ class User {
     String? image,
     String? email,
     List? friends,
+    List? awaitFriends,
     String? sex,
     double? objectif,
     DateTime? createdAt,
@@ -39,6 +42,7 @@ class User {
       image: image ?? this.image,
       email: email ?? this.email,
       friends: friends ?? this.friends,
+      awaitFriends: awaitFriends ?? this.awaitFriends,
       sex: sex ?? this.sex,
       objectif: objectif ?? this.objectif,
       createdAt: createdAt ?? this.createdAt,
@@ -53,6 +57,7 @@ class User {
       'image': image,
       'email': email,
       'friends': friends,
+      'awaitFriends': awaitFriends,
       'sex': sex,
       'objectif': objectif.toDouble(),
       'createdAt': Timestamp.fromDate(createdAt),
@@ -68,6 +73,7 @@ class User {
       image: map['image'] ?? '',
       email: map['email'] ?? '',
       friends: map['friends'] ?? [],
+      awaitFriends: map['awaitFriends'] ?? [],
       sex: map['sex'] ?? '',
       objectif: map['objectif'].toDouble() ?? 0,
       createdAt: map['createdAt'].toDate(),
@@ -81,6 +87,7 @@ class User {
     image: '',
     email: '',
     friends: [],
+    awaitFriends: [],
     sex: '',
     objectif: 0,
     createdAt: DateTime.now(),

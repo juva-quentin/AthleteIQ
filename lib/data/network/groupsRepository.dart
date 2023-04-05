@@ -57,7 +57,6 @@ class GroupsRepository {
 
 
   getChats(String groupId) async {
-    print(groupId);
     return groupCollection
         .doc(groupId)
         .collection("messages")
@@ -78,5 +77,8 @@ class GroupsRepository {
       "recentMessageSender": chatMessageData['sender'],
       "recentMessageTime": chatMessageData['time'],
     });
+  }
+  updateUserToGroup(String groupId, Map<String, dynamic> members) async {
+    await groupCollection.doc(groupId).update(members);
   }
 }
