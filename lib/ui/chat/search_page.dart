@@ -92,10 +92,10 @@ class SearchPage extends ConsumerWidget {
                       ),
                     );
                   }
-                  if (data.pseudo
+                  if (isUser ? data.pseudo
                           .toString()
                           .toLowerCase()
-                          .startsWith(model.name.toLowerCase()) ||
+                          .startsWith(model.name.toLowerCase()) :
                       data.groupName
                           .toString()
                           .toLowerCase()
