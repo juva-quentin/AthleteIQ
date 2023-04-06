@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../model/Parcour.dart';
-import '../chat/components/group_tile.dart';
 import 'info_view_model_provider.dart';
 
 class CoursesListScreen extends ConsumerWidget {
@@ -30,7 +29,7 @@ class CoursesListScreen extends ConsumerWidget {
                 print(snapshot.error.toString());
               }
               Utils.flushBarErrorMessage(snapshot.error.toString(), context);
-              return const Center(child:Text("Une érreure c'est produite ⚠️"));
+              return const Center(child:Text("Une erreur s'est produite ⚠️"));
             } else if (snapshot.hasData) {
               List<Parcours> parcours = snapshot.data;
               return ListView.builder( itemCount: parcours.length,
