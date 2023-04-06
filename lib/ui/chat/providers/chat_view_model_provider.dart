@@ -12,6 +12,9 @@ final chatViewModelProvider = ChangeNotifierProvider.autoDispose(
 );
 
 class ChatViewModel extends ChangeNotifier {
+
+  ScrollController scrollController = ScrollController();
+
   final Reader _reader;
 
   String get groupId => _reader(activeGroupeProvider);

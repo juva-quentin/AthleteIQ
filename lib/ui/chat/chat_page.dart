@@ -94,6 +94,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                     onTap: () {
                       model.sendMessage();
                       FocusManager.instance.primaryFocus?.unfocus();
+                      model.scrollController.animateTo(model.scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 010), curve: Curves.easeOut);
                     },
                     child: Container(
                       height: 40,
@@ -129,6 +130,7 @@ chatMessages() {
       builder: (context, AsyncSnapshot snapshot) {
         return snapshot.hasData
             ? ListView.builder(
+                controller: model.scrollController,
                 itemCount: snapshot.data.docs.length,
                 itemBuilder: (context, index) {
                   return MessageTile(
