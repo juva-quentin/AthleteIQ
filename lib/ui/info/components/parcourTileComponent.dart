@@ -127,6 +127,7 @@ Widget parcourTile(Parcours parcour, BuildContext context, WidgetRef ref) {
                                   color: Colors.black45,
                                   fontSize: 17,
                                   fontWeight: FontWeight.w500)),
+
                         ],
                       )
                     ],

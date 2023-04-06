@@ -11,6 +11,7 @@ import 'package:location/location.dart';
 import 'package:unicons/unicons.dart';
 import 'package:wakelock/wakelock.dart';
 
+import '../../data/network/userRepository.dart';
 import '../../model/Parcour.dart';
 import '../../utils/map_utils.dart';
 import '../providers/loading_provider.dart';
@@ -18,6 +19,7 @@ import '../providers/loading_provider.dart';
 final homeViewModelProvider = ChangeNotifierProvider.autoDispose<HomeViewModel>(
   (ref) => HomeViewModel(ref.read),
 );
+
 
 class HomeViewModel extends ChangeNotifier {
   final Reader _reader;
@@ -28,9 +30,10 @@ class HomeViewModel extends ChangeNotifier {
   TimerClassProvider get _chrono => _reader(timerProvider);
 
   PositionModel get _position => _reader(positionProvider);
+  final UserRepository _userRepo = UserRepository();
 
   ParcourRepository get _parcourRepo => _reader(parcourRepositoryProvider);
-
+  
   bool _courseStart = false;
   bool get courseStart => _courseStart;
   set courseStart(bool courseStart) {
@@ -124,7 +127,7 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> onMapCreated(GoogleMapController controller) async {
     try {
-      getParcourt();
+      getParcour();
     } catch (e) {
       rethrow;
     }
@@ -146,7 +149,7 @@ class HomeViewModel extends ChangeNotifier {
       _typeFilter = "public";
     }
     try {
-      await getParcourt();
+      await getParcour();
     } catch (e) {
       _typeFilter = provVal;
       switch (provVal) {
@@ -167,7 +170,7 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> getParcourt() async {
+  Future<void> getParcour() async {
     switch (typeFilter) {
       case "public":
         try {
@@ -213,7 +216,7 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   void streamParcours() async {
-    _subStreamParcours = parcours!.listen((List<Parcours> parcours) {
+    _subStreamParcours = parcours!.listen((List<Parcours> parcours) async {
       for (var i = 0; i < parcours.length; i++) {
         final newPolilyne = Polyline(
           polylineId: PolylineId(parcours[i].id),
@@ -241,9 +244,7 @@ class HomeViewModel extends ChangeNotifier {
                 parcours[i].allPoints.first.longitude!),
             infoWindow: InfoWindow(
                 title: parcours[i].title,
-                snippet: parcours[i].description.isNotEmpty
-                    ? parcours[i].description
-                    : 'Pas de description'));
+                snippet:"Par : ${await _userRepo.getUserWithId(userId: parcours[i].owner).then((value) => value.pseudo)}"));
         if (!polylines.contains(newPolilyne)) {
           polylines.add(newPolilyne);
         }
