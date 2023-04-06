@@ -40,7 +40,6 @@ class SearchPageViewModel extends ChangeNotifier {
       for(var objs in value){
         result.addAll(objs);
       }
-      print(result);
       return result;
     });
   }
@@ -52,9 +51,8 @@ class SearchPageViewModel extends ChangeNotifier {
       userModel.User user =
       await _userRepo.getUserWithId(userId: _auth.currentUser!.uid);
       userFriend.awaitFriends.add(_auth.currentUser?.uid);
-      user.awaitFriends.add(userId);
-      print(userId);
-      await _userRepo.updateFriendToFirestore(userId,{'awaitFriends': userFriend.awaitFriends}, {'awaitFriends': user.awaitFriends});
+      user.pendingFriendRequests.add(userId);
+      await _userRepo.updateFriendToFirestore(userId,{'awaitFriends': userFriend.awaitFriends}, {'pendingFriendRequests': user.pendingFriendRequests});
     } catch (e) {
       return Future.error(e);
     }

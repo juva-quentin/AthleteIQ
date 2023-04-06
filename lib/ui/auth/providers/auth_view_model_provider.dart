@@ -147,6 +147,7 @@ class AuthViewModel extends ChangeNotifier {
         email: email,
         friends: [],
         awaitFriends: [],
+        pendingFriendRequests: [],
         sex: sex,
         objectif: 0,
         createdAt: DateTime.now(),
