@@ -41,7 +41,7 @@ class CreateGroupScreen extends ConsumerWidget {
                 child: Consumer(builder: (context, ref, child) {
                   ref.watch(provider.select((value) => value.file));
                   return Container(
-                    height: height*.2,
+                    height: height * .2,
                     width: 200,
                     clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
@@ -49,11 +49,12 @@ class CreateGroupScreen extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(20),
                         image: (model.image != null || model.file != null)
                             ? DecorationImage(
-                          image: model.file != null
-                              ? FileImage(model.file!)
-                              : NetworkImage(model.image!) as ImageProvider,
-                          fit: BoxFit.cover,
-                        )
+                                image: model.file != null
+                                    ? FileImage(model.file!)
+                                    : NetworkImage(model.image!)
+                                        as ImageProvider,
+                                fit: BoxFit.cover,
+                              )
                             : null),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -83,7 +84,32 @@ class CreateGroupScreen extends ConsumerWidget {
                   );
                 }),
               ),
-              SizedBox(height: height*.02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: model.changeType,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: width * .34,
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(15))),
+                        padding: EdgeInsets.fromLTRB(
+                            width * .02, height * .02, width * .02, height * .02),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(model.switchCaseChangeType(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               TextField(
                 onChanged: (v) => model.groupName = v,
                 decoration: InputDecoration(
