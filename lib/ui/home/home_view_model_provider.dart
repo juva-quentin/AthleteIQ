@@ -149,7 +149,7 @@ class HomeViewModel extends ChangeNotifier {
       _typeFilter = "public";
     }
     try {
-      await getParcour();
+      getParcour();
     } catch (e) {
       _typeFilter = provVal;
       switch (provVal) {
@@ -170,7 +170,7 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> getParcour() async {
+  void getParcour() async {
     switch (typeFilter) {
       case "public":
         try {

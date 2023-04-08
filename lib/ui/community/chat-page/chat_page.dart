@@ -1,11 +1,11 @@
-import 'package:athlete_iq/ui/chat/providers/active_groups_provider.dart';
-import 'package:athlete_iq/ui/chat/providers/chat_view_model_provider.dart';
+import 'package:athlete_iq/ui/community/providers/active_groups_provider.dart';
+import 'package:athlete_iq/ui/community/chat-page/chat_view_model_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
 import 'components/message_tile.dart';
-import 'group_info.dart';
+import 'components/group_info.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   const ChatPage({Key, key}) : super(key: key);

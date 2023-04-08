@@ -46,7 +46,6 @@ dependencies:
   another_flushbar: ^1.12.29
   fluttertoast: ^8.1.2
   hooks_riverpod: ^1.0.4
-  gender_selection: ^1.0.0
   crypt: ^4.2.1
   introduction_screen: ^3.1.4
   google_maps_flutter: ^2.2.3
@@ -74,6 +73,7 @@ dependencies:
   flutter_background_service_android: ^3.0.3
   permission_handler: ^10.2.0
   flutter_local_notifications: ^13.0.0
+  material_design_icons_flutter: ^6.0.7096
 
 dev_dependencies:
   hive_generator: ^1.1.1

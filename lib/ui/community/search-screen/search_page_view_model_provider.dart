@@ -4,9 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
-import '../../model/Groups.dart';
-import '../../model/User.dart' as userModel;
-import '../providers/loading_provider.dart';
+
+import '../../../model/Groups.dart';
+import '../../../model/User.dart' as userModel;
+import '../../providers/loading_provider.dart';
+
 
 final searchPageViewModelProvider = ChangeNotifierProvider.autoDispose(
       (ref) => SearchPageViewModel(ref.read),
@@ -52,7 +54,7 @@ class SearchPageViewModel extends ChangeNotifier {
       await _userRepo.getUserWithId(userId: _auth.currentUser!.uid);
       userFriend.awaitFriends.add(_auth.currentUser?.uid);
       user.pendingFriendRequests.add(userId);
-      await _userRepo.updateFriendToFirestore(userId,{'awaitFriends': userFriend.awaitFriends}, {'pendingFriendRequests': user.pendingFriendRequests});
+      await _userRepo.updateFriendToFirestore(dataUserFriend: userFriend, dataUser: user);
     } catch (e) {
       return Future.error(e);
     }
@@ -61,7 +63,7 @@ class SearchPageViewModel extends ChangeNotifier {
   Future<void> addUserToGroup(Groups group) async{
     try {
       group.members.add(_auth.currentUser?.uid);
-      await _groupRepo.updateUserToGroup(group.id, {'members': group.members});
+      await _groupRepo.updateGroup(group.id, group);
     } catch (e) {
       return Future.error(e);
     }
@@ -70,9 +72,21 @@ class SearchPageViewModel extends ChangeNotifier {
   Future<void> removeUserToGroup(Groups group) async{
     try {
       group.members.removeWhere((item)=> item == _auth.currentUser?.uid);
-      await _groupRepo.updateUserToGroup(group.id, {'members': group.members});
+      await _groupRepo.updateGroup(group.id, group);
     } catch (e) {
       return Future.error(e);
+    }
+  }
+
+  Future<void> removeFriend(userModel.User friend) async{
+    try{
+      final currentUser = await _userRepo.getUserWithId(userId: _auth.currentUser!.uid);
+      currentUser.friends.removeWhere((item)=> item == friend.id);
+      friend.friends.removeWhere((element) => element == _auth.currentUser!.uid);
+      await _userRepo.updateFriendToFirestore(dataUserFriend: friend, dataUser: currentUser);
+
+    }catch(e){
+      Future.error(e);
     }
   }
 }

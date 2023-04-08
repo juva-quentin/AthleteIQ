@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:athlete_iq/ui/chat/providers/create_group_view_model_provider.dart';
-import 'package:athlete_iq/ui/chat/providers/groups_view_model_provider.dart';
+import 'package:athlete_iq/ui/community/create-group-screen/create_group_view_model_provider.dart';
 import 'package:athlete_iq/ui/components/loading_layer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +8,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../model/User.dart';
-import '../../utils/utils.dart';
-import '../info/provider/user_provider.dart';
+import '../../../utils/utils.dart';
 
 class CreateGroupScreen extends ConsumerWidget {
   CreateGroupScreen({Key, key}) : super(key: key);

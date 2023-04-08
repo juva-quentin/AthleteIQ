@@ -1,7 +1,6 @@
-import 'package:athlete_iq/ui/chat/providers/create_group_view_model_provider.dart';
-import 'package:athlete_iq/ui/chat/providers/groups_provider.dart';
-import 'package:athlete_iq/ui/chat/search_page.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:athlete_iq/ui/community/create-group-screen/create_group_view_model_provider.dart';
+import 'package:athlete_iq/ui/community/providers/groups_provider.dart';
+import 'package:athlete_iq/ui/community/search-screen/search_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -9,7 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../model/Groups.dart';
 import '../../utils/routes/customPopupRoute.dart';
 import 'components/no_group_component.dart';
-import 'createGroup_screen.dart';
+import 'create-group-screen/createGroup_screen.dart';
 import 'components/group_tile.dart';
 
 class HomeChatScreen extends ConsumerWidget {
@@ -24,7 +23,7 @@ class HomeChatScreen extends ConsumerWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          automaticallyImplyLeading: false,
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
               onPressed: () {
@@ -41,7 +40,7 @@ class HomeChatScreen extends ConsumerWidget {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(width*.01, 0, width*.01, height*.01),
+        padding: EdgeInsets.fromLTRB(width * .01, 0, width * .01, height * .01),
         child: groups.when(data: (List<Groups> groups) {
           if (groups.isEmpty) {
             return noGroupWidget(ref, context);
@@ -49,8 +48,7 @@ class HomeChatScreen extends ConsumerWidget {
             return ListView.builder(
                 itemCount: groups.length,
                 itemBuilder: (context, index) {
-                  return groupTile(
-                      groups[index], context, ref);
+                  return groupTile(groups[index], context, ref);
                 });
           }
         }, error: (Object error, StackTrace? stackTrace) {
@@ -59,7 +57,7 @@ class HomeChatScreen extends ConsumerWidget {
           }
           return Text(error.toString());
         }, loading: () {
-          return const Text('Loading');
+          return const Center(child: CircularProgressIndicator());
         }),
       ),
       floatingActionButton: Padding(

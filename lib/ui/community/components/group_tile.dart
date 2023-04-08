@@ -1,4 +1,4 @@
-import 'package:athlete_iq/ui/chat/chat_page.dart';
+import 'package:athlete_iq/ui/community/chat-page/chat_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../model/Groups.dart';

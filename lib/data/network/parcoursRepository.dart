@@ -24,15 +24,15 @@ class ParcourRepository {
         parcours.toMap(),
         SetOptions(merge: true),
       );
-    } catch (e) {
+    } on FirebaseException catch (e) {
       rethrow;
     }
   }
 
-  Future updateDataToFirestore(
-      Map<String, dynamic> data, String collectionName, String docName) async {
+  Future updateParcour(
+      Parcours data, String collectionName, String docName) async {
     try {
-      await _firestore.collection(collectionName).doc(docName).update(data);
+      await _firestore.collection(collectionName).doc(docName).update(data.toMap());
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -81,7 +81,10 @@ class ParcourRepository {
       .map((snapshot) =>
           snapshot.docs.map((e) => Parcours.fromFirestore(e)).toList());
 
-  void delete(String id) {
-    _firestore.collection("parcours").doc(id).delete();
+  Future<void> delete(String id) async {
+    try{
+    await _firestore.collection("parcours").doc(id).delete();}on FirebaseException catch (e) {
+      rethrow;
+    }
   }
 }

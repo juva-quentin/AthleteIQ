@@ -7,7 +7,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../model/Groups.dart';
 
-final groupsRepositoryProvider = Provider.autoDispose((ref) => GroupsRepository());
+final groupsRepositoryProvider =
+    Provider.autoDispose((ref) => GroupsRepository());
 
 class GroupsRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -15,20 +16,25 @@ class GroupsRepository {
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   final CollectionReference groupCollection =
-  FirebaseFirestore.instance.collection("groups");
+      FirebaseFirestore.instance.collection("groups");
 
   Future<void> writeGroups(Groups group, {File? file}) async {
-    final ref =
-        _firestore.collection("groups").doc(group.id.isEmpty ? null : group.id);
-    final String? imageUrl = file != null
-        ? await (await _storage.ref("images").child(ref.id).putFile(file))
-        .ref
-        .getDownloadURL()
-        : null;
-    await ref.set(
-      group.copyWith(groupIcon: imageUrl).toMap(),
-      SetOptions(merge: true),
-    );
+    try {
+      final ref = _firestore
+          .collection("groups")
+          .doc(group.id.isEmpty ? null : group.id);
+      final String? imageUrl = file != null
+          ? await (await _storage.ref("images").child(ref.id).putFile(file))
+              .ref
+              .getDownloadURL()
+          : null;
+      await ref.set(
+        group.copyWith(groupIcon: imageUrl).toMap(),
+        SetOptions(merge: true),
+      );
+    } on FirebaseException catch (e) {
+      rethrow;
+    }
   }
 
   Stream<List<Groups>> get myGroupsStream => _firestore
@@ -42,19 +48,34 @@ class GroupsRepository {
           )
           .toList());
 
-  void delete(String id) {
-    _firestore.collection("groups").doc(id).delete();
+  Future<void> deleteGroup(String id) async {
+    try {
+      await _firestore.collection("groups").doc(id).delete();
+    } on FirebaseException catch (e) {
+      rethrow;
+    }
   }
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> getmyGroupsStreamById(String id) {
-    return _firestore
-        .collection('groups').doc(id)
-        .snapshots();
+  Future<Groups> getGroupById(String id) async{
+    try {
+      var docRef = _firestore.collection('groups').doc(id);
+      final result =
+      docRef.get().then((value) => Groups.fromFirestore(value));
+      return result;
+    } on FirebaseException catch (e) {
+      rethrow;
+    }
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> get groupsStream =>
-      _firestore.collection('groups').snapshots();
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getmyGroupsStreamById(
+      String id) {
+    return _firestore.collection('groups').doc(id).snapshots();
+  }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> get groupsStream => _firestore
+      .collection('groups')
+      .where('type', isEqualTo: "Public")
+      .snapshots();
 
   getChats(String groupId) async {
     return groupCollection
@@ -62,12 +83,6 @@ class GroupsRepository {
         .collection("messages")
         .orderBy("time")
         .snapshots();
-  }
-
-  Future getGroupAdmin(String groupId) async {
-    DocumentReference d = groupCollection.doc(groupId);
-    DocumentSnapshot documentSnapshot = await d.get();
-    return documentSnapshot['admin'];
   }
 
   sendMessage(String groupId, Map<String, dynamic> chatMessageData) async {
@@ -78,7 +93,20 @@ class GroupsRepository {
       "recentMessageTime": chatMessageData['time'],
     });
   }
-  updateUserToGroup(String groupId, Map<String, dynamic> members) async {
-    await groupCollection.doc(groupId).update(members);
+
+  Future<void> updateGroup(String groupId, Groups group, {File? file}) async {
+    try {
+      final String? imageUrl = file != null
+          ? await (await _storage.ref("images").child(groupId).putFile(file))
+              .ref
+              .getDownloadURL()
+          : null;
+      imageUrl == null ? null : group.copyWith();
+      await groupCollection.doc(groupId).update(
+          (imageUrl == null ? group : group.copyWith(groupIcon: imageUrl))
+              .toMap());
+    } on FirebaseException catch (e) {
+      rethrow;
+    }
   }
 }
