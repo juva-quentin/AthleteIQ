@@ -1,13 +1,8 @@
-import 'dart:ffi';
-
-import 'package:athlete_iq/data/network/groupsRepository.dart';
-import 'package:athlete_iq/data/network/userRepository.dart';
-import 'package:athlete_iq/ui/chat/search_page_view_model_provider.dart';
-import '../../model/User.dart' as userModel;
+import 'package:athlete_iq/ui/community/search-screen/search_page_view_model_provider.dart';
+import '../../../model/User.dart' as userModel;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:unicons/unicons.dart';
 
 class SearchPage extends ConsumerWidget {
@@ -73,7 +68,10 @@ class SearchPage extends ConsumerWidget {
                               : IconButton(
                                   onPressed: () {
                                     isUser
-                                        ? model.addFriend(data.id)
+                                        ? data.friends.contains(
+                                                _auth.currentUser?.uid)
+                                            ? model.removeFriend(data)
+                                            : model.addFriend(data.id)
                                         : data.members.contains(
                                                 _auth.currentUser?.uid)
                                             ? model.removeUserToGroup(data)
@@ -81,7 +79,9 @@ class SearchPage extends ConsumerWidget {
                                   },
                                   icon: Icon(
                                     isUser
-                                        ? UniconsLine.user_plus
+                                        ? data.friends.contains(
+                                        _auth.currentUser?.uid)
+                                        ? UniconsLine.user_minus : UniconsLine.user_plus
                                         : data.members.contains(
                                                 _auth.currentUser?.uid)
                                             ? UniconsLine.exit
@@ -92,11 +92,12 @@ class SearchPage extends ConsumerWidget {
                       ),
                     );
                   }
-                  if (isUser ? data.pseudo
+                  if (isUser
+                      ? data.pseudo
                           .toString()
                           .toLowerCase()
-                          .startsWith(model.name.toLowerCase()) :
-                      data.groupName
+                          .startsWith(model.name.toLowerCase())
+                      : data.groupName
                           .toString()
                           .toLowerCase()
                           .startsWith(model.name.toLowerCase())) {

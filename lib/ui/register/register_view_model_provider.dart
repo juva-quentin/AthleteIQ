@@ -130,9 +130,11 @@ class RegisterViewModel extends ChangeNotifier {
   }
 
   void _setLocation() async {
-    final allPoints = _coursePosition.map((e) => LatLng(e.latitude!, e.longitude!)).toList();
+    final allPoints =
+        _coursePosition.map((e) => LatLng(e.latitude!, e.longitude!)).toList();
     _controller.animateCamera(
-      CameraUpdate.newLatLngBounds(MapUtils.boundsFromLatLngList(allPoints), 20),
+      CameraUpdate.newLatLngBounds(
+          MapUtils.boundsFromLatLngList(allPoints), 20),
     );
   }
 
@@ -213,7 +215,6 @@ class RegisterViewModel extends ChangeNotifier {
     } else {
       _share.remove(uid);
     }
-    print(_share);
     notifyListeners();
   }
 
@@ -239,12 +240,8 @@ class RegisterViewModel extends ChangeNotifier {
       await _parcourRepo.writeParcours(newParcour);
       userModel.User user =
           await _userRepo.getUserWithId(userId: _auth.currentUser!.uid);
-      try {
-        await _userRepo.updateDataToFirestore({'totalDist' : user.totalDist + totalDistance});
-      } catch (e) {
-        print("erreur add distance ${e.toString()}");
-        rethrow;
-      }
+      await _userRepo
+          .updateUser(user.copyWith(totalDist: user.totalDist+totalDistance));
       _homeProvier.setLocation();
       _loading.end();
     } catch (e) {

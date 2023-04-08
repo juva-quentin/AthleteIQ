@@ -5,7 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../data/network/userRepository.dart';
-import 'active_groups_provider.dart';
+import '../../../model/Groups.dart';
+import '../providers/active_groups_provider.dart';
 
 final chatViewModelProvider = ChangeNotifierProvider.autoDispose(
   (ref) => ChatViewModel(ref.read),
@@ -22,6 +23,8 @@ class ChatViewModel extends ChangeNotifier {
   final UserRepository _userRepo = UserRepository();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final GroupsRepository _groupRepo = GroupsRepository();
 
   ChatViewModel(this._reader);
 
@@ -73,6 +76,16 @@ class ChatViewModel extends ChangeNotifier {
         messageController.clear();
         notifyListeners();
       });
+    }
+  }
+
+  Future<void> removeUserToGroup() async{
+    try {
+      final group = await _groupRepo.getGroupById(groupId);
+      group.members.removeWhere((item)=> item == _auth.currentUser?.uid);
+      await _groupRepo.updateGroup(group.id, group);
+    } catch (e) {
+      return Future.error(e);
     }
   }
 }

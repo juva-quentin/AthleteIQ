@@ -1,9 +1,9 @@
 import 'package:athlete_iq/main.dart';
 import 'package:athlete_iq/ui/auth/signup_screen.dart';
-import 'package:athlete_iq/ui/chat/chat_page.dart';
-import 'package:athlete_iq/ui/chat/group_info.dart';
-import 'package:athlete_iq/ui/chat/homeChat_screen.dart';
-import 'package:athlete_iq/ui/chat/search_page.dart';
+import 'package:athlete_iq/ui/community/chat-page/chat_page.dart';
+import 'package:athlete_iq/ui/community/chat-page/components/group_info.dart';
+import 'package:athlete_iq/ui/community/homeChat_screen.dart';
+import 'package:athlete_iq/ui/community/search-screen/search_page.dart';
 import 'package:athlete_iq/utils/routes/root.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +18,7 @@ class AppRouter {
     late final Widget selectedPage;
     switch (settings.name) {
       case InitRoute.route:
-        selectedPage = InitRoute();
+        selectedPage = const InitRoute();
         break;
       case LoginScreen.route:
         selectedPage = LoginScreen();
@@ -27,25 +27,25 @@ class AppRouter {
         selectedPage = SignupScreen();
         break;
       case EmailVerifyScreen.route:
-        selectedPage = EmailVerifyScreen();
+        selectedPage = const EmailVerifyScreen();
         break;
       case SettingsScreen.route:
-        selectedPage = SettingsScreen();
+        selectedPage = const SettingsScreen();
         break;
       case App.route:
-        selectedPage = App();
+        selectedPage = const App();
         break;
       case HomeChatScreen.route:
-        selectedPage = HomeChatScreen();
+        selectedPage = const HomeChatScreen();
         break;
       case SearchPage.route:
-        selectedPage = SearchPage();
+        selectedPage = const SearchPage();
         break;
       case ChatPage.route:
-        selectedPage = ChatPage();
+        selectedPage = const ChatPage();
         break;
       case GroupInfo.route:
-        selectedPage = GroupInfo();
+        selectedPage = const GroupInfo();
         break;
       default:
         selectedPage = const Root();

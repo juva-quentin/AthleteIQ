@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../utils/routes/customPopupRoute.dart';
-import '../createGroup_screen.dart';
-import '../providers/create_group_view_model_provider.dart';
+import '../create-group-screen/createGroup_screen.dart';
+import '../create-group-screen/create_group_view_model_provider.dart';
 
 Widget noGroupWidget(WidgetRef ref, BuildContext context) {
   return Container(

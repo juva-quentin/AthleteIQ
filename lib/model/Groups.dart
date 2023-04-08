@@ -88,4 +88,5 @@ class Groups {
     recentMessageSender: '',
     recentMessageTime: DateTime.now(),
   );
+
 }
