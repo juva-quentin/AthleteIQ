@@ -34,7 +34,7 @@ Widget userTile(
               style:
                   const TextStyle(fontSize: 17, fontWeight: FontWeight.w500)),
           subtitle: Text(friendRequest
-              ? "Vous demande en amis"
+              ? "Vous demande en ami"
               : "Depuis lundi ${user.totalDist.toStringAsFixed(2)} Km"),
           trailing: friendRequest
               ? Row(
@@ -83,7 +83,8 @@ Widget userTile(
                                 ),
                                 onPressed: () async {
                                   try {
-                                    await ref.read(friendsViewModelProvider).removeFriend(user);
+                                    await ref.read(friendsViewModelProvider).removeFriend(user).then((value) => Navigator.pop(context));
+                                    
                                   } catch (e) {
                                     Utils.flushBarErrorMessage(
                                         e.toString(), context);
