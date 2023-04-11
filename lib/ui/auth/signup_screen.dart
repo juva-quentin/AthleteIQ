@@ -145,18 +145,18 @@ class SignupScreen extends ConsumerWidget {
                         shrinkWrap: true,
                         itemCount: model.genders.length,
                         itemBuilder: (context, index) {
-                          return InkWell(
-                            splashColor: Colors.pinkAccent,
-                            onTap: () {
-                              for (var gender in model.genders) {
-                                gender.isSelected = false;
-                              }
-                              model.genders[index].isSelected = true;
-                              model.changeSex(model.genders[index]);
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: width*.03),
-                              child: CustomRadio(model.genders[index]),
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: width*.05),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(15),
+                              onTap: () {
+                                for (var gender in model.genders) {
+                                  gender.isSelected = false;
+                                }
+                                model.genders[index].isSelected = true;
+                                model.changeSex(model.genders[index]);
+                              },
+                              child:CustomRadio(model.genders[index]),
                             ),
                           );
                         }),
