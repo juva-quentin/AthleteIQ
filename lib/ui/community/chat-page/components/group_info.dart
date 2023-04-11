@@ -10,14 +10,13 @@ import '../../../../data/network/userRepository.dart';
 import '../../../../utils/utils.dart';
 
 class GroupInfo extends ConsumerWidget {
-  const GroupInfo({Key, key}) : super(key: key);
-
+  GroupInfo(this.args, {Key, key}) : super(key: key);
+  Object args;
   static const route = "/groups/group_info";
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(activeGroupeProvider);
     final width = MediaQuery.of(context).size.width;
-    final group = ref.watch(streamGroupsProvider(id));
+    final group = ref.watch(streamGroupsProvider(args.toString()));
     final userRepo = ref.watch(userRepositoryProvider);
     final model = ref.watch(chatViewModelProvider);
     return Scaffold(
@@ -149,7 +148,7 @@ class GroupInfo extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  memberList(id),
+                  memberList(args.toString()),
                 ],
               ),
             );

@@ -10,11 +10,12 @@ import 'package:flutter/material.dart';
 import '../../app/app.dart';
 import '../../ui/auth/email_verify_page.dart';
 import '../../ui/auth/login_screen.dart';
-import '../../ui/settings_screen.dart';
+import '../../ui/settings/settings_screen.dart';
 
 
 class AppRouter {
   static Route<MaterialPageRoute> onNavigate(RouteSettings settings) {
+    final args = settings.arguments;
     late final Widget selectedPage;
     switch (settings.name) {
       case InitRoute.route:
@@ -42,10 +43,10 @@ class AppRouter {
         selectedPage = const SearchPage();
         break;
       case ChatPage.route:
-        selectedPage = const ChatPage();
+        selectedPage = ChatPage(args!);
         break;
       case GroupInfo.route:
-        selectedPage = const GroupInfo();
+        selectedPage = GroupInfo(args!);
         break;
       default:
         selectedPage = const Root();
