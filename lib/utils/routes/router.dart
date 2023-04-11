@@ -4,6 +4,7 @@ import 'package:athlete_iq/ui/community/chat-page/chat_page.dart';
 import 'package:athlete_iq/ui/community/chat-page/components/group_info.dart';
 import 'package:athlete_iq/ui/community/homeChat_screen.dart';
 import 'package:athlete_iq/ui/community/search-screen/search_page.dart';
+import 'package:athlete_iq/ui/info/parcour_details_screen.dart';
 import 'package:athlete_iq/utils/routes/root.dart';
 import 'package:flutter/material.dart';
 
@@ -47,6 +48,9 @@ class AppRouter {
         break;
       case GroupInfo.route:
         selectedPage = GroupInfo(args!);
+        break;
+      case ParcourDetails.route:
+        selectedPage = ParcourDetails(args!);
         break;
       default:
         selectedPage = const Root();
