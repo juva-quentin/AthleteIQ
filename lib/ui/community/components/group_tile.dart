@@ -2,7 +2,6 @@ import 'package:athlete_iq/ui/community/chat-page/chat_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../model/Groups.dart';
-import '../providers/active_groups_provider.dart';
 
 Widget groupTile(Groups group, BuildContext context, WidgetRef ref) {
   return Padding(
@@ -15,8 +14,7 @@ Widget groupTile(Groups group, BuildContext context, WidgetRef ref) {
       ),
       child: ListTile(
         onTap: () {
-          ref.read(activeGroupeProvider.notifier).state = group.id;
-          Navigator.pushNamed(context, ChatPage.route);
+          Navigator.pushNamed(context, ChatPage.route, arguments: group.id);
         },
         leading: group.groupIcon.isNotEmpty
             ? CircleAvatar(

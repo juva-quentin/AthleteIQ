@@ -18,8 +18,6 @@ class ChatViewModel extends ChangeNotifier {
 
   final Reader _reader;
 
-  String get groupId => _reader(activeGroupeProvider);
-
   final UserRepository _userRepo = UserRepository();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -49,9 +47,15 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _groupeId = "";
+  String get groupeId => _groupeId;
+  set groupeId(String groupeId) {
+    _groupeId = groupeId;
+    notifyListeners();
+  }
+
   getChatAndAdmin() async {
-    print("groupeId$groupId");
-    GroupsRepository().getChats(groupId).then((val) {
+    GroupsRepository().getChats(_groupeId).then((val) {
       chats = val;
       notifyListeners();
     });
@@ -72,7 +76,7 @@ class ChatViewModel extends ChangeNotifier {
           "sender": _username,
           "time": DateTime.now(),
         };
-        GroupsRepository().sendMessage(groupId, chatMessageMap);
+        GroupsRepository().sendMessage(_groupeId, chatMessageMap);
         messageController.clear();
         notifyListeners();
       });
@@ -81,7 +85,7 @@ class ChatViewModel extends ChangeNotifier {
 
   Future<void> removeUserToGroup() async{
     try {
-      final group = await _groupRepo.getGroupById(groupId);
+      final group = await _groupRepo.getGroupById(_groupeId);
       group.members.removeWhere((item)=> item == _auth.currentUser?.uid);
       await _groupRepo.updateGroup(group.id, group);
     } catch (e) {

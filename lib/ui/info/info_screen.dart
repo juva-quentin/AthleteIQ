@@ -1,5 +1,5 @@
 import 'package:athlete_iq/ui/info/provider/user_provider.dart';
-import 'package:athlete_iq/ui/settings_screen.dart';
+import 'package:athlete_iq/ui/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';

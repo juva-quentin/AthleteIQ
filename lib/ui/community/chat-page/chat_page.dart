@@ -8,9 +8,12 @@ import 'components/message_tile.dart';
 import 'components/group_info.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
-  const ChatPage({Key, key}) : super(key: key);
+  ChatPage(this.args, {Key, key}) : super(key: key);
 
   static const route = "/groups/chat";
+
+  Object args;
+
 
   @override
   ConsumerState<ChatPage> createState() => _ChatPageState();
@@ -20,13 +23,13 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   @override
   void initState() {
     final model = ref.read(chatViewModelProvider);
+    model.groupeId = widget.args.toString();
     model.init();
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    final id = ref.watch(activeGroupeProvider);
-    final group = ref.watch(streamGroupsProvider(id));
+    final group = ref.watch(streamGroupsProvider(widget.args.toString()));
     final width = MediaQuery.of(context).size.width;
     final model = ref.watch(chatViewModelProvider);
     return GestureDetector(
@@ -41,7 +44,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           actions: [
             IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, GroupInfo.route);
+                  Navigator.pushNamed(context, GroupInfo.route, arguments: widget.args);
                 },
                 icon: Icon(Icons.info,size: width*.07, color: Colors.white))
           ],
