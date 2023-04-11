@@ -238,7 +238,7 @@ class RegisterViewModel extends ChangeNotifier {
     _loading.start();
     try {
       await _parcourRepo.writeParcours(newParcour);
-      userModel.User user =
+      userModel.UserModel user =
           await _userRepo.getUserWithId(userId: _auth.currentUser!.uid);
       await _userRepo
           .updateUser(user.copyWith(totalDist: user.totalDist+totalDistance));

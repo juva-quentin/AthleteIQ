@@ -140,7 +140,7 @@ class AuthViewModel extends ChangeNotifier {
     }
     try {
       await _auth.currentUser?.updateDisplayName(pseudo);
-      userModel.User _user = userModel.User(
+      userModel.UserModel _user = userModel.UserModel(
         id: _auth.currentUser!.uid,
         pseudo: pseudo,
         image: sex == 'Homme'

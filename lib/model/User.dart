@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User {
+class UserModel {
   final String id;
   final String pseudo;
   final String image;
@@ -12,7 +12,7 @@ class User {
   final double objectif;
   final DateTime createdAt;
   final double totalDist;
-  const User({
+  const UserModel({
     required this.id,
     required this.pseudo,
     required this.image,
@@ -26,7 +26,7 @@ class User {
     required this.totalDist,
   });
 
-  User copyWith({
+  UserModel copyWith({
     String? id,
     String? pseudo,
     String? image,
@@ -39,7 +39,7 @@ class User {
     DateTime? createdAt,
     double? totalDist,
   }) {
-    return User(
+    return UserModel(
       id: id ?? this.id,
       pseudo: pseudo ?? this.pseudo,
       image: image ?? this.image,
@@ -70,9 +70,9 @@ class User {
     };
   }
 
-  factory User.fromFirestore(DocumentSnapshot doc) {
+  factory UserModel.fromFirestore(DocumentSnapshot doc) {
     final Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
-    return User(
+    return UserModel(
       id: doc.id,
       pseudo: map['pseudo'] ?? '',
       image: map['image'] ?? '',
@@ -87,7 +87,7 @@ class User {
     );
   }
 
-  factory User.empty() => User(
+  factory UserModel.empty() => UserModel(
     id: '',
     pseudo: '',
     image: '',

@@ -35,7 +35,7 @@ class SearchPage extends ConsumerWidget {
                 itemCount: snapshots.data.length,
                 itemBuilder: (context, index) {
                   var data = snapshots.data[index];
-                  var isUser = data.runtimeType == userModel.User;
+                  var isUser = data.runtimeType == userModel.UserModel;
                   if (model.name.isEmpty) {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),

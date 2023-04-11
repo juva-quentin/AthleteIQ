@@ -33,7 +33,7 @@ class SearchPageViewModel extends ChangeNotifier {
 
   CombineLatestStream<List<Object>, dynamic> combineStream(){
     final userStream = _userRepo.usersStream.map((snapshot) =>
-        snapshot.docs.map((e) => userModel.User.fromFirestore(e)).toList());
+        snapshot.docs.map((e) => userModel.UserModel.fromFirestore(e)).toList());
     final groupStream = _groupRepo.groupsStream.map((snapshot) =>
         snapshot.docs.map((e) => Groups.fromFirestore(e)).toList());
 
@@ -48,9 +48,9 @@ class SearchPageViewModel extends ChangeNotifier {
 
   Future<void> addFriend(String userId) async{
     try {
-      userModel.User userFriend =
+      userModel.UserModel userFriend =
       await _userRepo.getUserWithId(userId: userId);
-      userModel.User user =
+      userModel.UserModel user =
       await _userRepo.getUserWithId(userId: _auth.currentUser!.uid);
       userFriend.awaitFriends.add(_auth.currentUser?.uid);
       user.pendingFriendRequests.add(userId);
@@ -78,7 +78,7 @@ class SearchPageViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> removeFriend(userModel.User friend) async{
+  Future<void> removeFriend(userModel.UserModel friend) async{
     try{
       final currentUser = await _userRepo.getUserWithId(userId: _auth.currentUser!.uid);
       currentUser.friends.removeWhere((item)=> item == friend.id);

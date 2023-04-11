@@ -10,7 +10,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import '../../../utils/utils.dart';
 
 Widget userTile(
-    User user, BuildContext context, WidgetRef ref, bool friendRequest) {
+    UserModel user, BuildContext context, WidgetRef ref, bool friendRequest) {
   final height = MediaQuery.of(context).size.height;
   final width = MediaQuery.of(context).size.width;
 
