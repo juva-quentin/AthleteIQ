@@ -2,6 +2,7 @@ import 'package:athlete_iq/data/network/userRepository.dart';
 import 'package:athlete_iq/ui/auth/login_screen.dart';
 import 'package:athlete_iq/ui/home/home_screen.dart';
 import 'package:athlete_iq/ui/info/provider/user_provider.dart';
+import 'package:athlete_iq/ui/providers/loading_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -20,6 +21,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authViewModelProvider);
     final user = ref.watch(firestoreUserProvider);
+    final isLoading = ref.watch(loadingProvider);
     final height = MediaQuery.of(context).size.height;
 
     final width = MediaQuery.of(context).size.width;
@@ -114,23 +116,20 @@ class SettingsScreen extends ConsumerWidget {
               ),
               onChanged: (v) => auth.email = v,
             ),
-            TextFormField(
-              obscureText: auth.obscurePassword,
-              keyboardType: TextInputType.visiblePassword,
-              initialValue: auth.password,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.lock_outline_rounded),
-                labelText: "Mot de passe",
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    auth.obscurePassword = !auth.obscurePassword;
-                  },
-                  icon: Icon(auth.obscurePassword
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility_outlined),
-                ),
-              ),
-              onChanged: (v) => auth.password = v,
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: ElevatedButton(onPressed: () {
+
+              }, style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),child: Center(
+                  child: isLoading.loading
+                      ? const CircularProgressIndicator(
+                    color: Colors.white,
+                  )
+                      : Text(
+                    "Confirmer",
+                    style: TextStyle(
+                        color: Colors.white),
+                  ))),
             )
           ]),
         ));

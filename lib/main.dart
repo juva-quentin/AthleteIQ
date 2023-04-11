@@ -29,8 +29,6 @@ Future<void> main() async {
 
 }
 
-
-
 class MyApp extends ConsumerWidget {
   const MyApp({super.key, required this.theme});
   final ThemeData theme;
