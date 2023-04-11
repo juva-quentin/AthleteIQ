@@ -3,7 +3,6 @@ import 'package:athlete_iq/ui/info/provider/friends_view_model_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-
 import '../../utils/utils.dart';
 
 class FriendsListScreen extends ConsumerStatefulWidget {
@@ -40,16 +39,20 @@ class FriendsListState extends ConsumerState<FriendsListScreen> {
             }
           },
           child: model.awaitFriends.isEmpty && model.friends.isEmpty
-              ? const Center(child:  Text("Vous n'avez pas encore d'amis !"))
+              ? const Center(child: Text("Vous n'avez pas encore d'amis !"))
               : SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(horizontal: width * .02),
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(
                     children: [
-                      model.awaitFriends.isNotEmpty ? const Text("Demandes d'amis") : SizedBox(),
+                      model.awaitFriends.isNotEmpty
+                          ? const Text("Demandes d'amis")
+                          : SizedBox(),
                       ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount:  model.awaitFriends.length + ( model.awaitFriends.isEmpty ? 1 : 0),
+                        itemCount: model.awaitFriends.length +
+                            (model.awaitFriends.isEmpty ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index < model.awaitFriends.length) {
                             final data = model.awaitFriends[index];
@@ -60,11 +63,14 @@ class FriendsListState extends ConsumerState<FriendsListScreen> {
                           return null;
                         },
                       ),
-                      model.friends.isNotEmpty ? const Text("Amis") : const SizedBox(),
+                      model.friends.isNotEmpty
+                          ? const Text("Amis")
+                          : const SizedBox(),
                       ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: model.friends.length + (model.friends.isEmpty ? 1 : 0),
+                        itemCount: model.friends.length +
+                            (model.friends.isEmpty ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index < model.friends.length) {
                             final data = model.friends[index];
@@ -76,7 +82,12 @@ class FriendsListState extends ConsumerState<FriendsListScreen> {
                           }
                           return null;
                         },
-                      )
+                      ),
+                      model.awaitFriends.isEmpty && model.friends.isNotEmpty
+                          ? const SizedBox(
+                              height: 500,
+                            )
+                          : const SizedBox(),
                     ],
                   ),
                 )),
