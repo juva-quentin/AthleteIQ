@@ -1,13 +1,10 @@
 import 'package:athlete_iq/ui/info/components/userTileComponent.dart';
 import 'package:athlete_iq/ui/info/provider/friends_view_model_provider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../model/Parcour.dart';
+
 import '../../utils/utils.dart';
-import '../providers/loading_provider.dart';
-import 'components/parcourTileComponent.dart';
 
 class FriendsListScreen extends ConsumerStatefulWidget {
   const FriendsListScreen({Key, key}) : super(key: key);
@@ -43,7 +40,7 @@ class FriendsListState extends ConsumerState<FriendsListScreen> {
             }
           },
           child: model.awaitFriends.isEmpty && model.friends.isEmpty
-              ? const Center(child:  CircularProgressIndicator())
+              ? const Center(child:  Text("Vous n'avez pas encore d'amis !"))
               : SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(

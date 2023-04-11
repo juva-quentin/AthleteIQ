@@ -72,7 +72,6 @@ class FriendsViewModel extends ChangeNotifier {
       currentUser.friends.removeWhere((item)=> item == friend.id);
       friend.friends.removeWhere((element) => element == _auth.currentUser!.uid);
       await _repository.updateFriendToFirestore(dataUserFriend: friend, dataUser: currentUser).then((value) => loadFriends());
-
     }catch(e){
       Future.error(e);
     }
