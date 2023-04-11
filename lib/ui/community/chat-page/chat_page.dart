@@ -8,12 +8,11 @@ import 'components/message_tile.dart';
 import 'components/group_info.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
-  ChatPage(this.args, {Key, key}) : super(key: key);
+  const ChatPage(this.args, {Key, key}) : super(key: key);
 
   static const route = "/groups/chat";
 
-  Object args;
-
+  final Object args;
 
   @override
   ConsumerState<ChatPage> createState() => _ChatPageState();
@@ -27,6 +26,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     model.init();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final group = ref.watch(streamGroupsProvider(widget.args.toString()));
@@ -38,15 +38,20 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(UniconsLine.arrow_left,size: width*.1, color: Colors.white,),
+            icon: Icon(
+              UniconsLine.arrow_left,
+              size: width * .1,
+              color: Colors.white,
+            ),
             onPressed: () => Navigator.of(context).pop(),
           ),
           actions: [
             IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, GroupInfo.route, arguments: widget.args);
+                  Navigator.pushNamed(context, GroupInfo.route,
+                      arguments: widget.args);
                 },
-                icon: Icon(Icons.info,size: width*.07, color: Colors.white))
+                icon: Icon(Icons.info, size: width * .07, color: Colors.white))
           ],
           centerTitle: true,
           backgroundColor: Theme.of(context).primaryColor,
@@ -68,12 +73,16 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         body: Stack(
           children: <Widget>[
             // chat messages here
-            Padding(padding: EdgeInsets.only(bottom: 100), child:chatMessages(),),
+            Padding(
+              padding: EdgeInsets.only(bottom: 100),
+              child: chatMessages(),
+            ),
             Container(
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                 width: MediaQuery.of(context).size.width,
                 color: Colors.white,
                 child: Row(children: [
@@ -97,7 +106,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                     onTap: () {
                       model.sendMessage();
                       FocusManager.instance.primaryFocus?.unfocus();
-                      model.scrollController.animateTo(model.scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 010), curve: Curves.easeOut);
+                      model.scrollController.animateTo(
+                          model.scrollController.position.maxScrollExtent,
+                          duration: const Duration(milliseconds: 010),
+                          curve: Curves.easeOut);
                     },
                     child: Container(
                       height: 40,

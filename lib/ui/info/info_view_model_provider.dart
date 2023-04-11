@@ -22,7 +22,7 @@ final infoViewModelProvider = ChangeNotifierProvider.autoDispose<InfoViewModel>(
 class InfoViewModel extends ChangeNotifier {
   final Reader _reader;
   InfoViewModel(this._reader);
-  UserRepository get _repository => _reader(userRepositoryProvider);
+  UserRepository get repository => _reader(userRepositoryProvider);
   ParcourRepository get parcourRepository => _reader(parcourRepositoryProvider);
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -88,9 +88,9 @@ class InfoViewModel extends ChangeNotifier {
 
   Future<void> updateUserImage() async {
     try {
-      userModel.User user =
-          await _repository.getUserWithId(userId: _auth.currentUser!.uid);
-      await _repository.writeUser(user, file:_file);
+      userModel.UserModel user =
+          await repository.getUserWithId(userId: _auth.currentUser!.uid);
+      await repository.writeUser(user, file:_file);
     } catch (e) {
       return Future.error(e);
     }

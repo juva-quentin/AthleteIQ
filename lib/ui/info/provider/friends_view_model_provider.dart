@@ -17,8 +17,8 @@ class FriendsViewModel extends ChangeNotifier {
   UserRepository get _repository => _reader(userRepositoryProvider);
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  List<userModel.User> awaitFriends = [];
-  List<userModel.User> friends = [];
+  List<userModel.UserModel> awaitFriends = [];
+  List<userModel.UserModel> friends = [];
 
   Future<void> init() async {
     try {
@@ -30,9 +30,9 @@ class FriendsViewModel extends ChangeNotifier {
 
   Future<void> loadFriends() async {
     try {
-      List<userModel.User> resultFriends = [];
-      List<userModel.User> resultAwaitFriends = [];
-      userModel.User result =
+      List<userModel.UserModel> resultFriends = [];
+      List<userModel.UserModel> resultAwaitFriends = [];
+      userModel.UserModel result =
           await _repository.getUserWithId(userId: _auth.currentUser!.uid);
       for (var userId in result.awaitFriends) {
         final friend = await _repository.getUserWithId(userId: userId);
@@ -50,7 +50,7 @@ class FriendsViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> valideInvalideFriend(userModel.User friend, bool valide) async{
+  Future<void> valideInvalideFriend(userModel.UserModel friend, bool valide) async{
     try{
       final currentUser = await _repository.getUserWithId(userId: _auth.currentUser!.uid);
       currentUser.awaitFriends.removeWhere((item)=> item == friend.id);
@@ -66,7 +66,7 @@ class FriendsViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> removeFriend(userModel.User friend) async{
+  Future<void> removeFriend(userModel.UserModel friend) async{
     try{
       final currentUser = await _repository.getUserWithId(userId: _auth.currentUser!.uid);
       currentUser.friends.removeWhere((item)=> item == friend.id);

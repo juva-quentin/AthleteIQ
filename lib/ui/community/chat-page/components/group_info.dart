@@ -10,8 +10,8 @@ import '../../../../data/network/userRepository.dart';
 import '../../../../utils/utils.dart';
 
 class GroupInfo extends ConsumerWidget {
-  GroupInfo(this.args, {Key, key}) : super(key: key);
-  Object args;
+  const GroupInfo(this.args, {Key, key}) : super(key: key);
+  final Object args;
   static const route = "/groups/group_info";
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -120,11 +120,11 @@ class GroupInfo extends ConsumerWidget {
                             const SizedBox(
                               height: 5,
                             ),
-                            FutureBuilder<User>(
+                            FutureBuilder<UserModel>(
                                 future:
                                     userRepo.getUserWithId(userId: data.admin),
                                 builder:
-                                    (context, AsyncSnapshot<User> snapshot) {
+                                    (context, AsyncSnapshot<UserModel> snapshot) {
                                   if (snapshot.connectionState ==
                                       ConnectionState.waiting) {
                                     return const CircularProgressIndicator();
@@ -171,10 +171,10 @@ class GroupInfo extends ConsumerWidget {
                 itemCount: data.members.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  return FutureBuilder<User>(
+                  return FutureBuilder<UserModel>(
                       future:
                           userRepo.getUserWithId(userId: data.members[index]),
-                      builder: (context, AsyncSnapshot<User> snapshot) {
+                      builder: (context, AsyncSnapshot<UserModel> snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return const CircularProgressIndicator();

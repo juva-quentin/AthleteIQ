@@ -69,83 +69,85 @@ class HomeScreen extends ConsumerWidget {
               alignment: Alignment(0, !model.courseStart ? 0.71 : 0.9),
               child: const GoBtn()),
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FloatingActionButton(
-                backgroundColor: Theme.of(context).cardColor,
-                heroTag: "modeParcourBtn",
-                onPressed: () async {
-                  try {
-                    await model.changeFilterParcour();
-                    Utils.toastMessage(
-                        "Chargement des parcours ${model.typeFilter == "public" ? 'public' : model.typeFilter == "protected" ? "protégé" : model.typeFilter == "private" ? "privé" : "public"}");
-                  } catch (e) {
-                    Utils.flushBarErrorMessage(e.toString(), context);
-                  }
-                },
-                child: Icon(model.filterParcourIcon),
+            child: Align(
+              alignment: const Alignment(-0.97, -1),
+              child: Padding(
+                padding: EdgeInsets.all(width * .007),
+                child: FloatingActionButton(
+                  backgroundColor: Theme.of(context).cardColor,
+                  heroTag: "modeParcourBtn",
+                  onPressed: () async {
+                    try {
+                      await model.changeFilterParcour();
+                      Utils.toastMessage(
+                          "Chargement des parcours ${model.typeFilter == "public" ? 'public' : model.typeFilter == "protected" ? "protégé" : model.typeFilter == "private" ? "privé" : "public"}");
+                    } catch (e) {
+                      Utils.flushBarErrorMessage(e.toString(), context);
+                    }
+                  },
+                  child: Icon(model.filterParcourIcon),
+                ),
               ),
             ),
           ),
           SafeArea(
             child: Align(
-                alignment: Alignment(0.97, 0),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(width * .007),
-                      child: FloatingActionButton(
-                        backgroundColor: Theme.of(context).cardColor,
-                        heroTag: "modeViewBtn",
-                        onPressed: () {
-                          model.defaultMapType =
-                              model.defaultMapType == MapType.normal
-                                  ? MapType.satellite
-                                  : MapType.normal;
-                          Utils.toastMessage(
-                              "Mode ${model.defaultMapType == MapType.normal ? 'normal' : 'satellite'} activé");
-                        },
-                        child: const Icon(UniconsLine.layer_group),
+              alignment: const Alignment(0.97, 0),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(width * .007),
+                    child: FloatingActionButton(
+                      backgroundColor: Theme.of(context).cardColor,
+                      heroTag: "modeViewBtn",
+                      onPressed: () {
+                        model.defaultMapType =
+                            model.defaultMapType == MapType.normal
+                                ? MapType.satellite
+                                : MapType.normal;
+                        Utils.toastMessage(
+                            "Mode ${model.defaultMapType == MapType.normal ? 'normal' : 'satellite'} activé");
+                      },
+                      child: const Icon(UniconsLine.layer_group),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(width * .007),
+                    child: FloatingActionButton(
+                      backgroundColor: Theme.of(context).cardColor,
+                      heroTag: "locateBtn",
+                      onPressed: () {
+                        model.setLocation();
+                        Utils.toastMessage("Localisation en cours...");
+                      },
+                      child: !model.courseStart
+                          ? isLoading.loading
+                              ? CircularProgressIndicator(
+                                  color: Theme.of(context).primaryColor,
+                                )
+                              : const Icon(Icons.my_location)
+                          : const Icon(Icons.my_location),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(width * .007),
+                    child: FloatingActionButton(
+                      backgroundColor: Theme.of(context).cardColor,
+                      heroTag: "traficBtn",
+                      onPressed: () {
+                        model.traffic = model.traffic == false ? true : false;
+                        Utils.toastMessage(
+                            "Trafic ${model.traffic == false ? 'désactivé' : 'activé'}");
+                      },
+                      child: Icon(
+                        UniconsLine.traffic_light,
+                        color: model.traffic ? Colors.lightGreen : Colors.red,
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(width * .007),
-                      child: FloatingActionButton(
-                        backgroundColor: Theme.of(context).cardColor,
-                        heroTag: "locateBtn",
-                        onPressed: () {
-                          model.setLocation();
-                          Utils.toastMessage("Localisation en cours...");
-                        },
-                        child: !model.courseStart
-                            ? isLoading.loading
-                                ? CircularProgressIndicator(
-                                    color: Theme.of(context).primaryColor,
-                                  )
-                                : const Icon(Icons.my_location)
-                            : const Icon(Icons.my_location),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(width * .007),
-                      child: FloatingActionButton(
-                        backgroundColor: Theme.of(context).cardColor,
-                        heroTag: "traficBtn",
-                        onPressed: () {
-                          model.traffic = model.traffic == false ? true : false;
-                          Utils.toastMessage(
-                              "Trafic ${model.traffic == false ? 'désactivé' : 'activé'}");
-                        },
-                        child: Icon(
-                          UniconsLine.traffic_light,
-                          color: model.traffic ? Colors.lightGreen : Colors.red,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-
+            ),
           ),
         ],
       ),

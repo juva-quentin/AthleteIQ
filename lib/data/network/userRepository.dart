@@ -4,17 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../model/User.dart' as user;
-import '../../ui/auth/providers/auth_view_model_provider.dart';
+import '../../model/User.dart';
 
-final userRepositoryProvider = Provider.autoDispose((ref) => UserRepository());
+final userRepositoryProvider = Provider((ref) => UserRepository());
 
 class UserRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> writeUser(user.User user, {File? file}) async {
+  Future<void> writeUser(UserModel user, {File? file}) async {
     final ref =
         _firestore.collection("users").doc(user.id.isEmpty ? null : user.id);
     final String? imageUrl = file != null
@@ -33,7 +32,7 @@ class UserRepository {
     }
   }
 
-  Future updateUser(user.User data) async {
+  Future updateUser(UserModel data) async {
     try {
       await _firestore
           .collection('users')
@@ -45,8 +44,8 @@ class UserRepository {
   }
 
   Future updateFriendToFirestore({
-     required user.User dataUserFriend,
-      required user.User dataUser}) async {
+     required UserModel dataUserFriend,
+      required UserModel dataUser}) async {
     try {
       await _firestore.collection('users').doc(dataUserFriend.id).update(dataUserFriend.toMap());
       await _firestore
@@ -58,8 +57,8 @@ class UserRepository {
     }
   }
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> get userStream =>
-      _firestore.collection('users').doc(_auth.currentUser?.uid).snapshots();
+  Stream<UserModel> get currentUserStream =>
+      _firestore.collection('users').doc(_auth.currentUser?.uid).snapshots().map((snapshot) => UserModel.fromFirestore(snapshot));
 
   Stream<QuerySnapshot<Map<String, dynamic>>> get usersStream => _firestore
       .collection('users')
@@ -71,25 +70,25 @@ class UserRepository {
     return _firestore.collection('users').doc(userId).snapshots();
   }
 
-  Future<user.User> getUserWithId({required String userId}) async {
+  Future<UserModel> getUserWithId({required String userId}) async {
     try {
       var docRef = _firestore.collection('users').doc(userId);
       final result =
-          docRef.get().then((value) => user.User.fromFirestore(value));
+          docRef.get().then((value) => UserModel.fromFirestore(value));
       return result;
     } on FirebaseException catch (e) {
       rethrow;
     }
   }
 
-  Future<List<user.User>> getUserWithPseudo({required String pseudo}) async {
+  Future<List<UserModel>> getUserWithPseudo({required String pseudo}) async {
     try {
       var docRef =
           _firestore.collection('users').where('pseudo', isEqualTo: pseudo);
       final querySnapshot = await docRef.get();
       final result = querySnapshot.docs
           .map((e) =>
-              user.User.fromFirestore(e.data() as DocumentSnapshot<Object?>))
+              UserModel.fromFirestore(e.data() as DocumentSnapshot<Object?>))
           .toList();
       return result;
     } on FirebaseException catch (e) {
