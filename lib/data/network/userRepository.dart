@@ -6,7 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../model/User.dart';
 
-final userRepositoryProvider = Provider((ref) => UserRepository());
+final userRepositoryProvider = Provider.autoDispose((ref) => UserRepository());
 
 class UserRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

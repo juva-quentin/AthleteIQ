@@ -30,7 +30,7 @@ class InfoScreen extends ConsumerWidget {
                   size: width * .1,
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, SettingsScreen.route);
+                  Navigator.pushReplacementNamed(context, SettingsScreen.route);
                 },
               ),
             ),

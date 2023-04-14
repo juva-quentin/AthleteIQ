@@ -31,7 +31,7 @@ class AppRouter {
         selectedPage = const EmailVerifyScreen();
         break;
       case SettingsScreen.route:
-        selectedPage = const SettingsScreen();
+        selectedPage = SettingsScreen();
         break;
       case App.route:
         selectedPage = const App();

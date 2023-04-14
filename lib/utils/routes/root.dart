@@ -19,6 +19,7 @@ class Root extends ConsumerWidget {
         ref.read(cacheProvider).value?.getBool("seen") ?? false;
     final FirebaseAuth _auth = FirebaseAuth.instance;
     User? user = _auth.currentUser;
+    print(user);
     return user != null
             ? !seen ? const OnboardingScreen() : const App()
             : LoginScreen();

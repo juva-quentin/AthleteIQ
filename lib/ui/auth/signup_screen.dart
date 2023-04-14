@@ -113,7 +113,7 @@ class SignupScreen extends ConsumerWidget {
                   ),
                   TextFormField(
                     obscureText: model.obscureConfirmPassword,
-                    initialValue: model.confirmPassord,
+                    initialValue: model.confirmPassword,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.lock_outline_rounded),
                       labelText: "Confirmer le mot de passe",
@@ -127,7 +127,7 @@ class SignupScreen extends ConsumerWidget {
                             : Icons.visibility_outlined),
                       ),
                     ),
-                    onChanged: (v) => model.confirmPassord = v,
+                    onChanged: (v) => model.confirmPassword = v,
                     validator: (v) => v != model.password
                         ? "Les mots de passe ne correspondent pas"
                         : null,
@@ -167,7 +167,7 @@ class SignupScreen extends ConsumerWidget {
                   InkWell(
                     onTap: model.email.isNotEmpty &&
                             model.password.isNotEmpty &&
-                            model.confirmPassord.isNotEmpty &&
+                            model.confirmPassword.isNotEmpty &&
                             model.sex.isNotEmpty
                         ? () async {
                             if (_formRegisterKey.currentState!.validate()) {
@@ -192,7 +192,7 @@ class SignupScreen extends ConsumerWidget {
                         decoration: BoxDecoration(
                             color: model.email.isNotEmpty &&
                                     model.password.isNotEmpty &&
-                                    model.confirmPassord.isNotEmpty &&
+                                    model.confirmPassword.isNotEmpty &&
                                     model.sex.isNotEmpty
                                 ? Theme.of(context)
                                     .buttonTheme

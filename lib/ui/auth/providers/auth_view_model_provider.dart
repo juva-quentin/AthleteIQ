@@ -21,7 +21,7 @@ class AuthViewModel extends ChangeNotifier {
 
   User? get user => _auth.currentUser;
 
-  final UserRepository _userRepo = UserRepository();
+  UserRepository get _userRepo => _reader(userRepositoryProvider);
 
   String _pseudo = '';
   String get pseudo => _pseudo;
@@ -44,10 +44,10 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _confirmPassord = '';
-  String get confirmPassord => _confirmPassord;
-  set confirmPassord(String confirmPassord) {
-    _confirmPassord = confirmPassord;
+  String _confirmPassword = '';
+  String get confirmPassword => _confirmPassword;
+  set confirmPassword(String confirmPassword) {
+    _confirmPassword = confirmPassword;
     notifyListeners();
   }
 

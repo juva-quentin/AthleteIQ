@@ -7,7 +7,7 @@ import '../../utils/routes/root.dart';
 import '../providers/loading_provider.dart';
 
 class LoginScreen extends ConsumerWidget {
-  LoginScreen({Key, key}) : super(key: key);
+  LoginScreen({Key? key}) : super(key: key);
   final _formLoginKey = GlobalKey<FormState>();
   static const route = "/login";
   @override
