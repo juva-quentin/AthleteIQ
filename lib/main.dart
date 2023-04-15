@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:athlete_iq/app/app.dart';
 import 'package:athlete_iq/ui/providers/cache_provider.dart';
-import 'package:athlete_iq/utils/routes/root.dart';
 import 'package:athlete_iq/utils/routes/router.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,7 +11,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:json_theme/json_theme.dart';
 import 'firebase_options.dart';
-
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +25,6 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]).then((value) => runApp(ProviderScope(child: MyApp(theme: theme))));
-
 }
 
 class MyApp extends ConsumerWidget {
@@ -53,21 +51,23 @@ class InitRoute extends ConsumerStatefulWidget {
 }
 
 class _InitRouteState extends ConsumerState<InitRoute> {
-
   @override
   void initState() {
     super.initState();
-    init();
+    Future.delayed(Duration.zero, () async {
+      await init();
+    });
+    FlutterNativeSplash.remove();
   }
 
-  void init() async {
+  Future<void> init() async {
     await ref.read(cacheProvider.future);
     await Future.delayed(const Duration(seconds: 1));
     if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(
       context,
-      Root.route,
-          (route) => false,
+      App.route,
+      (route) => false,
     );
   }
 
@@ -75,4 +75,4 @@ class _InitRouteState extends ConsumerState<InitRoute> {
   Widget build(BuildContext context) {
     return Container();
   }
-  }
+}

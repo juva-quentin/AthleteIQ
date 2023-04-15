@@ -157,12 +157,10 @@ class RegisterViewModel extends ChangeNotifier {
   }
 
   double _calculVM() {
-    final totalInHour =
-        _chrono.hour + _chrono.minute / 60 + _chrono.seconds / 3600;
-
-    final result = _totalDistance / totalInHour;
-
-    return result;
+    double sumSpeed = 0.0;
+    coursePosition.forEach((point) => sumSpeed += point.speed!);
+    double avgSpeed = sumSpeed / coursePosition.length;
+    return avgSpeed;
   }
 
   void changeVisibility() {

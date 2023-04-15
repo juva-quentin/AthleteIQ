@@ -2,7 +2,7 @@ import 'package:athlete_iq/data/network/groupsRepository.dart';
 import 'package:athlete_iq/data/network/parcoursRepository.dart';
 import 'package:athlete_iq/data/network/userRepository.dart';
 import 'package:athlete_iq/ui/auth/providers/auth_view_model_provider.dart';
-import 'package:athlete_iq/ui/info/friends_screen.dart';
+import 'package:athlete_iq/ui/info/friends_list_screen.dart';
 import 'package:athlete_iq/ui/info/info_screen.dart';
 import 'package:athlete_iq/ui/info/provider/user_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

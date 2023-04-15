@@ -5,8 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../data/network/userRepository.dart';
-import '../../../model/Groups.dart';
-import '../providers/active_groups_provider.dart';
 
 final chatViewModelProvider = ChangeNotifierProvider.autoDispose(
   (ref) => ChatViewModel(ref.read),
@@ -22,12 +20,12 @@ class ChatViewModel extends ChangeNotifier {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  final GroupsRepository _groupRepo = GroupsRepository();
+  GroupsRepository get _groupRepo => _reader(groupsRepositoryProvider);
 
   ChatViewModel(this._reader);
 
-  void init() {
-    getChatAndAdmin();
+  Future<void> init() async {
+    await getChatAndAdmin();
   }
 
   Stream<QuerySnapshot>? _chats;
@@ -55,7 +53,7 @@ class ChatViewModel extends ChangeNotifier {
   }
 
   getChatAndAdmin() async {
-    GroupsRepository().getChats(_groupeId).then((val) {
+    _groupRepo.getChats(_groupeId).then((val) {
       chats = val;
       notifyListeners();
     });

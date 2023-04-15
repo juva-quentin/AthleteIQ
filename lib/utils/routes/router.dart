@@ -5,7 +5,6 @@ import 'package:athlete_iq/ui/community/chat-page/components/group_info.dart';
 import 'package:athlete_iq/ui/community/homeChat_screen.dart';
 import 'package:athlete_iq/ui/community/search-screen/search_page.dart';
 import 'package:athlete_iq/ui/info/parcour_details_screen.dart';
-import 'package:athlete_iq/utils/routes/root.dart';
 import 'package:flutter/material.dart';
 
 import '../../app/app.dart';
@@ -32,7 +31,7 @@ class AppRouter {
         selectedPage = const EmailVerifyScreen();
         break;
       case SettingsScreen.route:
-        selectedPage = SettingsScreen();
+        selectedPage = const SettingsScreen();
         break;
       case App.route:
         selectedPage = const App();
@@ -53,7 +52,7 @@ class AppRouter {
         selectedPage = ParcourDetails(args!);
         break;
       default:
-        selectedPage = const Root();
+        selectedPage = const App();
         break;
     }
 

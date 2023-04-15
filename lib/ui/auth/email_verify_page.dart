@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../utils/routes/root.dart';
+import '../../app/app.dart';
 import '../../utils/utils.dart';
 
 class EmailVerifyScreen extends ConsumerStatefulWidget {
@@ -20,7 +20,7 @@ class _EmailVerifyScreenState extends ConsumerState<EmailVerifyScreen> {
 
   void onDone() {
     if (!mounted) return;
-    Navigator.pushReplacementNamed(context, Root.route);
+    Navigator.pushReplacementNamed(context, App.route);
   }
 
   @override
