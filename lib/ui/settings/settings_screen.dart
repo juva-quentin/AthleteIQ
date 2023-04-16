@@ -1,13 +1,14 @@
 import 'package:athlete_iq/ui/auth/login_screen.dart';
 import 'package:athlete_iq/ui/providers/loading_provider.dart';
 import 'package:athlete_iq/ui/settings/settings_view_model_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
 import '../../app/app.dart';
-import '../../utils/routes/root.dart';
 import '../../utils/utils.dart';
 import '../auth/providers/auth_view_model_provider.dart';
 
@@ -48,16 +49,15 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
         leading: IconButton(
             icon: Icon(UniconsLine.arrow_left, size: width * .1),
-            onPressed: () => Navigator.pushReplacementNamed(context, App.route)),
+            onPressed: () => Navigator.pop(context)),
         actions: [
           IconButton(
               onPressed: () async {
                 try {
-                  await authModel.logout().then((value) =>
-                      Navigator.pushReplacementNamed(
-                        context,
-                        Root.route,
-                      ));
+                  await authModel.logout();
+                  FirebaseFirestore.instance.terminate();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, App.route, (Route<dynamic> route) => false);
                 } catch (e) {
                   Utils.flushBarErrorMessage(e.toString(), context);
                   if (kDebugMode) {
@@ -152,7 +152,9 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ? () async {
                         if (model.formSettingKey.currentState!.validate()) {
                           try {
-                            await model.updateUser();
+                            await model.updateUser().then((value) =>
+                                Utils.toastMessage(
+                                    "Votre profile à été mis  à jour"));
                           } catch (e) {
                             Utils.flushBarErrorMessage(e.toString(), context);
                           }
@@ -184,9 +186,7 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
               InkWell(
                 onTap: () async {
                   if (model.formSettingKey.currentState!.validate()) {
-                    try {
-
-                    } catch (e) {
+                    try {} catch (e) {
                       Utils.flushBarErrorMessage(e.toString(), context);
                     }
                   }

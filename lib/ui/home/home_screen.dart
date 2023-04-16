@@ -19,8 +19,7 @@ class HomeScreen extends ConsumerWidget {
     final model = ref.watch(homeViewModelProvider);
     final chrono = ref.watch(timerProvider);
     final isLoading = ref.watch(loadingProvider);
-    return Scaffold(
-      body: Stack(
+    return Stack(
         children: <Widget>[
           GoogleMap(
             polylines: model.polylines,
@@ -150,7 +149,7 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
         ],
-      ),
-    );
+      );
+
   }
 }

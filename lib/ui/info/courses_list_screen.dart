@@ -16,8 +16,7 @@ class CoursesListScreen extends ConsumerWidget {
     final model = ref.watch(infoViewModelProvider);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: StreamBuilder(
+    return StreamBuilder(
         stream: model.parcourRepository.parcoursStream,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -45,7 +44,6 @@ class CoursesListScreen extends ConsumerWidget {
             return Center(child: Text('Avancement: ${snapshot.connectionState}'));
           }
         },
-      ),
     );
   }
 }

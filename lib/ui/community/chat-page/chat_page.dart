@@ -8,7 +8,7 @@ import 'components/message_tile.dart';
 import 'components/group_info.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
-  const ChatPage(this.args, {Key, key}) : super(key: key);
+  const ChatPage(this.args, {Key? key}) : super(key: key);
 
   static const route = "/groups/chat";
 
@@ -23,7 +23,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   void initState() {
     final model = ref.read(chatViewModelProvider);
     model.groupeId = widget.args.toString();
-    model.init();
+    Future.delayed(Duration.zero, () async {
+      await model.init();
+    });
     super.initState();
   }
 

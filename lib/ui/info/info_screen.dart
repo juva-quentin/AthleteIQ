@@ -16,8 +16,7 @@ class InfoScreen extends ConsumerWidget {
     final model = ref.watch(infoViewModelProvider);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: SafeArea(
+    return SafeArea(
         maintainBottomViewPadding: true,
         child: Stack(
           children: [
@@ -30,7 +29,7 @@ class InfoScreen extends ConsumerWidget {
                   size: width * .1,
                 ),
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, SettingsScreen.route);
+                  Navigator.pushNamed(context, SettingsScreen.route);
                 },
               ),
             ),
@@ -44,8 +43,7 @@ class InfoScreen extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
 

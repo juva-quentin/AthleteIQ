@@ -1,9 +1,9 @@
+import 'package:athlete_iq/app/app.dart';
 import 'package:athlete_iq/ui/auth/providers/auth_view_model_provider.dart';
 import 'package:athlete_iq/ui/auth/signup_screen.dart';
 import 'package:athlete_iq/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../utils/routes/root.dart';
 import '../providers/loading_provider.dart';
 
 class LoginScreen extends ConsumerWidget {
@@ -112,7 +112,7 @@ class LoginScreen extends ConsumerWidget {
                             // ignore: use_build_context_synchronously
                             Navigator.pushReplacementNamed(
                               context,
-                              Root.route,
+                              App.route,
                             );
                           } catch (e) {
                             Utils.flushBarErrorMessage(e.toString(), context);
