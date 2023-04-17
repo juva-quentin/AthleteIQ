@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../data/network/userRepository.dart';
 
@@ -53,14 +54,14 @@ class ChatViewModel extends ChangeNotifier {
   }
 
   getChatAndAdmin() async {
-    _groupRepo.getChats(_groupeId).then((val) {
+    await _groupRepo.getChats(_groupeId).then((val) {
       chats = val;
       notifyListeners();
     });
     await _userRepo.getUserWithId(userId: _auth.currentUser!.uid).then((value) {
       _username = value.pseudo;
+      notifyListeners();
     });
-    notifyListeners();
   }
 
   sendMessage() async {
@@ -78,6 +79,20 @@ class ChatViewModel extends ChangeNotifier {
         messageController.clear();
         notifyListeners();
       });
+    }
+  }
+
+  String formatMessageDateTime(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inHours < 24) {
+      // Moins de 24 heures écoulées, afficher le temps écoulé
+      return  difference.inHours != 0 ? 'Il y à ${difference.inHours}h${difference.inMinutes.remainder(60)}min' : '${difference.inMinutes.remainder(60)}min';
+    } else {
+      // Plus de 24 heures écoulées, afficher la date complète
+      final formatter = DateFormat('dd/MM/yyyy');
+      return formatter.format(dateTime);
     }
   }
 

@@ -21,12 +21,25 @@ class ChatPage extends ConsumerStatefulWidget {
 class _ChatPageState extends ConsumerState<ChatPage> {
   @override
   void initState() {
-    final model = ref.read(chatViewModelProvider);
-    model.groupeId = widget.args.toString();
-    Future.delayed(Duration.zero, () async {
-      await model.init();
-    });
     super.initState();
+    Future.delayed(
+      Duration.zero,
+      () async {
+        final model = ref.read(chatViewModelProvider);
+        model.groupeId = widget.args.toString();
+        await model.init().then(
+              (value) => WidgetsBinding.instance.addPostFrameCallback(
+                (_) {
+                  model.scrollController.animateTo(
+                    model.scrollController.position.maxScrollExtent,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeOut,
+                  );
+                },
+              ),
+            );
+      },
+    );
   }
 
   @override
@@ -76,7 +89,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           children: <Widget>[
             // chat messages here
             Padding(
-              padding: EdgeInsets.only(bottom: 100),
+              padding: const EdgeInsets.only(bottom: 100),
               child: chatMessages(),
             ),
             Container(
@@ -141,6 +154,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 chatMessages() {
   return Consumer(
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
+        final width = MediaQuery.of(context).size.width;
     final model = ref.watch(chatViewModelProvider);
     return StreamBuilder(
       stream: model.chats,
@@ -149,10 +163,12 @@ chatMessages() {
             ? ListView.builder(
                 controller: model.scrollController,
                 itemCount: snapshot.data.docs.length,
+                padding: EdgeInsets.symmetric(horizontal: width*.007),
                 itemBuilder: (context, index) {
                   return MessageTile(
                       message: snapshot.data.docs[index]['message'],
                       sender: snapshot.data.docs[index]['sender'],
+                      date: model.formatMessageDateTime(snapshot.data.docs[index]['time'].toDate()),
                       sentByMe: model.username ==
                           snapshot.data.docs[index]['sender']);
                 },

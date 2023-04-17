@@ -3,22 +3,17 @@ import 'dart:async';
 import 'package:athlete_iq/model/Parcour.dart';
 import 'package:athlete_iq/ui/info/parcour_details_view_model.dart';
 import 'package:athlete_iq/utils/stringCapitalize.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
-import '../../app/app.dart';
-import '../../data/network/userRepository.dart';
-import '../../model/User.dart';
 import '../../utils/map_utils.dart';
 import 'components/caractéristiqueComponent.dart';
 
 class ParcourDetails extends ConsumerWidget {
   const ParcourDetails(this.args, {Key? key}) : super(key: key);
   final Object args;
-
   static const route = "/parcours/details";
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -98,6 +93,46 @@ class ParcourDetails extends ConsumerWidget {
               IconButton(
                 icon: Icon(UniconsLine.heart, size: width * .1),
                 onPressed: () =>print("add to favori"),
+              ),
+              IconButton(
+                icon: Icon(Icons.menu, size: width * .1),
+                onPressed: () {
+                  showMenu(
+                    context: context,
+                    position: RelativeRect.fromLTRB(
+                      width, 100, 0,0
+                    ),
+                    items: [
+                      PopupMenuItem(
+                        value: "modifier",
+                        child: Row(
+                          children: const [
+                            Icon(Icons.edit),
+                            SizedBox(width: 10),
+                            Text("Modifier"),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: "supprimer",
+                        child: Row(
+                          children: const [
+                            Icon(Icons.delete),
+                            SizedBox(width: 10),
+                            Text("Supprimer"),
+                          ],
+                        ),
+                      ),
+                    ],
+                    elevation: 8.0,
+                  ).then((value) {
+                    if (value == "Modifier") {
+                      // Gérer l'action de modification
+                    } else if (value == "Supprimer") {
+                      // Gérer l'action de suppression
+                    }
+                  });
+                },
               ),
             ],
           ),

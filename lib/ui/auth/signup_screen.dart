@@ -10,9 +10,7 @@ import 'login_screen.dart';
 class SignupScreen extends ConsumerWidget {
   SignupScreen({Key? key}) : super(key: key);
   static const String route = "/register";
-
   final _formRegisterKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final model = ref.watch(authViewModelProvider);
