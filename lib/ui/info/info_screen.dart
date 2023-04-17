@@ -1,4 +1,3 @@
-import 'package:athlete_iq/ui/info/provider/user_provider.dart';
 import 'package:athlete_iq/ui/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,7 +7,7 @@ import 'components/middleNavComponent.dart';
 import 'info_view_model_provider.dart';
 
 class InfoScreen extends ConsumerWidget {
-  const InfoScreen({Key, key}) : super(key: key);
+  const InfoScreen({Key? key}) : super(key: key);
 
   static const route = "/info";
   @override

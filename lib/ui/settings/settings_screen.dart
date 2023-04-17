@@ -1,8 +1,6 @@
-import 'package:athlete_iq/ui/auth/login_screen.dart';
 import 'package:athlete_iq/ui/providers/loading_provider.dart';
 import 'package:athlete_iq/ui/settings/settings_view_model_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
