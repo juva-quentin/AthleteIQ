@@ -8,6 +8,7 @@ class UserModel {
   final List friends;
   final List awaitFriends;
   final List pendingFriendRequests;
+  final List fav;
   final String sex;
   final double objectif;
   final DateTime createdAt;
@@ -20,6 +21,7 @@ class UserModel {
     required this.friends,
     required this.awaitFriends,
     required this.pendingFriendRequests,
+    required this.fav,
     required this.sex,
     required this.objectif,
     required this.createdAt,
@@ -34,6 +36,7 @@ class UserModel {
     List? friends,
     List? awaitFriends,
     List? pendingFriendRequests,
+    List? fav,
     String? sex,
     double? objectif,
     DateTime? createdAt,
@@ -47,6 +50,7 @@ class UserModel {
       friends: friends ?? this.friends,
       awaitFriends: awaitFriends ?? this.awaitFriends,
       pendingFriendRequests: pendingFriendRequests ?? this.pendingFriendRequests,
+      fav: fav ?? this.fav,
       sex: sex ?? this.sex,
       objectif: objectif ?? this.objectif,
       createdAt: createdAt ?? this.createdAt,
@@ -63,11 +67,13 @@ class UserModel {
       'friends': friends,
       'awaitFriends': awaitFriends,
       'pendingFriendRequests': pendingFriendRequests,
+      'fav': fav,
       'sex': sex,
       'objectif': objectif.toDouble(),
       'createdAt': Timestamp.fromDate(createdAt),
       'totalDist': totalDist.toDouble(),
     };
+
   }
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
@@ -80,6 +86,7 @@ class UserModel {
       friends: map['friends'] ?? [],
       awaitFriends: map['awaitFriends'] ?? [],
       pendingFriendRequests: map['pendingFriendRequests'] ?? [],
+      fav: map['fav'] ?? [],
       sex: map['sex'] ?? '',
       objectif: map['objectif'].toDouble() ?? 0,
       createdAt: map['createdAt'].toDate(),
@@ -95,6 +102,7 @@ class UserModel {
     friends: [],
     awaitFriends: [],
     pendingFriendRequests: [],
+    fav: [],
     sex: '',
     objectif: 0,
     createdAt: DateTime.now(),

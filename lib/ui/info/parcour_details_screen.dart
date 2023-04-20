@@ -1,13 +1,17 @@
 import 'dart:async';
 
+import 'package:athlete_iq/data/network/userRepository.dart';
 import 'package:athlete_iq/model/Parcour.dart';
 import 'package:athlete_iq/ui/info/parcour_details_view_model.dart';
+import 'package:athlete_iq/ui/info/provider/user_provider.dart';
 import 'package:athlete_iq/utils/stringCapitalize.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
+import '../../model/User.dart';
 import '../../utils/map_utils.dart';
 import 'components/caractéristiqueComponent.dart';
 
@@ -23,6 +27,7 @@ class ParcourDetails extends ConsumerWidget {
         Completer<GoogleMapController>();
     final Parcours parcour = args as Parcours;
     final model = ref.watch(parcourDetailsViewModel);
+    final user = ref.watch(firestoreUserProvider);
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -86,59 +91,88 @@ class ParcourDetails extends ConsumerWidget {
             pinned: true,
             leading: IconButton(
               icon: Icon(UniconsLine.arrow_left, size: width * .1),
-              onPressed: () =>
-                  Navigator.pop(context),
+              onPressed: () => Navigator.pop(context),
             ),
             actions: [
-              IconButton(
-                icon: Icon(UniconsLine.heart, size: width * .1),
-                onPressed: () =>print("add to favori"),
-              ),
-              IconButton(
-                icon: Icon(Icons.menu, size: width * .1),
-                onPressed: () {
-                  showMenu(
-                    context: context,
-                    position: RelativeRect.fromLTRB(
-                      width, 100, 0,0
-                    ),
-                    items: [
-                      PopupMenuItem(
-                        value: "modifier",
-                        child: Row(
-                          children: const [
-                            Icon(Icons.edit),
-                            SizedBox(width: 10),
-                            Text("Modifier"),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: "supprimer",
-                        child: Row(
-                          children: const [
-                            Icon(Icons.delete),
-                            SizedBox(width: 10),
-                            Text("Supprimer"),
-                          ],
-                        ),
-                      ),
-                    ],
-                    elevation: 8.0,
-                  ).then((value) {
-                    if (value == "Modifier") {
-                      // Gérer l'action de modification
-                    } else if (value == "Supprimer") {
-                      // Gérer l'action de suppression
-                    }
-                  });
+              user.when(
+                data: (user) {
+                  return IconButton(
+                    icon: user.fav.contains(parcour.id)
+                        ? Icon(
+                      UniconsLine.heart,
+                      size: width * .1,
+                      color: Colors.red,
+                    )
+                        : Icon(UniconsLine.heart, size: width * .1),
+                    onPressed: () {
+                      user.fav.contains(parcour.id)
+                          ? model.removeToFav(parcour)
+                          : model.addToFav(parcour);
+                    },
+                  );
                 },
+                error: (error, stackTrace) {
+                  if (kDebugMode) {
+                    print(error.toString());
+                  }
+                  return Text(error.toString());
+                },
+                loading: () => const CircularProgressIndicator(),
+              ),
+              user.when(
+                data: (user) {
+                 return user.id == parcour.owner ? IconButton(
+                    icon: Icon(Icons.menu, size: width * .1),
+                    onPressed: () {
+                      showMenu(
+                        context: context,
+                        position: RelativeRect.fromLTRB(width, 100, 0, 0),
+                        items: [
+                          PopupMenuItem(
+                            value: "modifier",
+                            child: Row(
+                              children: const [
+                                Icon(Icons.edit),
+                                SizedBox(width: 10),
+                                Text("Modifier"),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: "supprimer",
+                            child: Row(
+                              children: const [
+                                Icon(Icons.delete),
+                                SizedBox(width: 10),
+                                Text("Supprimer"),
+                              ],
+                            ),
+                          ),
+                        ],
+                        elevation: 8.0,
+                      ).then((value) {
+                        if (value == "Modifier") {
+                          // Gérer l'action de modification
+                        } else if (value == "Supprimer") {
+                          // Gérer l'action de suppression
+                        }
+                      });
+                    },
+                  ): Container();
+                },
+                error: (error, stackTrace) {
+                  if (kDebugMode) {
+                    print(error.toString());
+                  }
+                  return Text(error.toString());
+                },
+                loading: () => const CircularProgressIndicator(),
               ),
             ],
           ),
           SliverToBoxAdapter(
             child: Container(
-              padding: EdgeInsets.all(width *.04),
+              padding: EdgeInsets.all(width * .04),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -149,14 +183,16 @@ class ParcourDetails extends ConsumerWidget {
                       fontSize: 24.0,
                     ),
                   ),
-                  SizedBox(height: height *.02),
+                  SizedBox(height: height * .02),
                   Text(
-                    parcour.description.isNotEmpty ? parcour.description : 'Aucune description',
+                    parcour.description.isNotEmpty
+                        ? parcour.description
+                        : 'Aucune description',
                     style: const TextStyle(
                       fontSize: 16.0,
                     ),
                   ),
-                  SizedBox(height: height *.04),
+                  SizedBox(height: height * .04),
                   const Text(
                     'Caractéristiques',
                     style: TextStyle(
@@ -167,7 +203,7 @@ class ParcourDetails extends ConsumerWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: height *.007),
+                      SizedBox(height: height * .007),
                       CaracteristiqueWidget(
                         iconData: Icons.speed,
                         label: 'Vitesse moyenne',
@@ -208,7 +244,7 @@ class ParcourDetails extends ConsumerWidget {
                             .toStringAsFixed(2),
                         unit: 'm',
                       ),
-                      SizedBox(height: height *.02),
+                      SizedBox(height: height * .02),
                     ],
                   ),
                 ],

@@ -94,6 +94,30 @@ class Parcours {
     };
   }
 
+  factory Parcours.fromFirestoreDoc(DocumentSnapshot doc) {
+    final Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
+    List<LocationData> mapLocationData(List<dynamic> list){
+      List<LocationData> result = [];
+      for(var i = 0; i< list.length; i++){
+        result.add(LocationData.fromMap(list[i]));
+      }
+      return result;
+    }
+    return Parcours(
+      id: doc.id,
+      owner: map['owner'] as String,
+      title: map['title'] as String,
+      description: map['description'] as String,
+      type: map['type'] as String,
+      shareTo: map['shareTo'] as List,
+      timer: CustomTimer.fromFirestore(map['timer']),
+      createdAt: map['createdAt'].toDate(),
+      VM: map['VM'] as double,
+      totalDistance: map['totalDistance'] as double,
+      allPoints: mapLocationData(map['allPoints']),
+    );
+  }
+
   factory Parcours.fromFirestore(QueryDocumentSnapshot doc) {
     final Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
     List<LocationData> mapLocationData(List<dynamic> list){
@@ -116,8 +140,6 @@ class Parcours {
       totalDistance: map['totalDistance'] as double,
       allPoints: mapLocationData(map['allPoints']),
     );
-
-
   }
 
 
