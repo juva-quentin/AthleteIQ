@@ -99,6 +99,23 @@ class LoginScreen extends ConsumerWidget {
                   ),
                 ),
                 onChanged: (v) => model.password = v,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) =>  model.email.isNotEmpty && model.password.isNotEmpty
+                    ? () async {
+                  if (_formLoginKey.currentState!.validate()) {
+                    try {
+                      await model.login();
+                      // ignore: use_build_context_synchronously
+                      Navigator.pushReplacementNamed(
+                        context,
+                        App.route,
+                      );
+                    } catch (e) {
+                      Utils.flushBarErrorMessage(e.toString(), context);
+                    }
+                  }
+                }
+                    : null,
               ),
               SizedBox(
                 height: height * .08,

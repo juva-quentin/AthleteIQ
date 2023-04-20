@@ -7,7 +7,6 @@ import 'package:athlete_iq/model/Timer.dart';
 import 'package:athlete_iq/ui/providers/position_provider.dart';
 import 'package:athlete_iq/utils/map_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -15,11 +14,10 @@ import 'package:location/location.dart';
 import 'package:unicons/unicons.dart';
 
 import '../../data/network/parcoursRepository.dart';
-import '../../model/User.dart' as userModel;
+import '../../model/User.dart';
 import '../../utils/visibility.dart';
 import '../home/home_view_model_provider.dart';
 import '../home/providers/timer_provider.dart';
-import '../info/provider/user_provider.dart';
 import '../providers/loading_provider.dart';
 
 final registerViewModelProvider =
@@ -157,10 +155,10 @@ class RegisterViewModel extends ChangeNotifier {
   }
 
   double _calculVM() {
-    double sumSpeed = 0.0;
-    coursePosition.forEach((point) => sumSpeed += point.speed!);
-    double avgSpeed = sumSpeed / coursePosition.length;
-    return avgSpeed;
+    final totalInHour =
+        _chrono.hour + _chrono.minute / 60 + _chrono.seconds / 3600;
+    final result = _totalDistance / totalInHour;
+    return result;
   }
 
   void changeVisibility() {
@@ -232,14 +230,13 @@ class RegisterViewModel extends ChangeNotifier {
       totalDistance: totalDistance,
       allPoints: coursePosition,
     );
-    print(newParcour.timer.hours);
     _loading.start();
     try {
       await _parcourRepo.writeParcours(newParcour);
-      userModel.UserModel user =
+      UserModel user =
           await _userRepo.getUserWithId(userId: _auth.currentUser!.uid);
       await _userRepo
-          .updateUser(user.copyWith(totalDist: user.totalDist+totalDistance));
+          .updateUser(user.copyWith(totalDist: user.totalDist + totalDistance));
       _homeProvier.setLocation();
       _loading.end();
     } catch (e) {
