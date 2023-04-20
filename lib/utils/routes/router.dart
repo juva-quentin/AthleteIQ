@@ -18,9 +18,6 @@ class AppRouter {
     final args = settings.arguments;
     late final Widget selectedPage;
     switch (settings.name) {
-      case InitRoute.route:
-        selectedPage = const InitRoute();
-        break;
       case LoginScreen.route:
         selectedPage = LoginScreen();
         break;

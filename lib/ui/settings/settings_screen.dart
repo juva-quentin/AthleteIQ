@@ -1,3 +1,4 @@
+import 'package:athlete_iq/ui/auth/login_screen.dart';
 import 'package:athlete_iq/ui/providers/loading_provider.dart';
 import 'package:athlete_iq/ui/settings/settings_view_model_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -55,7 +56,7 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
                   await authModel.logout();
                   FirebaseFirestore.instance.terminate();
                   Navigator.pushNamedAndRemoveUntil(
-                      context, App.route, (Route<dynamic> route) => false);
+                      context, LoginScreen.route, (Route<dynamic> route) => false);
                 } catch (e) {
                   Utils.flushBarErrorMessage(e.toString(), context);
                   if (kDebugMode) {

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:athlete_iq/ui/home/home_view_model_provider.dart';
+import 'package:athlete_iq/utils/speedConverter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -88,7 +89,7 @@ class PositionModel extends ChangeNotifier {
     try {
       stream = await _getStreamPosition();
       _streamPosition = stream.listen((LocationData currentLocation) {
-        _speed = currentLocation.speed!;
+        _speed = toKmH(speed: currentLocation.speed!);
         _allPosition.add(currentLocation);
         homeProvider.setLocationDuringCours(currentLocation);
       });

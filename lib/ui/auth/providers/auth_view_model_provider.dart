@@ -1,5 +1,6 @@
 import 'package:athlete_iq/data/network/userRepository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -8,6 +9,9 @@ import '../../../model/Gender.dart';
 import '../../../model/User.dart' as userModel;
 
 import '../../providers/loading_provider.dart';
+
+final firebaseAuthProvider =
+Provider((ref) => FirebaseAuth.instanceFor(app: Firebase.app()));
 
 final authViewModelProvider = ChangeNotifierProvider.autoDispose<AuthViewModel>(
   (ref) => AuthViewModel(ref.read),
