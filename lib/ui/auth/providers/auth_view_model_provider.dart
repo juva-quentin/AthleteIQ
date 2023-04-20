@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import '../../../model/Gender.dart';
-import '../../../model/User.dart' as userModel;
+import '../../../model/User.dart';
 
 import '../../providers/loading_provider.dart';
 
@@ -144,7 +144,7 @@ class AuthViewModel extends ChangeNotifier {
     }
     try {
       await _auth.currentUser?.updateDisplayName(pseudo);
-      userModel.UserModel _user = userModel.UserModel(
+      UserModel _user = UserModel(
         id: _auth.currentUser!.uid,
         pseudo: pseudo,
         image: sex == 'Homme'
@@ -154,6 +154,7 @@ class AuthViewModel extends ChangeNotifier {
         friends: [],
         awaitFriends: [],
         pendingFriendRequests: [],
+        fav: [],
         sex: sex,
         objectif: 0,
         createdAt: DateTime.now(),

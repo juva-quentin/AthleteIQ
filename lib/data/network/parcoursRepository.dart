@@ -29,12 +29,25 @@ class ParcourRepository {
     }
   }
 
-  Future updateParcour(
-      Parcours data, String collectionName, String docName) async {
+  Future<void> updateParcour({required Parcours data}) async {
+  try {
+  await _firestore
+      .collection('parcours')
+      .doc(data.id)
+      .update(data.toMap());
+  } catch (e) {
+  throw Exception(e.toString());
+  }
+  }
+
+  Future<Parcours> getParcourWithId({required String parcourId}) async {
     try {
-      await _firestore.collection(collectionName).doc(docName).update(data.toMap());
-    } catch (e) {
-      throw Exception(e.toString());
+      var docRef = _firestore.collection('parcours').doc(parcourId);
+      final result =
+      docRef.get().then((value) => Parcours.fromFirestoreDoc(value));
+      return result;
+    } on FirebaseException catch (e) {
+      rethrow;
     }
   }
 

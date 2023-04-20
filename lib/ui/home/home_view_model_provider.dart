@@ -2,8 +2,6 @@ import 'dart:async';
 import 'package:athlete_iq/data/network/parcoursRepository.dart';
 import 'package:athlete_iq/ui/home/providers/timer_provider.dart';
 import 'package:athlete_iq/ui/providers/position_provider.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
