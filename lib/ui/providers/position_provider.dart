@@ -9,7 +9,7 @@ import 'package:location/location.dart';
 
 import '../../utils/utils.dart';
 
-final positionProvider = ChangeNotifierProvider.autoDispose(
+final positionProvider = ChangeNotifierProvider(
   (ref) => PositionModel(ref.read),
 );
 
