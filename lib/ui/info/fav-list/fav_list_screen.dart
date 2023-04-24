@@ -1,13 +1,9 @@
 import 'package:athlete_iq/ui/info/components/parcourTileComponent.dart';
-import 'package:athlete_iq/ui/info/provider/fav_view_model_provider.dart';
 import 'package:athlete_iq/utils/utils.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../model/Parcour.dart';
-import 'info_view_model_provider.dart';
+import 'fav_view_model_provider.dart';
 
 class FavListScreen extends ConsumerStatefulWidget {
   const FavListScreen({Key? key}) : super(key: key);

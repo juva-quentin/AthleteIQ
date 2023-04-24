@@ -1,5 +1,6 @@
 import 'package:athlete_iq/data/network/parcoursRepository.dart';
 import 'package:athlete_iq/ui/auth/providers/auth_view_model_provider.dart';
+import 'package:athlete_iq/utils/speedConverter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -23,19 +24,19 @@ class ParcourDetailsViewModel extends ChangeNotifier {
 
   double? caculatMaxSpeed(Parcours parcour){
     double? maxSpeed = parcour.allPoints.reduce((curr, next) => curr.speed! > next.speed! ? curr : next).speed;
-    return maxSpeed;
+    return toKmH(speed: maxSpeed!);
   }
   double? calculatMinSpeed(Parcours parcour){
     double? minSpeed = parcour.allPoints.reduce((curr, next) => curr.speed! < next.speed! ? curr : next).speed;
-    return minSpeed;
+    return toKmH(speed: minSpeed!);
   }
   double? caculatMaxAltitude(Parcours parcour){
-    double? maxSpeed = parcour.allPoints.reduce((curr, next) => curr.altitude! > next.altitude! ? curr : next).speed;
-    return maxSpeed;
+    double? maxAlt = parcour.allPoints.reduce((curr, next) => curr.altitude! > next.altitude! ? curr : next).speed;
+    return maxAlt;
   }
   double? calculatMinAltitude(Parcours parcour){
-    double? minSpeed = parcour.allPoints.reduce((curr, next) => curr.altitude! < next.altitude! ? curr : next).speed;
-    return minSpeed;
+    double? minAlt = parcour.allPoints.reduce((curr, next) => curr.altitude! < next.altitude! ? curr : next).speed;
+    return minAlt;
   }
   Future<void> addToFav(Parcours parcour) async{
     try{

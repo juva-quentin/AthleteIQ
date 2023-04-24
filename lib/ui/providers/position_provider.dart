@@ -90,6 +90,7 @@ class PositionModel extends ChangeNotifier {
       stream = await _getStreamPosition();
       _streamPosition = stream.listen((LocationData currentLocation) {
         _speed = toKmH(speed: currentLocation.speed!);
+        print(_speed);
         _allPosition.add(currentLocation);
         homeProvider.setLocationDuringCours(currentLocation);
       });

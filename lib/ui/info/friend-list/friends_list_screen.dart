@@ -1,9 +1,9 @@
 import 'package:athlete_iq/ui/info/components/userTileComponent.dart';
-import 'package:athlete_iq/ui/info/provider/friends_view_model_provider.dart';
+import 'package:athlete_iq/ui/info/friend-list/friends_view_model_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../utils/utils.dart';
+import '../../../utils/utils.dart';
 
 class FriendsListScreen extends ConsumerStatefulWidget {
   const FriendsListScreen({Key? key}) : super(key: key);

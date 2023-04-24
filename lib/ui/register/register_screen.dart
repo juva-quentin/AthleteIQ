@@ -10,7 +10,7 @@ import '../home/providers/timer_provider.dart';
 import '../info/provider/user_provider.dart';
 
 class RegisterScreen extends ConsumerWidget {
-  RegisterScreen({Key, key}) : super(key: key);
+  RegisterScreen({Key? key}) : super(key: key);
   final _formRegisterKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
