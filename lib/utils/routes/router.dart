@@ -4,7 +4,7 @@ import 'package:athlete_iq/ui/community/chat-page/chat_page.dart';
 import 'package:athlete_iq/ui/community/chat-page/components/group_info.dart';
 import 'package:athlete_iq/ui/community/homeChat_screen.dart';
 import 'package:athlete_iq/ui/community/search-screen/search_page.dart';
-import 'package:athlete_iq/ui/info/parcour_details_screen.dart';
+import 'package:athlete_iq/ui/parcour-detail/parcour_details_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../app/app.dart';

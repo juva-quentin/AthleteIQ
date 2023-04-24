@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:athlete_iq/data/network/userRepository.dart';
 import 'package:athlete_iq/model/Parcour.dart';
-import 'package:athlete_iq/ui/info/parcour_details_view_model.dart';
+import 'package:athlete_iq/ui/parcour-detail/parcour_details_view_model.dart';
 import 'package:athlete_iq/ui/info/provider/user_provider.dart';
+import 'package:athlete_iq/ui/parcour-detail/update_parcour_screen.dart';
 import 'package:athlete_iq/utils/stringCapitalize.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +11,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
-import '../../model/User.dart';
 import '../../utils/map_utils.dart';
-import 'components/caractéristiqueComponent.dart';
+import '../../utils/routes/customPopupRoute.dart';
+import '../info/components/caractéristiqueComponent.dart';
 
 class ParcourDetails extends ConsumerWidget {
   const ParcourDetails(this.args, {Key? key}) : super(key: key);
@@ -99,10 +99,10 @@ class ParcourDetails extends ConsumerWidget {
                   return IconButton(
                     icon: user.fav.contains(parcour.id)
                         ? Icon(
-                      UniconsLine.heart,
-                      size: width * .1,
-                      color: Colors.red,
-                    )
+                            UniconsLine.heart,
+                            size: width * .1,
+                            color: Colors.red,
+                          )
                         : Icon(UniconsLine.heart, size: width * .1),
                     onPressed: () {
                       user.fav.contains(parcour.id)
@@ -121,44 +121,52 @@ class ParcourDetails extends ConsumerWidget {
               ),
               user.when(
                 data: (user) {
-                 return user.id == parcour.owner ? IconButton(
-                    icon: Icon(Icons.menu, size: width * .1),
-                    onPressed: () {
-                      showMenu(
-                        context: context,
-                        position: RelativeRect.fromLTRB(width, 100, 0, 0),
-                        items: [
-                          PopupMenuItem(
-                            value: "modifier",
-                            child: Row(
-                              children: const [
-                                Icon(Icons.edit),
-                                SizedBox(width: 10),
-                                Text("Modifier"),
+                  return user.id == parcour.owner
+                      ? IconButton(
+                          icon: Icon(Icons.menu, size: width * .1),
+                          onPressed: () {
+                            showMenu(
+                              context: context,
+                              position: RelativeRect.fromLTRB(width, 100, 0, 0),
+                              items: [
+                                PopupMenuItem(
+                                  value: "modifier",
+                                  child: Row(
+                                    children: const [
+                                      Icon(Icons.edit),
+                                      SizedBox(width: 10),
+                                      Text("Modifier"),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: "supprimer",
+                                  child: Row(
+                                    children: const [
+                                      Icon(Icons.delete),
+                                      SizedBox(width: 10),
+                                      Text("Supprimer"),
+                                    ],
+                                  ),
+                                ),
                               ],
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: "supprimer",
-                            child: Row(
-                              children: const [
-                                Icon(Icons.delete),
-                                SizedBox(width: 10),
-                                Text("Supprimer"),
-                              ],
-                            ),
-                          ),
-                        ],
-                        elevation: 8.0,
-                      ).then((value) {
-                        if (value == "Modifier") {
-                          // Gérer l'action de modification
-                        } else if (value == "Supprimer") {
-                          // Gérer l'action de suppression
-                        }
-                      });
-                    },
-                  ): Container();
+                              elevation: 8.0,
+                            ).then((value) {
+                              if (value == "modifier") {
+                                Navigator.of(context).push(
+                                  CustomPopupRoute(
+                                    builder: (BuildContext context) {
+                                      return UpdateParcourScreen();
+                                    },
+                                  ),
+                                );
+                              } else if (value == "supprimer") {
+                                // Gérer l'action de suppression
+                              }
+                            });
+                          },
+                        )
+                      : Container();
                 },
                 error: (error, stackTrace) {
                   if (kDebugMode) {
@@ -176,17 +184,29 @@ class ParcourDetails extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Description',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24.0,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Description',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24.0,
+                        ),
+                      ),
+                      Text(
+                        "${parcour.totalDistance.toStringAsFixed(2)} km",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24.0,
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: height * .02),
                   Text(
                     parcour.description.isNotEmpty
-                        ? parcour.description
+                        ? parcour.description.capitalize()
                         : 'Aucune description',
                     style: const TextStyle(
                       fontSize: 16.0,
