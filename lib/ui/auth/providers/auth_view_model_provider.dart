@@ -13,7 +13,7 @@ import '../../providers/loading_provider.dart';
 final firebaseAuthProvider =
 Provider((ref) => FirebaseAuth.instanceFor(app: Firebase.app()));
 
-final authViewModelProvider = ChangeNotifierProvider.autoDispose<AuthViewModel>(
+final authViewModelProvider = ChangeNotifierProvider<AuthViewModel>(
   (ref) => AuthViewModel(ref.read),
 );
 

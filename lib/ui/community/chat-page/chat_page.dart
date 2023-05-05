@@ -27,7 +27,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       () async {
         final model = ref.read(chatViewModelProvider);
         model.groupeId = widget.args.toString();
-        await model.init().then(
+        model.init().then(
               (value) => WidgetsBinding.instance.addPostFrameCallback(
                 (_) {
                   model.scrollController.animateTo(
@@ -83,7 +83,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               error: (error, _) {
                 return Text(Error as String);
               },
-              loading: () => CircularProgressIndicator()),
+              loading: () => const CircularProgressIndicator()),
         ),
         body: Stack(
           children: <Widget>[

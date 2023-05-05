@@ -38,6 +38,41 @@ class GroupInfo extends ConsumerWidget {
                 fontWeight: FontWeight.w600,
                 color: Colors.white)),
         actions: [
+          group.when(
+              data: (data) {
+                return FutureBuilder<UserModel>(
+                    future:
+                    userRepo.getUserWithId(userId: data.admin),
+                    builder:
+                        (context, AsyncSnapshot<UserModel> snapshot) {
+                      if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.connectionState ==
+                          ConnectionState.done) {
+                        if (snapshot.hasError) {
+                          return const Text('Error');
+                        } else if (snapshot.hasData) {
+                          return model.isAdmin(data.admin) ? IconButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, GroupInfo.route,
+                                    arguments: args);
+                              },
+                              icon: Icon(Icons.edit,
+                                  size: width * .07, color: Colors.white)): const SizedBox();
+                        } else {
+                          return const Text('Empty data');
+                        }
+                      } else {
+                        return Text(
+                            'State: ${snapshot.connectionState}');
+                      }
+                    });
+              },
+              error: (error, _) {
+                return Text(Error as String);
+              },
+              loading: () => const CircularProgressIndicator()),
           IconButton(
               onPressed: () {
                 showDialog(
