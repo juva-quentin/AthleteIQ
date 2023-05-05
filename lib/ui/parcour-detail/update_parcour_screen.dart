@@ -1,13 +1,9 @@
 import 'package:athlete_iq/ui/parcour-detail/parcour_details_view_model.dart';
-import 'package:athlete_iq/ui/register/register_view_model_provider.dart';
 import 'package:athlete_iq/utils/visibility.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:unicons/unicons.dart';
 
 import '../../utils/utils.dart';
-import '../home/providers/timer_provider.dart';
 import '../info/provider/user_provider.dart';
 
 class UpdateParcourScreen extends ConsumerWidget {
@@ -21,7 +17,7 @@ class UpdateParcourScreen extends ConsumerWidget {
     final user = ref.watch(firestoreUserProvider);
     return SafeArea(
       child: AnimatedPadding(
-        padding: EdgeInsets.only(right: width * .04, left: width * .04),
+        padding: EdgeInsets.only(right: width * .04, left: width * .04, bottom: height*.1, top: height*.1),
         duration: const Duration(milliseconds: 100),
         child: Material(
           shape: RoundedRectangleBorder(
@@ -31,7 +27,7 @@ class UpdateParcourScreen extends ConsumerWidget {
           ),
           color: Colors.white,
           child: Padding(
-            padding: EdgeInsets.only(bottom: height * .02),
+            padding: EdgeInsets.only(bottom: height * .02, top: height * .03),
             child: SingleChildScrollView(
               child: Form(
                 key: _formUpdateKey,
@@ -42,11 +38,14 @@ class UpdateParcourScreen extends ConsumerWidget {
                           width * .03, height * .01, width * .03, height * .01),
                       child: Column(
                         children: [
+                          Text('Modification', style: TextStyle(fontSize: height*.04),),
                           TextFormField(
                             keyboardType: TextInputType.text,
                             decoration: const InputDecoration(
                               labelText: "Titre",
                             ),
+                            initialValue: model.title,
+                            onChanged: (v) => model.title = v,
                           ),
                           SizedBox(
                             width: double.infinity,
@@ -58,6 +57,8 @@ class UpdateParcourScreen extends ConsumerWidget {
                               labelText: "Description",
                             ),
                             maxLines: 3,
+                            initialValue: model.description,
+                            onChanged: (v) => model.description = v,
                           ),
                           SizedBox(
                             width: double.infinity,
@@ -65,25 +66,30 @@ class UpdateParcourScreen extends ConsumerWidget {
                           ),
 
                           GestureDetector(
+                            onTap: model.changeVisibility,
                             child: Container(
                               alignment: Alignment.center,
                               width: width * .34,
                               height: height * .12,
                               decoration: const BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15))),
-                              padding: EdgeInsets.fromLTRB(width * .04,
-                                  height * .02, width * .04, height * .02),
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(15))),
+                              padding: EdgeInsets.fromLTRB(
+                                  width * .04,
+                                  height * .02,
+                                  width * .04,
+                                  height * .02),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                crossAxisAlignment:
+                                CrossAxisAlignment.center,
                                 children: [
-                                  Text("visibility"),
+                                  Text(model.switchCaseVisibility()),
                                   SizedBox(
                                     height: height * .01,
                                   ),
                                   Icon(
-                                    Icons.abc,
+                                    model.switchCaseIconVisibility(),
                                     size: height * .05,
                                   ),
                                 ],
@@ -94,54 +100,54 @@ class UpdateParcourScreen extends ConsumerWidget {
                           SizedBox(
                             height: height * .01,
                           ),
-                          // model.visibility == ParcourVisibility.Protected
-                          //     ? Container(
-                          //         padding: const EdgeInsets.all(5),
-                          //         decoration: BoxDecoration(
-                          //             color: Theme.of(context).primaryColor,
-                          //             borderRadius: BorderRadius.circular(30)),
-                          //         height: height * .15,
-                          //         child: user.when(
-                          //           data: (user) {
-                          //             return user.friends.isNotEmpty
-                          //                 ? ListView.builder(
-                          //                     itemCount: user.friends.length,
-                          //                     itemBuilder:
-                          //                         (BuildContext context,
-                          //                             int index) {
-                          //                       final friend = ref.watch(
-                          //                           firestoreUserFriendsProvider(
-                          //                               user.friends[index]));
-                          //                       return CheckboxListTile(
-                          //                         tileColor: Colors.white,
-                          //                         title: friend.when(
-                          //                           data: (data) {
-                          //                             return Text(data.pseudo);
-                          //                           },
-                          //                           error: (error,
-                          //                                   stackTrace) =>
-                          //                               Text(error.toString()),
-                          //                           loading: () =>
-                          //                               const CircularProgressIndicator(),
-                          //                         ),
-                          //                         value: model.share.contains(
-                          //                             user.friends[index]),
-                          //                         onChanged: (bool? value) {
-                          //                           model.addRemoveFriend(value,
-                          //                               user.friends[index]);
-                          //                         },
-                          //                       );
-                          //                     },
-                          //                   )
-                          //                 : const Text(
-                          //                     'Vous n avez pas encore d amis');
-                          //           },
-                          //           error: (error, stackTrace) =>
-                          //               Text(error.toString()),
-                          //           loading: () =>
-                          //               const CircularProgressIndicator(),
-                          //         ))
-                          //     : const SizedBox(),
+                          model.visibility == ParcourVisibility.Protected
+                              ? Container(
+                                  padding: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.circular(30)),
+                                  height: height * .15,
+                                  child: user.when(
+                                    data: (user) {
+                                      return user.friends.isNotEmpty
+                                          ? ListView.builder(
+                                              itemCount: user.friends.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                final friend = ref.watch(
+                                                    firestoreUserFriendsProvider(
+                                                        user.friends[index]));
+                                                return CheckboxListTile(
+                                                  tileColor: Colors.white,
+                                                  title: friend.when(
+                                                    data: (data) {
+                                                      return Text(data.pseudo);
+                                                    },
+                                                    error: (error,
+                                                            stackTrace) =>
+                                                        Text(error.toString()),
+                                                    loading: () =>
+                                                        const CircularProgressIndicator(),
+                                                  ),
+                                                  value: model.share.contains(
+                                                      user.friends[index]),
+                                                  onChanged: (bool? value) {
+                                                    model.addRemoveFriend(value,
+                                                        user.friends[index]);
+                                                  },
+                                                );
+                                              },
+                                            )
+                                          : const Text(
+                                              'Vous n avez pas encore d amis');
+                                    },
+                                    error: (error, stackTrace) =>
+                                        Text(error.toString()),
+                                    loading: () =>
+                                        const CircularProgressIndicator(),
+                                  ))
+                              : const SizedBox(),
                           SizedBox(
                             height: height * .01,
                           ),
@@ -159,6 +165,7 @@ class UpdateParcourScreen extends ConsumerWidget {
                                   child: const Text('Annuler'),
                                 ),
                                 onTap: () {
+                                  model.initValue(model.parcour!);
                                   Navigator.of(context).pop();
                                 },
                               ),
@@ -174,7 +181,7 @@ class UpdateParcourScreen extends ConsumerWidget {
                                 ),
                                 onTap: () async {
                                   try {
-                                    Navigator.of(context).pop();
+                                    await model.updateParcour().then((value) => Navigator.of(context).pop());
                                   } catch (e) {
                                     Utils.flushBarErrorMessage(
                                         e.toString(), context);

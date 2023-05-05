@@ -11,21 +11,35 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
+import '../../app/app.dart';
 import '../../utils/map_utils.dart';
 import '../../utils/routes/customPopupRoute.dart';
+import '../../utils/utils.dart';
 import '../info/components/caractéristiqueComponent.dart';
 
-class ParcourDetails extends ConsumerWidget {
+class ParcourDetails extends ConsumerStatefulWidget {
   const ParcourDetails(this.args, {Key? key}) : super(key: key);
   final Object args;
   static const route = "/parcours/details";
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ParcourDetailsState createState() => ParcourDetailsState();
+}
+
+class ParcourDetailsState extends ConsumerState<ParcourDetails> {
+  @override
+  void initState() {
+    super.initState();
+    ref.read(parcourDetailsViewModel).initValue(widget.args as Parcours);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final Completer<GoogleMapController> _controller =
         Completer<GoogleMapController>();
-    final Parcours parcour = args as Parcours;
+    final Parcours parcour = widget.args as Parcours;
     final model = ref.watch(parcourDetailsViewModel);
     final user = ref.watch(firestoreUserProvider);
     return Scaffold(
@@ -47,7 +61,7 @@ class ParcourDetails extends ConsumerWidget {
                   ],
                 ),
                 child: Text(
-                  parcour.title.capitalize(),
+                  model.title.capitalize(),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.black54,
@@ -70,7 +84,7 @@ class ParcourDetails extends ConsumerWidget {
                 ),
                 polylines: {
                   Polyline(
-                    polylineId: PolylineId(parcour.title),
+                    polylineId: PolylineId(model.title),
                     points: parcour.allPoints
                         .map((e) => LatLng(e.latitude!, e.longitude!))
                         .toList(),
@@ -161,7 +175,43 @@ class ParcourDetails extends ConsumerWidget {
                                   ),
                                 );
                               } else if (value == "supprimer") {
-                                // Gérer l'action de suppression
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text("Supprimer le parcour"),
+                                        content: const Text(
+                                            "Êtes-vous sur de vouloir supprimer le parcour ?"),
+                                        actions: [
+                                          IconButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            icon: const Icon(
+                                              Icons.cancel,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.done,
+                                              color: Colors.green,
+                                            ),
+                                            onPressed: () async {
+                                              try {
+                                                await model.deleteParcour();
+                                              } catch (e) {
+                                                Utils.flushBarErrorMessage(
+                                                    e.toString(), context);
+                                              }
+                                              Navigator.pushNamed(
+                                                  context, App.route);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    });
                               }
                             });
                           },
@@ -205,8 +255,8 @@ class ParcourDetails extends ConsumerWidget {
                   ),
                   SizedBox(height: height * .02),
                   Text(
-                    parcour.description.isNotEmpty
-                        ? parcour.description.capitalize()
+                    model.description.isNotEmpty
+                        ? model.description.capitalize()
                         : 'Aucune description',
                     style: const TextStyle(
                       fontSize: 16.0,

@@ -29,6 +29,10 @@ class ChatViewModel extends ChangeNotifier {
     await getChatAndAdmin();
   }
 
+  bool isAdmin(String owner){
+    return owner == _auth.currentUser!.uid;
+  }
+
   Stream<QuerySnapshot>? _chats;
   Stream<QuerySnapshot>? get chats => _chats;
   set chats(Stream<QuerySnapshot>? chats) {
