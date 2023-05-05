@@ -18,17 +18,17 @@ class OnboardingScreen extends HookConsumerWidget {
 
   static const List<OnboardingItem> _items = [
     OnboardingItem(
-        image: "https://www.alpesaventures.com/wp-content/uploads/2020/05/BASE-pdt-cours.webp",
-        title: "titre1",
-        description: "description"),
+        image: "assets/images/photo_nous.png",
+        title: "Notre projet",
+        description: "Bienvenue sur AthleteIQ ! Ce projet à été réalisé par Quentin Juvet et Célian Frasca pour le compte du projet développement de notre année de B3 Informatique spécialité Développement. Notre application consiste à retracer la performance de chaque athlète utilisant l’application, Les athlètes peuvent donc partager leur performance et interagir avec la performance des autres. Un boitier est aussi disponible afin d’utiliser l’application sans utiliser son téléphone."),
     OnboardingItem(
-        image: "https://www.alpesaventures.com/wp-content/uploads/2020/05/BASE-pdt-cours.webp",
-        title: "titre1",
-        description: "description"),
+        image: "assets/images/presentation-parcours.png",
+        title: "Les parcours et la visibilité",
+        description: ""),
     OnboardingItem(
-        image: "https://www.alpesaventures.com/wp-content/uploads/2020/05/BASE-pdt-cours.webp",
-        title: "titre1",
-        description: "description"),
+        image: "assets/images/page-principale.png",
+        title: "La page principale",
+        description: ""),
   ];
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -60,7 +60,7 @@ class OnboardingScreen extends HookConsumerWidget {
           children: [
             TextButton(
               onPressed: done,
-              child: Text("SKIP"),
+              child: Text("Passer"),
             ),
             MaterialButton(
               color: scheme.primary,
@@ -72,7 +72,7 @@ class OnboardingScreen extends HookConsumerWidget {
                   done();
                 }
               },
-              child: Text(index.value == 2?"DONE":"NEXT"),
+              child: Text(index.value == 2?"Fini":"Suivant"),
             ),
           ],
         ),
@@ -114,24 +114,29 @@ class OnboardingScreen extends HookConsumerWidget {
             .map(
               (e) => Padding(
             padding: const EdgeInsets.all(24),
-            child: Column(
+            child: ListView(
               children: [
                 Expanded(
                   flex: 32,
-                  child: Image.network(e.image),
+                  child: Image.asset(e.image),
                 ),
-                Text(
-                  e.title,
-                  style: style.headlineLarge,
-                  textAlign: TextAlign.center,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 40.0),
+                  child: Text(
+                    e.title,
+                    style: style.headlineLarge,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 const Spacer(),
-                Text(
-                  e.description,
-                  style: style.titleLarge,
-                  textAlign: TextAlign.center,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 55.0),
+                  child: Text(
+                    e.description,
+                    style: style.titleLarge,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-                const Spacer(flex: 4),
               ],
             ),
           ),
