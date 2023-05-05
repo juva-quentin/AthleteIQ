@@ -1,5 +1,6 @@
 import 'package:athlete_iq/model/User.dart';
 import 'package:athlete_iq/ui/community/chat-page/chat_view_model_provider.dart';
+import 'package:athlete_iq/ui/community/chat-page/components/update_group_screen.dart';
 import 'package:athlete_iq/ui/community/providers/active_groups_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -7,7 +8,9 @@ import 'package:unicons/unicons.dart';
 
 import '../../../../app/app.dart';
 import '../../../../data/network/userRepository.dart';
+import '../../../../utils/routes/customPopupRoute.dart';
 import '../../../../utils/utils.dart';
+import '../../../parcour-detail/update_parcour_screen.dart';
 
 class GroupInfo extends ConsumerWidget {
   const GroupInfo(this.args, {Key, key}) : super(key: key);
@@ -55,11 +58,57 @@ class GroupInfo extends ConsumerWidget {
                         } else if (snapshot.hasData) {
                           return model.isAdmin(data.admin) ? IconButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, GroupInfo.route,
-                                    arguments: args);
+                                Navigator.of(context).push(
+                                  CustomPopupRoute(
+                                    builder: (BuildContext context) {
+                                      return UpdateGroupScreen(groupId: args.toString(),);
+                                    },
+                                  ),
+                                );
                               },
                               icon: Icon(Icons.edit,
-                                  size: width * .07, color: Colors.white)): const SizedBox();
+                                  size: width * .07, color: Colors.white)) : IconButton(
+                              onPressed: () {
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text("Quitter le groupe"),
+                                        content: const Text(
+                                            "Êtes-vous sur de vouloir quitter le groupe ?"),
+                                        actions: [
+                                          IconButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            icon: const Icon(
+                                              Icons.cancel,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.done,
+                                              color: Colors.green,
+                                            ),
+                                            onPressed: () async {
+                                              try {
+                                                await model.removeUserToGroup();
+
+                                              } catch (e) {
+                                                Utils.flushBarErrorMessage(
+                                                    e.toString(), context);
+                                              }
+                                              Navigator.pushNamed(context, App.route);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    });
+                              },
+                              icon: Icon(Icons.exit_to_app,
+                                  size: width * .1, color: Colors.white));
                         } else {
                           return const Text('Empty data');
                         }
@@ -73,48 +122,6 @@ class GroupInfo extends ConsumerWidget {
                 return Text(Error as String);
               },
               loading: () => const CircularProgressIndicator()),
-          IconButton(
-              onPressed: () {
-                showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text("Quitter le groupe"),
-                        content: const Text(
-                            "Êtes-vous sur de vouloir quitter le groupe ?"),
-                        actions: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: const Icon(
-                              Icons.cancel,
-                              color: Colors.red,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.done,
-                              color: Colors.green,
-                            ),
-                            onPressed: () async {
-                              try {
-                                await model.removeUserToGroup();
-
-                              } catch (e) {
-                                Utils.flushBarErrorMessage(
-                                    e.toString(), context);
-                              }
-                              Navigator.pushNamed(context, App.route);
-                            },
-                          ),
-                        ],
-                      );
-                    });
-              },
-              icon: Icon(Icons.exit_to_app,
-                  size: width * .1, color: Colors.white))
         ],
       ),
       body: group.when(
