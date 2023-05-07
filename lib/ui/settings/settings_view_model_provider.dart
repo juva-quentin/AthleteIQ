@@ -32,6 +32,8 @@ class SettingsViewModel extends ChangeNotifier {
 
   final confirmPasswordController = TextEditingController();
 
+  final objectifController = TextEditingController();
+
   String get pseudo => pseudoController.text;
 
   String get email => emailController.text;
@@ -40,9 +42,13 @@ class SettingsViewModel extends ChangeNotifier {
 
   String get confirmPassword => confirmPasswordController.text;
 
+  String get objectif => objectifController.text;
+
   String _holdPseudo = '';
 
   String _holdEmail = '';
+
+  String _holdObjectif = '';
 
   UserModel? _currentUserInfo;
 
@@ -76,6 +82,8 @@ class SettingsViewModel extends ChangeNotifier {
       _currentUserInfo =
           await _userRepo.getUserWithId(userId: _auth.currentUser!.uid);
       pseudoController.text = _currentUserInfo!.pseudo;
+      objectifController.text = _currentUserInfo!.objectif.toString();
+      _holdObjectif = _currentUserInfo!.objectif.toString();
       _holdPseudo = _currentUserInfo!.pseudo;
       emailController.text = _currentUserInfo!.email;
       _holdEmail = _currentUserInfo!.email;
@@ -86,8 +94,7 @@ class SettingsViewModel extends ChangeNotifier {
   }
 
   bool valideForm() {
-    print(password != '' && (password == confirmPassword));
-    if ((pseudo != _holdPseudo || email != _holdEmail && password == '') ||
+    if ((pseudo != _holdPseudo || email != _holdEmail || objectif != _holdObjectif && password == '') ||
         (password != '' && (password == confirmPassword))) {
       return true;
     }
@@ -100,6 +107,7 @@ class SettingsViewModel extends ChangeNotifier {
       try {
         await _userRepo.updateUser(_currentUserInfo!.copyWith(
             pseudo: pseudo != _holdPseudo ? pseudo : _holdPseudo,
+            objectif: objectif != _holdPseudo ? double.parse(objectif) : double.parse(_holdPseudo),
             email: email != _holdEmail ? email : _holdEmail));
         if (email != _holdEmail) {
           await _auth.currentUser?.updateEmail(email);

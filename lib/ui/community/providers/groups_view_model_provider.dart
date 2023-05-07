@@ -115,6 +115,7 @@ class GroupsViewModel extends ChangeNotifier {
       await _groupRepo.updateGroup(currentGroupe!.id, currentGroupe!.copyWith(
         groupName: title,
         members: share,
+        type: visibility.name
       ));
     } catch (e) {
       _loading.stop();
