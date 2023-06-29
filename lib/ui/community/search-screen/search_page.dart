@@ -25,14 +25,14 @@ class SearchPage extends ConsumerWidget {
       ),
       body: StreamBuilder(
         stream: model.combineStream(),
-        builder: (context, snapshots) {
+        builder: (context, AsyncSnapshot snapshots) {
           if (snapshots.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           } else {
             return ListView.builder(
-              itemCount: snapshots.data.length,
+              itemCount: snapshots.data!.length,
               itemBuilder: (context, index) {
                 var data = snapshots.data[index];
                 var isUser = data.runtimeType == UserModel;
