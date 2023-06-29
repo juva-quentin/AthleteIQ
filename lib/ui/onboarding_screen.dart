@@ -20,7 +20,8 @@ class OnboardingScreen extends HookConsumerWidget {
     OnboardingItem(
         image: "assets/images/photo_nous.png",
         title: "Notre projet",
-        description: "Bienvenue sur AthleteIQ ! Ce projet à été réalisé par Quentin Juvet et Célian Frasca pour le compte du projet développement de notre année de B3 Informatique spécialité Développement. Notre application consiste à retracer la performance de chaque athlète utilisant l’application, Les athlètes peuvent donc partager leur performance et interagir avec la performance des autres. Un boitier est aussi disponible afin d’utiliser l’application sans utiliser son téléphone."),
+        description:
+            "Bienvenue sur AthleteIQ ! Ce projet à été réalisé par Quentin Juvet et Célian Frasca pour le compte du projet développement de notre année de B3 Informatique spécialité Développement. Notre application consiste à retracer la performance de chaque athlète utilisant l’application, Les athlètes peuvent donc partager leur performance et interagir avec la performance des autres. Un boitier est aussi disponible afin d’utiliser l’application sans utiliser son téléphone."),
     OnboardingItem(
         image: "assets/images/presentation-parcours.png",
         title: "Les parcours et la visibilité",
@@ -40,12 +41,12 @@ class OnboardingScreen extends HookConsumerWidget {
     final index = useState(0);
 
     controller.addListener(() {
-      if(index.value!= controller.index){
+      if (index.value != controller.index) {
         index.value = controller.index;
       }
     });
 
-    void done() async{
+    void done() async {
       await ref.read(cacheProvider).value!.setBool("seen", true);
       // ignore: use_build_context_synchronously
       Navigator.pushReplacementNamed(context, App.route);
@@ -72,7 +73,7 @@ class OnboardingScreen extends HookConsumerWidget {
                   done();
                 }
               },
-              child: Text(index.value == 2?"Fini":"Suivant"),
+              child: Text(index.value == 2 ? "Fini" : "Suivant"),
             ),
           ],
         ),
@@ -85,7 +86,7 @@ class OnboardingScreen extends HookConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
               _items.length,
-                  (i) => Padding(
+              (i) => Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 child: Container(
                   decoration: ShapeDecoration(
@@ -95,8 +96,8 @@ class OnboardingScreen extends HookConsumerWidget {
                         : scheme.tertiaryContainer,
                   ),
                   child: AnimatedSize(
-                    duration: Duration(milliseconds: 500),
-                    reverseDuration: Duration(milliseconds: 500),
+                    duration: Duration(milliseconds: 100),
+                    reverseDuration: Duration(milliseconds: 100),
                     child: SizedBox(
                       height: 16,
                       width: index.value == i ? 32 : 16,
@@ -113,34 +114,31 @@ class OnboardingScreen extends HookConsumerWidget {
         children: _items
             .map(
               (e) => Padding(
-            padding: const EdgeInsets.all(24),
-            child: ListView(
-              children: [
-                Expanded(
-                  flex: 32,
-                  child: Image.asset(e.image),
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: 32,
+                      child: Image.asset(e.image),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 40.0),
+                      child: Text(
+                        e.title,
+                        style: style.headlineLarge,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      e.description,
+                      style: style.titleLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 40.0),
-                  child: Text(
-                    e.title,
-                    style: style.headlineLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 55.0),
-                  child: Text(
-                    e.description,
-                    style: style.titleLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        )
+              ),
+            )
             .toList(),
       ),
     );
