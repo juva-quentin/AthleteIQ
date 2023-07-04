@@ -48,7 +48,7 @@ class MyApp extends ConsumerWidget {
       theme: theme,
       home: FutureBuilder(
         future: cache,
-        builder: (context, snapshot) {
+        builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(
               color: Colors.white,

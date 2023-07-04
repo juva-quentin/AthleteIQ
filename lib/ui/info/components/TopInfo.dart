@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:athlete_iq/ui/info/provider/user_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -89,19 +88,17 @@ Widget buildTopInfo(double height, double width, BuildContext context) {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Objectif hebdo: ",
-                                style: GoogleFonts.sen(
-                                    textStyle: const TextStyle(
+                                style: const TextStyle(
                                   color: Color(0xFF121212),
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
-                                ))),
+                                )),
                             Text("${user.objectif.toString()}Km",
-                                style: GoogleFonts.sen(
-                                    textStyle: TextStyle(
+                                style: TextStyle(
                                   color: Theme.of(context).primaryColor,
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
-                                )))
+                                ))
                           ]);
                     },
                     error: (error, stackTrace) {
@@ -118,12 +115,12 @@ Widget buildTopInfo(double height, double width, BuildContext context) {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("${user.totalDist.toStringAsFixed(2)}Km",
-                                style: GoogleFonts.sen(
-                                    textStyle: const TextStyle(
+                                style:
+                                    const TextStyle(
                                   color: Color.fromARGB(255, 0, 0, 0),
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700,
-                                ))),
+                                )),
                             Text("plus que ${model.nbrDays()} jours..."),
                           ]);
                     },
