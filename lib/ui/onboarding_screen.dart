@@ -1,8 +1,10 @@
 import 'package:athlete_iq/app/app.dart';
 import 'package:athlete_iq/ui/providers/cache_provider.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'auth/login_screen.dart';
 import 'auth/providers/auth_view_model_provider.dart';
@@ -24,7 +26,11 @@ class OnboardingScreen extends HookConsumerWidget {
         image: "assets/images/photo_nous.png",
         title: "Notre projet",
         description:
-            "Bienvenue sur AthleteIQ ! Ce projet à été réalisé par Quentin Juvet et Célian Frasca pour le compte du projet développement de notre année de B3 Informatique spécialité Développement. Notre application consiste à retracer la performance de chaque athlète utilisant l’application, Les athlètes peuvent donc partager leur performance et interagir avec la performance des autres. Un boitier est aussi disponible afin d’utiliser l’application sans utiliser son téléphone."),
+            "Bienvenue sur AthleteIQ ! Ce projet à été réalisé par Quentin Juvet et Célian Frasca pour le "
+            "compte du projet développement de notre année de B3 Informatique spécialité Développement. "
+            "Notre application consiste à retracer la performance de chaque athlète utilisant l’application, "
+            "Les athlètes peuvent donc partager leur performance et interagir avec la performance des autres."
+            " Un site est aussi disponible avec les mêmes identifiant de connection pour lister vos parcours. Vous pouvez le retrouver "),
     OnboardingItem(
         image: "assets/images/presentation-parcours.png",
         title: "Les parcours et la visibilité",
@@ -40,7 +46,8 @@ class OnboardingScreen extends HookConsumerWidget {
     final scheme = theme.colorScheme;
     final style = theme.textTheme;
     final controller = useTabController(initialLength: _items.length);
-
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     final index = useState(0);
 
     controller.addListener(() {
@@ -54,22 +61,26 @@ class OnboardingScreen extends HookConsumerWidget {
       final firebaseAuth = ref.watch(firebaseAuthProvider);
       final bool isLoggedIn = firebaseAuth.currentUser != null;
       // ignore: use_build_context_synchronously
-      Navigator.pushReplacementNamed(context, isLoggedIn
-          ? App.route : LoginScreen.route);
+      Navigator.pushReplacementNamed(
+          context, isLoggedIn ? App.route : LoginScreen.route);
     }
 
     return Scaffold(
       backgroundColor: theme.cardColor,
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.symmetric(
+            vertical: height * 0.025, horizontal: width * 0.02),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             TextButton(
               onPressed: done,
-              child: Text("Passer"),
+              child: const Text("Passer"),
             ),
             MaterialButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
               color: scheme.primary,
               onPressed: () {
                 if (controller.index < 2) {
@@ -85,30 +96,21 @@ class OnboardingScreen extends HookConsumerWidget {
         ),
       ),
       bottomSheet: Material(
-        color: theme.cardColor,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 32),
+          padding: EdgeInsets.symmetric(vertical: height * 0.01),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
               _items.length,
               (i) => Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Container(
                   decoration: ShapeDecoration(
                     shape: const StadiumBorder(),
-                    color: index.value == i
-                        ? scheme.tertiary
-                        : scheme.tertiaryContainer,
+                    color: index.value == i ? scheme.primary : scheme.secondary,
                   ),
-                  child: AnimatedSize(
-                    duration: Duration(milliseconds: 100),
-                    reverseDuration: Duration(milliseconds: 100),
-                    child: SizedBox(
-                      height: 16,
-                      width: index.value == i ? 32 : 16,
-                    ),
-                  ),
+                  height: 16,
+                  width: index.value == i ? 32 : 16,
                 ),
               ),
             ),
@@ -118,33 +120,69 @@ class OnboardingScreen extends HookConsumerWidget {
       body: TabBarView(
         controller: controller,
         children: _items
-            .map(
-              (e) => Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
+            .map((e) => Column(
                   children: [
-                    Expanded(
-                      flex: 32,
-                      child: Image.asset(e.image),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 40.0),
-                      child: Text(
-                        e.title,
-                        style: style.headlineLarge,
-                        textAlign: TextAlign.center,
+                    Flexible(
+                      flex: e.description != "" ? 5 : 10,
+                      child: SafeArea(
+                        child: Image.asset(
+                          e.image,
+                          fit: BoxFit.contain,
+                          width: double.infinity,
+                        ),
                       ),
                     ),
-                    const Spacer(),
-                    Text(
-                      e.description,
-                      style: style.titleLarge,
-                      textAlign: TextAlign.center,
+                    Expanded(
+                      flex: 3,
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: width * 0.1),
+                          child: Column(
+                            children: [
+                              Text(
+                                e.title,
+                                style: style.headlineLarge,
+                                textAlign: TextAlign.center,
+                              ),
+                              if (e.description.isNotEmpty)
+                                SizedBox(height: height * 0.002),
+                              if (e.description.isNotEmpty)
+                                RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    text: e.description,
+                                    style: style.titleLarge,
+                                    children: [
+                                      TextSpan(
+                                        text: 'ici',
+                                        style: const TextStyle(
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () async {
+                                            Uri url = Uri.parse(
+                                                'https://www.example.com');
+                                            if (await canLaunchUrl(url)) {
+                                              await launchUrl(url);
+                                            } else {
+                                              print(
+                                                  'Impossible d\'ouvrir l\'URL : $url');
+                                            }
+                                          },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              if (e.description.isNotEmpty)
+                                SizedBox(height: height * 0.05)
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ],
-                ),
-              ),
-            )
+                ))
             .toList(),
       ),
     );
