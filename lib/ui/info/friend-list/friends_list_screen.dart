@@ -24,11 +24,12 @@ class FriendsListState extends ConsumerState<FriendsListScreen> {
     final model = ref.watch(friendsViewModelProvider);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    print(model.awaitFriends);
     return RefreshIndicator(
+      triggerMode: RefreshIndicatorTriggerMode.anywhere,
       backgroundColor: Theme.of(context).primaryColor,
       color: Theme.of(context).indicatorColor,
       strokeWidth: 3,
-      triggerMode: RefreshIndicatorTriggerMode.onEdge,
       onRefresh: () async {
         try {
           await model.loadFriends();
@@ -38,56 +39,68 @@ class FriendsListState extends ConsumerState<FriendsListScreen> {
       },
       child: model.awaitFriends.isEmpty && model.friends.isEmpty
           ? const Center(child: Text("Vous n'avez pas encore d'amis !"))
-          : SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: width * .02),
+          : CustomScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              child: Column(
-                children: [
-                  model.awaitFriends.isNotEmpty
-                      ? const Text("Demandes d'amis")
-                      : const SizedBox(),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: model.awaitFriends.length +
-                        (model.awaitFriends.isEmpty ? 1 : 0),
-                    itemBuilder: (context, index) {
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: width * .02),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      if (model.awaitFriends.isNotEmpty)
+                        const Center(child: Text("Demandes d'amis")),
+                    ]),
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
                       if (index < model.awaitFriends.length) {
                         final data = model.awaitFriends[index];
                         return userTile(data, context, ref, true);
-                      } else if (model.awaitFriends.isEmpty) {
+                      } else if (model.awaitFriends.isEmpty && index == 0) {
                         return null;
                       }
                       return null;
                     },
+                    childCount: model.awaitFriends.length +
+                        (model.awaitFriends.isEmpty ? 1 : 0),
                   ),
-                  model.friends.isNotEmpty
-                      ? const Text("Amis")
-                      : const SizedBox(),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount:
-                        model.friends.length + (model.friends.isEmpty ? 1 : 0),
-                    itemBuilder: (context, index) {
+                ),
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: width * .02),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      if (model.friends.isNotEmpty)
+                        const Center(child: Text("Amis")),
+                    ]),
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
                       if (index < model.friends.length) {
                         final data = model.friends[index];
                         return userTile(data, context, ref, false);
-                      } else if (model.friends.isEmpty) {
+                      } else if (model.friends.isEmpty && index == 0) {
                         return const SizedBox(
                           height: 500,
                         );
                       }
                       return null;
                     },
+                    childCount:
+                        model.friends.length + (model.friends.isEmpty ? 1 : 0),
                   ),
-                  model.awaitFriends.isEmpty && model.friends.isNotEmpty
-                      ? const SizedBox(
-                          height: 500,
-                        )
-                      : const SizedBox(),
-                ],
-              ),
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height:
+                        (model.awaitFriends.isEmpty && model.friends.isNotEmpty)
+                            ? 500
+                            : 0,
+                  ),
+                ),
+              ],
             ),
     );
   }
