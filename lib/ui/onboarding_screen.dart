@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import 'auth/login_screen.dart';
+import 'auth/providers/auth_view_model_provider.dart';
+
 class OnboardingItem {
   final String image;
   final String title;
@@ -48,8 +51,11 @@ class OnboardingScreen extends HookConsumerWidget {
 
     void done() async {
       await ref.read(cacheProvider).value!.setBool("seen", true);
+      final firebaseAuth = ref.watch(firebaseAuthProvider);
+      final bool isLoggedIn = firebaseAuth.currentUser != null;
       // ignore: use_build_context_synchronously
-      Navigator.pushReplacementNamed(context, App.route);
+      Navigator.pushReplacementNamed(context, isLoggedIn
+          ? App.route : LoginScreen.route);
     }
 
     return Scaffold(
