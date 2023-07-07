@@ -72,7 +72,7 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
       body: LoadingLayer(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: width * .02),
-          height: height * .42,
+          height: height * .50,
           width: double.infinity,
           child: Form(
             key: model.formSettingKey,

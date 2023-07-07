@@ -73,6 +73,7 @@ dependencies:
   permission_handler: ^10.2.0
   flutter_local_notifications: ^13.0.0
   material_design_icons_flutter: ^6.0.7096
+  url_launcher: ^6.1.11
 
 dev_dependencies:
   hive_generator: ^1.1.1
