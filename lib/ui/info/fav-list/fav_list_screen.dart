@@ -27,7 +27,7 @@ class FavListState extends ConsumerState<FavListScreen> {
       backgroundColor: Theme.of(context).primaryColor,
       color: Theme.of(context).indicatorColor,
       strokeWidth: 3,
-      triggerMode: RefreshIndicatorTriggerMode.onEdge,
+      triggerMode: RefreshIndicatorTriggerMode.anywhere,
       onRefresh: () async {
         try {
           await model.loadFavs();
@@ -37,12 +37,25 @@ class FavListState extends ConsumerState<FavListScreen> {
       },
       child: model.favParcour.isEmpty
           ? const Center(child: Text("Vous n'avez pas encore de favoris !"))
-          : ListView.builder( itemCount: model.favParcour.length,
-          padding: EdgeInsets.symmetric(vertical: height *.02, horizontal: width*.02),
-          itemBuilder: (context, index) {
-            return parcourTile(
-                model.favParcour[index], context, ref);
-          })
+          : CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverPadding(
+            padding: EdgeInsets.symmetric(
+                vertical: height * .02, horizontal: width * .02),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                  return parcourTile(
+                      model.favParcour[index], context, ref);
+                },
+                childCount: model.favParcour.length,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
+
 }
