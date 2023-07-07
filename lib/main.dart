@@ -41,7 +41,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final firebaseAuth = ref.watch(firebaseAuthProvider);
     final cache = ref.watch(cacheProvider.future);
-
+    final userIsConnect = ref.watch(userIsConneted.future);
     return MaterialApp(
       title: 'AthleteIQ',
       debugShowCheckedModeBanner: false,
@@ -55,8 +55,8 @@ class MyApp extends ConsumerWidget {
             );
           } else {
             final SharedPreferences prefs = snapshot.data!;
-            final bool isLoggedIn = firebaseAuth.currentUser != null;
-
+            bool isLoggedIn = false;
+            userIsConnect.then((value) => isLoggedIn = value != null);
             bool hasSeenOnboarding =
                 prefs.getBool('seen') ?? false;
             Widget targetScreen = hasSeenOnboarding
