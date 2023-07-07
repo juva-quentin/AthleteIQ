@@ -29,7 +29,7 @@ class CoursesListScreen extends ConsumerWidget {
               }
               Utils.flushBarErrorMessage(snapshot.error.toString(), context);
               return const Center(child:Text("Une erreur s'est produite ⚠️"));
-            } else if (snapshot.hasData) {
+            } else if (snapshot.hasData && snapshot.data.length > 0){
               List<Parcours> parcours = snapshot.data;
               return ListView.builder( itemCount: parcours.length,
                   padding: EdgeInsets.symmetric(vertical: height *.02, horizontal: width*.02),
