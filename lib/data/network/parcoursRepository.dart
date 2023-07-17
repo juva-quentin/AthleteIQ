@@ -110,4 +110,20 @@ class ParcourRepository {
       rethrow;
     }
   }
+
+  Future<void> deleteParcoursOfUser(String userId) async {
+    try {
+      final parcoursSnapshot = await _firestore.collection('parcours').where('owner', isEqualTo: userId).get();
+
+      final batch = _firestore.batch();
+      for (final parcourDoc in parcoursSnapshot.docs) {
+        batch.delete(parcourDoc.reference);
+      }
+
+      await batch.commit();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 }

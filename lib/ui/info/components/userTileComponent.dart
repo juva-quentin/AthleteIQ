@@ -1,9 +1,7 @@
-import 'dart:async';
 
 import 'package:athlete_iq/model/User.dart';
 import 'package:athlete_iq/ui/info/friend-list/friends_view_model_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -46,14 +44,14 @@ Widget userTile(
                               .read(friendsViewModelProvider)
                               .valideInvalideFriend(user, true);
                         },
-                        icon: const Icon(MdiIcons.accountCheck)),
+                        icon: Icon(MdiIcons.accountCheck)),
                     IconButton(
                         onPressed: () {
                           ref
                               .read(friendsViewModelProvider)
                               .valideInvalideFriend(user, false);
                         },
-                        icon: const Icon(MdiIcons.accountCancel))
+                        icon: Icon(MdiIcons.accountCancel))
                   ],
                 )
               : IconButton(
@@ -96,7 +94,7 @@ Widget userTile(
                         });
 
                   },
-                  icon: const Icon(MdiIcons.accountCancel))),
+                  icon: Icon(MdiIcons.accountCancel))),
     ),
   );
 }
