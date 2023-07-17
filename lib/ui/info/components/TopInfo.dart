@@ -63,93 +63,100 @@ Widget buildTopInfo(double height, double width, BuildContext context) {
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(
-                  left: width * .02,
-                  right: width * .03,
-                  top: (height * .25) * .15),
+                left: width * .02,
+                right: width * .03,
+                top: (height * .25) * .15,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  user.when(data: (UserModel user) {
-                    return Text(
-                      user.pseudo,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 26),
-                    );
-                  }, error: (Object error, StackTrace? stackTrace) {
-                    return Text(error.toString());
-                  }, loading: () {
-                    return const Text('Loading');
-                  }),
-                  SizedBox(height: height * .02),
-                  user.when(
-                    data: (user) {
-                      return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Objectif hebdo: ",
-                                style: const TextStyle(
-                                  color: Color(0xFF121212),
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.normal,
-                                )),
-                            Text("${user.objectif.toString()}Km",
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                ))
-                          ]);
-                    },
-                    error: (error, stackTrace) {
-                      if (kDebugMode) {
-                        print(error.toString());
-                      }
-                      return Text(error.toString());
-                    },
-                    loading: () => const CircularProgressIndicator(),
+                  // Pseudo de l'utilisateur
+                  Text(
+                    user.when(
+                      data: (user) => user.pseudo,
+                      error: (Object error, StackTrace? stackTrace) => 'Error',
+                      loading: () => 'Loading',
+                    ),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 26,
+                    ),
                   ),
-                  user.when(
-                    data: (user) {
-                      return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("${user.totalDist.toStringAsFixed(2)}Km",
-                                style:
-                                    const TextStyle(
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                )),
-                            Text("plus que ${model.nbrDays()} jours..."),
-                          ]);
-                    },
-                    error: (error, stackTrace) => Text(error.toString()),
-                    loading: () => const CircularProgressIndicator(),
+
+                  // Objectif hebdomadaire
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Objectif hebdo: ",
+                        style: TextStyle(
+                          color: Color(0xFF121212),
+                          fontSize: 17,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      Text(
+                        "${user.when(data: (user) => user.objectif, error: (error, stackTrace) => 0.0, loading: () => 0.0).toString()}Km",
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
                   ),
-                  user.when(
-                    data: (user) {
-                      return LinearPercentIndicator(
-                        animation: true,
-                        lineHeight: height * .025,
-                        animationDuration: 2500,
-                        padding: EdgeInsets.zero,
-                        percent: model.advencement(
-                            user.objectif.toInt(), user.totalDist.toInt()),
-                        barRadius: const Radius.circular(16),
-                        center: Text(
-                            "${((model.advencement(user.objectif.toInt(), user.totalDist.toInt())) * 100).toStringAsFixed(2)}%"),
-                        progressColor: Theme.of(context).primaryColor,
-                        backgroundColor: Theme.of(context).highlightColor,
-                      );
-                    },
-                    error: (error, stackTrace) => Text(error.toString()),
-                    loading: () => const CircularProgressIndicator(),
+
+                  // Total des kilomètres et jours restants
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        "${user.when(data: (user) => user.totalDist, error: (error, stackTrace) => 0.0, loading: () => 0.0).toStringAsFixed(2)}Km",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      SizedBox(width: width*.03),
+                      Text(
+                        "plus que ${model.nbrDays()} jours...",
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+
+                  // Pourcentage d'avancement
+                  LinearPercentIndicator(
+                    animation: true,
+                    lineHeight: height * .025,
+                    animationDuration: 2500,
+                    padding: EdgeInsets.zero,
+                    percent: model.advencementBar(
+                      user.when(
+                        data: (user) => user.objectif.toInt(),
+                        error: (error, stackTrace) => 0,
+                        loading: () => 0,
+                      ),
+                      user.when(
+                        data: (user) => user.totalDist.toInt(),
+                        error: (error, stackTrace) => 0,
+                        loading: () => 0,
+                      ),
+                    ),
+                    barRadius: const Radius.circular(16),
+                    center: Text(
+                      "${(model.advencement(user.when(data: (user) => user.objectif.toInt(), error: (error, stackTrace) => 0, loading: () => 0), user.when(data: (user) => user.totalDist.toInt(), error: (error, stackTrace) => 0, loading: () => 0)) * 100).toStringAsFixed(2)}%",
+                    ),
+                    progressColor: Theme.of(context).primaryColor,
+                    backgroundColor: Theme.of(context).highlightColor,
                   ),
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );

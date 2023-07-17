@@ -70,7 +70,7 @@ class UpdateParcourScreen extends ConsumerWidget {
                             child: Container(
                               alignment: Alignment.center,
                               width: width * .34,
-                              height: height * .12,
+                              height: height * .14,
                               decoration: const BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.all(
@@ -139,8 +139,10 @@ class UpdateParcourScreen extends ConsumerWidget {
                                                 );
                                               },
                                             )
-                                          : const Text(
-                                              'Vous n avez pas encore d amis');
+                                          : const Center(
+                                            child: Text(
+                                                'Vous n avez pas encore d amis'),
+                                          );
                                     },
                                     error: (error, stackTrace) =>
                                         Text(error.toString()),

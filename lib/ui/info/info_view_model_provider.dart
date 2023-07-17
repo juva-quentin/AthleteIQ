@@ -73,7 +73,7 @@ class InfoViewModel extends ChangeNotifier {
     return 0;
   }
 
-  double advencement(int objectif, advencement) {
+  double advencementBar(int objectif, advencement) {
     double result = ((advencement * 100) / objectif) / 100;
     if (objectif == 0) {
       return 0.0;
@@ -83,6 +83,18 @@ class InfoViewModel extends ChangeNotifier {
     } else if (result > 1) {
       return 1.0;
     } else {
+      return result;
+    }
+  }
+
+  double advencement(int objectif, advencement) {
+    double result = ((advencement * 100) / objectif) / 100;
+    if (objectif == 0) {
+      return 0.0;
+    }
+    if (result <= 0) {
+      return 0.0;
+    }else {
       return result;
     }
   }
