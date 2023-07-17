@@ -96,7 +96,17 @@ class ParcourRepository {
 
   Future<void> delete(String id) async {
     try{
-    await _firestore.collection("parcours").doc(id).delete();}on FirebaseException catch (e) {
+    final usersSnapshot = await _firestore.collection('users').where('shareTo', arrayContains: id).get();
+
+    final batch = _firestore.batch();
+    for (final userDoc in usersSnapshot.docs) {
+      batch.update(userDoc.reference, {'fav': FieldValue.arrayRemove([id])});
+    }
+
+    batch.delete(_firestore.collection('parcours').doc(id));
+
+    await batch.commit();
+    } on FirebaseException catch (e) {
       rethrow;
     }
   }
