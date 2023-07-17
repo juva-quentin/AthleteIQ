@@ -20,6 +20,9 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class SettingsScreenState extends ConsumerState<SettingsScreen> {
+
+
+
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
@@ -54,10 +57,11 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
           IconButton(
               onPressed: () async {
                 try {
-                  await authModel.logout();
-                  FirebaseFirestore.instance.terminate();
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, LoginScreen.route, (Route<dynamic> route) => false);
+                  await authModel.logout().then((value) => {
+                  FirebaseFirestore.instance.terminate(),
+                      Navigator.pushNamedAndRemoveUntil(
+                      context, LoginScreen.route, (Route<dynamic> route) => false)
+                  });
                 } catch (e) {
                   Utils.flushBarErrorMessage(e.toString(), context);
                   if (kDebugMode) {
@@ -194,9 +198,7 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
                 InkWell(
                   onTap: () async {
                     if (model.formSettingKey.currentState!.validate()) {
-                      try {} catch (e) {
-                        Utils.flushBarErrorMessage(e.toString(), context);
-                      }
+                      _showConfirmationDialog(context, model, authModel);
                     }
                   },
                   child: Container(
@@ -221,5 +223,46 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
       ),
     );
+
+
+
   }
+}
+
+void _showConfirmationDialog(BuildContext context, SettingsViewModel model, AuthViewModel authModel) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Confirmation"),
+        content: Text("Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible."),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Ferme la boîte de dialogue
+            },
+            child: Text("Annuler"),
+          ),
+          TextButton(
+            onPressed: () async {
+              try {
+                await model.deleteUser().then((value) =>
+                    Utils.toastMessage("Votre compte à été supprimé"));
+                await authModel.logout().then((value) => {
+                FirebaseFirestore.instance.terminate(),
+                    Navigator.of(context).pop(),
+                Navigator.pushNamedAndRemoveUntil(
+                    context, LoginScreen.route, (Route<dynamic> route) => false)
+                }
+                );
+              } catch (e) {
+                Utils.flushBarErrorMessage(e.toString(), context);
+              }
+            },
+            child: Text("Supprimer"),
+          ),
+        ],
+      );
+    },
+  );
 }

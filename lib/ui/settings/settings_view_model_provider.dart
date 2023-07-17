@@ -1,3 +1,5 @@
+import 'package:athlete_iq/data/network/groupsRepository.dart';
+import 'package:athlete_iq/data/network/parcoursRepository.dart';
 import 'package:athlete_iq/model/User.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,6 +23,10 @@ class SettingsViewModel extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   UserRepository get _userRepo => _reader(userRepositoryProvider);
+
+  ParcourRepository get _parcourRepo => _reader(parcourRepositoryProvider);
+
+  GroupsRepository get _groupsRepo => _reader(groupsRepositoryProvider);
 
   final formSettingKey = GlobalKey<FormState>();
 
@@ -145,5 +151,40 @@ class SettingsViewModel extends ChangeNotifier {
       return Future.error(e);
     }
     _loading.stop();
+  }
+
+  Future<void> deleteUser() async {
+    try {
+      final user = _auth.currentUser;
+      final metadata = user?.metadata;
+      final lastSignInTime = metadata?.lastSignInTime;
+      final currentTime = DateTime.now();
+      final difference = currentTime.difference(lastSignInTime!).inHours;
+
+      // Vérifier si l'utilisateur s'est connecté il y a moins de 24 heures (ou selon votre critère)
+      if (difference < 24) {
+        final userInfo =
+        await _userRepo.getUserWithId(userId: _auth.currentUser!.uid);
+
+
+        await _parcourRepo.deleteParcoursOfUser(userInfo.id);
+
+
+        await _userRepo.removeFromFriendsLists(userInfo.id);
+
+
+        await _groupsRepo.removeUserFromGroupMembers(userInfo.id);
+
+        await _userRepo.delete(userInfo.id);
+
+        if (user != null) {
+          await user.delete();
+        }
+      }else{
+        throw Exception('Vous devez vous connecter au moins une fois dans les 24h avant de supprimer votre compte');
+      }
+    } catch (e) {
+      rethrow;
+    }
   }
 }

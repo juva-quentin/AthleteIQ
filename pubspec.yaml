@@ -17,7 +17,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.1.0-SNAPSHOT
+version: 1.1.1-SNAPSHOT
 
 environment:
   sdk: '>=2.17.1 <3.0.0'
@@ -50,32 +50,32 @@ dependencies:
   google_maps_flutter: ^2.2.3
   geolocator: ^9.0.2
   equatable: ^2.0.3
-  font_awesome_flutter: ^9.2.0
-  json_theme: 4.0.3
+  font_awesome_flutter: ^10.5.0
+  json_theme: ^6.1.0
   flutter_native_splash: ^2.2.18
   percent_indicator: ^4.0.0
   shared_preferences: ^2.0.15
   mask_text_input_formatter: ^2.4.0
-  rive: ^0.9.0
-  stop_watch_timer: ^2.0.0
-  google_fonts: ^2.3.1
-  intl: ^0.17.0
-  image_picker: ^0.8.5+3
+  rive: ^0.11.4
+  stop_watch_timer: ^3.0.0
+  google_fonts: ^4.0.4
+  intl: ^0.18.1
+  image_picker: ^1.0.1
   unicons: ^2.1.0
-  location: ^4.4.0
+  location: ^5.0.0
   workmanager: ^0.5.1
   wakelock: ^0.6.2
   rxdart: ^0.27.7
-  flutter_background_service: ^2.4.6
-  flutter_background_service_ios: ^2.4.0
-  flutter_background_service_android: ^3.0.3
+  flutter_background_service: ^3.0.1
+  flutter_background_service_ios: ^3.0.0
+  flutter_background_service_android: ^4.0.1
   permission_handler: ^10.2.0
-  flutter_local_notifications: ^13.0.0
-  material_design_icons_flutter: ^6.0.7096
+  flutter_local_notifications: ^15.1.0+1
+  material_design_icons_flutter: ^7.0.7296
   url_launcher: ^6.1.11
 
 dev_dependencies:
-  hive_generator: ^1.1.1
+  hive_generator: ^2.0.0
 #  flutter_launcher_icons: ^0.11.0
   flutter_test:
     sdk: flutter
