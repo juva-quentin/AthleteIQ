@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../utils/utils.dart';
 import 'auth/login_screen.dart';
 import 'auth/providers/auth_view_model_provider.dart';
 
@@ -162,12 +163,11 @@ class OnboardingScreen extends HookConsumerWidget {
                                         recognizer: TapGestureRecognizer()
                                           ..onTap = () async {
                                             Uri url = Uri.parse(
-                                                'https://www.example.com');
+                                                'https://athleteiq-2f163.web.app');
                                             if (await canLaunchUrl(url)) {
                                               await launchUrl(url);
                                             } else {
-                                              print(
-                                                  'Impossible d\'ouvrir l\'URL : $url');
+                                              Utils.toastMessage('Impossible d\'ouvrir l\'URL : $url');
                                             }
                                           },
                                       ),

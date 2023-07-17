@@ -85,6 +85,16 @@ $ ssh-keygen -t ecdsa-sk -C "your_email@example.com"
 
 ```
 
+5. Build ios et android
+
+```shell
+flutter build ios --release # for iOS
+```
+
+```shell
+flutter build apk --split-per-abi  # for Android
+```
+
 5. Ajoutez la clé SSH à votre compte sur GitHub. Pour plus d’informations, consultez « [Ajout d’une nouvelle clé SSH à votre compte GitHub](https://docs.github.com/fr/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) ».
 
 ## Contact
