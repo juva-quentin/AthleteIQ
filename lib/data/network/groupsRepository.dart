@@ -109,4 +109,20 @@ class GroupsRepository {
       rethrow;
     }
   }
+
+  Future<void> removeUserFromGroupMembers(String userId) async {
+    try {
+      final groupsSnapshot = await _firestore.collectionGroup('groups').where('members', arrayContains: userId).get();
+
+      final batch = _firestore.batch();
+      for (final groupDoc in groupsSnapshot.docs) {
+        batch.update(groupDoc.reference, {'members': FieldValue.arrayRemove([userId])});
+      }
+
+      await batch.commit();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 }

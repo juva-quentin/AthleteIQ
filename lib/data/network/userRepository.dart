@@ -13,6 +13,7 @@ class UserRepository {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+
   Future<void> writeUser(UserModel user, {File? file}) async {
     final ref =
         _firestore.collection("users").doc(user.id.isEmpty ? null : user.id);
@@ -96,11 +97,33 @@ class UserRepository {
     }
   }
 
+  Future<void> removeFromFriendsLists(String userId) async {
+    try {
+      final usersSnapshot = await _firestore.collection('users').where('awaitFriends', arrayContains: userId).get();
+
+      final batch = _firestore.batch();
+      for (final userDoc in usersSnapshot.docs) {
+        batch.update(userDoc.reference, {'awaitFriends': FieldValue.arrayRemove([userId])});
+      }
+
+      final friendsSnapshot = await _firestore.collection('users').where('friends', arrayContains: userId).get();
+
+      for (final userDoc in friendsSnapshot.docs) {
+        batch.update(userDoc.reference, {'friends': FieldValue.arrayRemove([userId])});
+      }
+
+      await batch.commit();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> delete(String id) async {
     try {
-      await _firestore.collection("users").doc(id).delete();
+      await _firestore.collection('users').doc(id).delete();
     } on FirebaseException catch (e) {
       rethrow;
     }
   }
+
 }
