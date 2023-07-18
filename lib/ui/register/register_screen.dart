@@ -174,7 +174,7 @@ class RegisterScreen extends ConsumerWidget {
                                       child: Container(
                                         alignment: Alignment.center,
                                         width: width * .34,
-                                        height: height * .12,
+                                        height: height * .13,
                                         decoration: const BoxDecoration(
                                             color: Colors.white,
                                             borderRadius: BorderRadius.all(
@@ -203,7 +203,7 @@ class RegisterScreen extends ConsumerWidget {
                                     Container(
                                       alignment: Alignment.centerLeft,
                                       width: width * .34,
-                                      height: height * .12,
+                                      height: height * .13,
                                       decoration: const BoxDecoration(
                                           color: Colors.white,
                                           borderRadius: BorderRadius.all(

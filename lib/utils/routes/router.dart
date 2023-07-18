@@ -1,4 +1,5 @@
 import 'package:athlete_iq/main.dart';
+import 'package:athlete_iq/ui/auth/forgot_password_screen.dart';
 import 'package:athlete_iq/ui/auth/signup_screen.dart';
 import 'package:athlete_iq/ui/community/chat-page/chat_page.dart';
 import 'package:athlete_iq/ui/community/chat-page/components/group_info.dart';
@@ -23,6 +24,9 @@ class AppRouter {
         break;
       case SignupScreen.route:
         selectedPage = SignupScreen();
+        break;
+      case ForgotPasswordScreen.route:
+        selectedPage = ForgotPasswordScreen();
         break;
       case EmailVerifyScreen.route:
         selectedPage = const EmailVerifyScreen();
