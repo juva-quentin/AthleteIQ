@@ -218,4 +218,14 @@ class AuthViewModel extends ChangeNotifier {
 
   final formatter = MaskTextInputFormatter(
       mask: '# - # - # - # - # - #', filter: {"#": RegExp(r'[0-9]')});
+
+  Future<void> forgotPassword() async {
+    _loading.start();
+    try {
+      await _auth.sendPasswordResetEmail(email: email).then((value) => _loading.end());
+    } catch (e) {
+      _loading.stop();
+      rethrow;
+    }
+  }
 }

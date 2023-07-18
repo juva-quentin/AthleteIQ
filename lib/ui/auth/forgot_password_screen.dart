@@ -1,5 +1,5 @@
 import 'package:athlete_iq/app/app.dart';
-import 'package:athlete_iq/ui/auth/forgot_password_screen.dart';
+import 'package:athlete_iq/ui/auth/login_screen.dart';
 import 'package:athlete_iq/ui/auth/providers/auth_view_model_provider.dart';
 import 'package:athlete_iq/ui/auth/signup_screen.dart';
 import 'package:athlete_iq/utils/utils.dart';
@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../providers/loading_provider.dart';
 
-class LoginScreen extends ConsumerWidget {
-  LoginScreen({Key? key}) : super(key: key);
-  final _formLoginKey = GlobalKey<FormState>();
-  static const route = "/login";
+class ForgotPasswordScreen extends ConsumerWidget {
+  ForgotPasswordScreen({Key? key}) : super(key: key);
+  final _formForgotPasswordKey = GlobalKey<FormState>();
+  static const route = "/forgot_password";
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final model = ref.watch(authViewModelProvider);
@@ -22,7 +22,7 @@ class LoginScreen extends ConsumerWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: Form(
-          key: _formLoginKey,
+          key: _formForgotPasswordKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,14 +49,14 @@ class LoginScreen extends ConsumerWidget {
                           height: height * .01,
                         ),
                         const Text(
-                          'Bienvenue,',
+                          'Mot de passe oublié,',
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 26,
                               fontWeight: FontWeight.bold),
                         ),
                         const Text(
-                          'Connectez-vous pour continuer,',
+                          'Taper votre email pour continuer,',
                           style: TextStyle(
                               color: Color.fromARGB(156, 35, 109, 178),
                               fontSize: 17,
@@ -83,107 +83,79 @@ class LoginScreen extends ConsumerWidget {
                 onChanged: (v) => model.email = v,
                 validator: (v) => model.emailValidate(v!),
               ),
-              TextFormField(
-                obscureText: model.obscurePassword,
-                keyboardType: TextInputType.visiblePassword,
-                initialValue: model.password,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.lock_outline_rounded),
-                  labelText: "Mot de passe",
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      model.obscurePassword = !model.obscurePassword;
-                    },
-                    icon: Icon(model.obscurePassword
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined),
-                  ),
-                ),
-                onChanged: (v) => model.password = v,
-                textInputAction: TextInputAction.done,
-                onFieldSubmitted: (_) =>  model.email.isNotEmpty && model.password.isNotEmpty
+              SizedBox(
+                height: height * .08,
+              ),
+              InkWell(
+                onTap: model.email.isNotEmpty
                     ? () async {
-                  if (_formLoginKey.currentState!.validate()) {
+                  if (_formForgotPasswordKey.currentState!.validate()) {
                     try {
-                      await model.login();
-                      // ignore: use_build_context_synchronously
-                      Navigator.pushReplacementNamed(
+                      await model.forgotPassword().then((value) => {
+                        Utils.toastMessage("Un mail vous a été envoyé"),
+                        Navigator.pushReplacementNamed(
                         context,
-                        App.route,
-                      );
+                        LoginScreen.route,
+                      )});
                     } catch (e) {
                       Utils.flushBarErrorMessage(e.toString(), context);
                     }
                   }
                 }
                     : null,
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, ForgotPasswordScreen.route);
-                },
-                child: const Text("Mot de passe oublié ?"),
-              ),
-              SizedBox(
-                height: height * .08,
-              ),
-              InkWell(
-                onTap: model.email.isNotEmpty && model.password.isNotEmpty
-                    ? () async {
-                        if (_formLoginKey.currentState!.validate()) {
-                          try {
-                            await model.login();
-                            // ignore: use_build_context_synchronously
-                            Navigator.pushReplacementNamed(
-                              context,
-                              App.route,
-                            );
-                          } catch (e) {
-                            Utils.flushBarErrorMessage(e.toString(), context);
-                          }
-                        }
-                      }
-                    : null,
                 child: Container(
                     height: 40,
                     width: 200,
                     decoration: BoxDecoration(
-                        color: model.email.isNotEmpty && model.password.isNotEmpty
+                        color: model.email.isNotEmpty
                             ? Theme.of(context).buttonTheme.colorScheme!.primary : Theme.of(context).disabledColor,
                         borderRadius: BorderRadius.circular(10)),
                     child: Center(
                         child: isLoading.loading
                             ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
+                          color: Colors.white,
+                        )
                             : Text(
-                                "Connexion",
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.background),
-                              ))),
+                          "Envoyer",
+                          style: TextStyle(
+                              color:
+                              Theme.of(context).colorScheme.background),
+                        ))),
               ),
               SizedBox(
                 height: height * .02,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Vous n'avez pas de compte ? "),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushReplacementNamed(context, SignupScreen.route);
-                    },
-                    child: const Text(
-                      "Créer un compte",
-                      style: TextStyle(color: Color.fromARGB(255, 0, 152, 240)),
-                    ),
-                  ),
-                ],
-              )
+              InkWell(
+                onTap: () {
+                  Navigator.pushReplacementNamed(
+                    context,
+                    LoginScreen.route,
+                  );
+                },
+                child: Container(
+                    height: 40,
+                    width: 200,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).buttonTheme.colorScheme!.primary,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Center(
+                        child: isLoading.loading
+                            ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                            : Text(
+                          "Retour",
+                          style: TextStyle(
+                              color:
+                              Theme.of(context).colorScheme.background),
+                        ))),
+              ),
             ],
+
           ),
+
         ),
+
       ),
     );
   }
