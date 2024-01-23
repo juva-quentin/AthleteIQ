@@ -15,23 +15,22 @@ import '../../utils/map_utils.dart';
 import '../providers/loading_provider.dart';
 
 final homeViewModelProvider = ChangeNotifierProvider.autoDispose<HomeViewModel>(
-  (ref) => HomeViewModel(ref.read),
+  (ref) => HomeViewModel(ref),
 );
 
-
 class HomeViewModel extends ChangeNotifier {
-  final Reader _reader;
+  final Ref _reader;
   HomeViewModel(this._reader);
 
-  Loading get _loading => _reader(loadingProvider);
+  Loading get _loading => _reader.read(loadingProvider);
 
-  TimerClassProvider get _chrono => _reader(timerProvider);
+  TimerClassProvider get _chrono => _reader.read(timerProvider);
 
-  PositionModel get _position => _reader(positionProvider);
+  PositionModel get _position => _reader.read(positionProvider);
   final UserRepository _userRepo = UserRepository();
 
-  ParcourRepository get _parcourRepo => _reader(parcourRepositoryProvider);
-  
+  ParcourRepository get _parcourRepo => _reader.read(parcourRepositoryProvider);
+
   bool _courseStart = false;
   bool get courseStart => _courseStart;
   set courseStart(bool courseStart) {
@@ -139,10 +138,10 @@ class HomeViewModel extends ChangeNotifier {
     if (_typeFilter == "public") {
       _filterParcourIcon = Icons.shield;
       _typeFilter = "protected";
-    }else if (_typeFilter == "protected"){
+    } else if (_typeFilter == "protected") {
       _filterParcourIcon = UniconsLine.lock;
       _typeFilter = "private";
-    }else{
+    } else {
       _filterParcourIcon = UniconsLine.globe;
       _typeFilter = "public";
     }
@@ -217,32 +216,35 @@ class HomeViewModel extends ChangeNotifier {
     _subStreamParcours = parcours!.listen((List<Parcours> parcours) async {
       for (var i = 0; i < parcours.length; i++) {
         final newPolilyne = Polyline(
-          polylineId: PolylineId(parcours[i].id),
-          points: parcours[i]
-              .allPoints
-              .map(
-                  (position) => LatLng(position.latitude!, position.longitude!))
-              .toList(),
-          width: 5,
-          color: typeFilter == "public"
-              ? const Color(0xC005FF0C)
-              : typeFilter == "protected"
-                  ? const Color(0xFFFFF200)
-                  : const Color(0xFFFF2100),
-          onTap: () async {
-           await  _controller.animateCamera(CameraUpdate.newLatLngBounds(
-                MapUtils.boundsFromLatLngList(parcours[i].allPoints.map((e) => LatLng(e.latitude!, e.longitude!)).toList()),12
-            ));
-           notifyListeners();
-          }
-        );
+            polylineId: PolylineId(parcours[i].id),
+            points: parcours[i]
+                .allPoints
+                .map((position) =>
+                    LatLng(position.latitude!, position.longitude!))
+                .toList(),
+            width: 5,
+            color: typeFilter == "public"
+                ? const Color(0xC005FF0C)
+                : typeFilter == "protected"
+                    ? const Color(0xFFFFF200)
+                    : const Color(0xFFFF2100),
+            onTap: () async {
+              await _controller.animateCamera(CameraUpdate.newLatLngBounds(
+                  MapUtils.boundsFromLatLngList(parcours[i]
+                      .allPoints
+                      .map((e) => LatLng(e.latitude!, e.longitude!))
+                      .toList()),
+                  12));
+              notifyListeners();
+            });
         final newMarker = Marker(
             markerId: MarkerId(parcours[i].id),
             position: LatLng(parcours[i].allPoints.first.latitude!,
                 parcours[i].allPoints.first.longitude!),
             infoWindow: InfoWindow(
                 title: parcours[i].title,
-                snippet:"Par : ${await _userRepo.getUserWithId(userId: parcours[i].owner).then((value) => value.pseudo)}"));
+                snippet:
+                    "Par : ${await _userRepo.getUserWithId(userId: parcours[i].owner).then((value) => value.pseudo)}"));
         if (!polylines.contains(newPolilyne)) {
           polylines.add(newPolilyne);
         }

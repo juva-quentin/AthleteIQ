@@ -22,20 +22,20 @@ import '../providers/loading_provider.dart';
 
 final registerViewModelProvider =
     ChangeNotifierProvider.autoDispose<RegisterViewModel>(
-  (ref) => RegisterViewModel(ref.read),
+  (ref) => RegisterViewModel(ref),
 );
 
 class RegisterViewModel extends ChangeNotifier {
-  final Reader _reader;
+  final Ref _reader;
   RegisterViewModel(this._reader);
 
-  Loading get _loading => _reader(loadingProvider);
+  Loading get _loading => _reader.read(loadingProvider);
 
-  TimerClassProvider get _chrono => _reader(timerProvider);
+  TimerClassProvider get _chrono => _reader.read(timerProvider);
 
-  HomeViewModel get _homeProvier => _reader(homeViewModelProvider);
+  HomeViewModel get _homeProvier => _reader.read(homeViewModelProvider);
 
-  PositionModel get _position => _reader(positionProvider);
+  PositionModel get _position => _reader.read(positionProvider);
 
   ParcourVisibility visibility = ParcourVisibility.Public;
 

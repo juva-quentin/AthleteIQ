@@ -14,16 +14,16 @@ import '../../utils/visibility.dart';
 
 final parcourDetailsViewModel =
     ChangeNotifierProvider.autoDispose<ParcourDetailsViewModel>(
-  (ref) => ParcourDetailsViewModel(ref.read),
+  (ref) => ParcourDetailsViewModel(ref),
 );
 
 class ParcourDetailsViewModel extends ChangeNotifier {
-  final Reader _reader;
+  final Ref _reader;
   ParcourDetailsViewModel(this._reader);
 
-  UserRepository get _repository => _reader(userRepositoryProvider);
-  ParcourRepository get parcourRepo => _reader(parcourRepositoryProvider);
-  FirebaseAuth get auth => _reader(firebaseAuthProvider);
+  UserRepository get _repository => _reader.read(userRepositoryProvider);
+  ParcourRepository get parcourRepo => _reader.read(parcourRepositoryProvider);
+  FirebaseAuth get auth => _reader.read(firebaseAuthProvider);
 
   Parcours? parcour;
 

@@ -11,21 +11,21 @@ import '../../../model/User.dart';
 import '../../providers/loading_provider.dart';
 
 final firebaseAuthProvider =
-Provider((ref) => FirebaseAuth.instanceFor(app: Firebase.app()));
+    Provider((ref) => FirebaseAuth.instanceFor(app: Firebase.app()));
 
 final authViewModelProvider = ChangeNotifierProvider<AuthViewModel>(
-  (ref) => AuthViewModel(ref.read),
+  (ref) => AuthViewModel(
+      ref.read(userRepositoryProvider), ref.read(loadingProvider)),
 );
 
 class AuthViewModel extends ChangeNotifier {
-  final Reader _reader;
-  AuthViewModel(this._reader);
-
+  AuthViewModel(this._userRepo, this._loading);
+  final Loading _loading;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   User? get user => _auth.currentUser;
 
-  UserRepository get _userRepo => _reader(userRepositoryProvider);
+  final UserRepository _userRepo;
 
   String _pseudo = '';
   String get pseudo => _pseudo;
@@ -214,15 +214,15 @@ class AuthViewModel extends ChangeNotifier {
 
   int? resendToken;
 
-  Loading get _loading => _reader(loadingProvider);
-
   final formatter = MaskTextInputFormatter(
       mask: '# - # - # - # - # - #', filter: {"#": RegExp(r'[0-9]')});
 
   Future<void> forgotPassword() async {
     _loading.start();
     try {
-      await _auth.sendPasswordResetEmail(email: email).then((value) => _loading.end());
+      await _auth
+          .sendPasswordResetEmail(email: email)
+          .then((value) => _loading.end());
     } catch (e) {
       _loading.stop();
       rethrow;
