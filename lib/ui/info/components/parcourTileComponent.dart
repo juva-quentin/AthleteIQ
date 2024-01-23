@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:athlete_iq/model/Parcour.dart';
 import 'package:athlete_iq/ui/parcour-detail/parcour_details_screen.dart';
+import 'package:athlete_iq/utils/stringCapitalize.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/cli_commands.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
