@@ -17,14 +17,15 @@ import '../../model/User.dart' as userModel;
 import 'courses_list_screen.dart';
 
 final infoViewModelProvider = ChangeNotifierProvider.autoDispose<InfoViewModel>(
-  (ref) => InfoViewModel(ref.read),
+  (ref) => InfoViewModel(ref),
 );
 
 class InfoViewModel extends ChangeNotifier {
-  final Reader _reader;
+  final Ref _reader;
   InfoViewModel(this._reader);
-  UserRepository get repository => _reader(userRepositoryProvider);
-  ParcourRepository get parcourRepository => _reader(parcourRepositoryProvider);
+  UserRepository get repository => _reader.read(userRepositoryProvider);
+  ParcourRepository get parcourRepository =>
+      _reader.read(parcourRepositoryProvider);
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   dynamic _file;
@@ -94,7 +95,7 @@ class InfoViewModel extends ChangeNotifier {
     }
     if (result <= 0) {
       return 0.0;
-    }else {
+    } else {
       return result;
     }
   }
@@ -103,7 +104,7 @@ class InfoViewModel extends ChangeNotifier {
     try {
       userModel.UserModel user =
           await repository.getUserWithId(userId: _auth.currentUser!.uid);
-      await repository.writeUser(user, file:_file);
+      await repository.writeUser(user, file: _file);
     } catch (e) {
       return Future.error(e);
     }

@@ -9,15 +9,15 @@ import '../../../model/User.dart';
 import '../../providers/loading_provider.dart';
 
 final favListViewModelProvider =
-ChangeNotifierProvider.autoDispose<favListViewModel>(
-      (ref) => favListViewModel(ref.read),
+    ChangeNotifierProvider.autoDispose<favListViewModel>(
+  (ref) => favListViewModel(ref),
 );
 
 class favListViewModel extends ChangeNotifier {
-  final Reader _reader;
+  final Ref _reader;
   favListViewModel(this._reader);
-  UserRepository get _repository => _reader(userRepositoryProvider);
-  ParcourRepository get _parcourRepo => _reader(parcourRepositoryProvider);
+  UserRepository get _repository => _reader.read(userRepositoryProvider);
+  ParcourRepository get _parcourRepo => _reader.read(parcourRepositoryProvider);
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   List<Parcours> favParcour = [];
@@ -34,9 +34,10 @@ class favListViewModel extends ChangeNotifier {
     try {
       List<Parcours> resultFavsId = [];
       UserModel result =
-      await _repository.getUserWithId(userId: _auth.currentUser!.uid);
+          await _repository.getUserWithId(userId: _auth.currentUser!.uid);
       for (var parcourId in result.fav) {
-        final parcour = await _parcourRepo.getParcourWithId(parcourId: parcourId);
+        final parcour =
+            await _parcourRepo.getParcourWithId(parcourId: parcourId);
         resultFavsId.add(parcour);
       }
       favParcour = resultFavsId;
@@ -45,5 +46,4 @@ class favListViewModel extends ChangeNotifier {
       return Future.error(e);
     }
   }
-
 }
