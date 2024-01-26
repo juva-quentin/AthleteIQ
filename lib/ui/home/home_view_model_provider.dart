@@ -38,6 +38,13 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  String? _selectedParcourId;
+  String? get selectedParcourId => _selectedParcourId;
+  set selectedParcourId(String? id) {
+    _selectedParcourId = id;
+    notifyListeners();
+  }
+
   bool _traffic = false;
   bool get traffic => _traffic;
   set traffic(bool traffic) {
@@ -213,47 +220,65 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   void streamParcours() async {
+    print("StreamParcours");
     _subStreamParcours = parcours!.listen((List<Parcours> parcours) async {
-      for (var i = 0; i < parcours.length; i++) {
-        final newPolilyne = Polyline(
-            polylineId: PolylineId(parcours[i].id),
-            points: parcours[i]
-                .allPoints
-                .map((position) =>
-                    LatLng(position.latitude!, position.longitude!))
-                .toList(),
-            width: 5,
-            color: typeFilter == "public"
-                ? const Color(0xC005FF0C)
-                : typeFilter == "protected"
-                    ? const Color(0xFFFFF200)
-                    : const Color(0xFFFF2100),
-            onTap: () async {
-              await _controller.animateCamera(CameraUpdate.newLatLngBounds(
-                  MapUtils.boundsFromLatLngList(parcours[i]
-                      .allPoints
-                      .map((e) => LatLng(e.latitude!, e.longitude!))
-                      .toList()),
-                  12));
-              notifyListeners();
-            });
-        final newMarker = Marker(
-            markerId: MarkerId(parcours[i].id),
-            position: LatLng(parcours[i].allPoints.first.latitude!,
-                parcours[i].allPoints.first.longitude!),
-            infoWindow: InfoWindow(
-                title: parcours[i].title,
-                snippet:
-                    "Par : ${await _userRepo.getUserWithId(userId: parcours[i].owner).then((value) => value.pseudo)}"));
-        if (!polylines.contains(newPolilyne)) {
-          polylines.add(newPolilyne);
-        }
-        if (!markers.contains(newMarker)) {
-          markers.add(newMarker);
-        }
-        notifyListeners();
-      }
+      buildPolylinesAndMarkers(parcours);
     });
+  }
+
+  void buildPolylinesAndMarkers(List<Parcours> parcours) async {
+    Set<Polyline> updatedPolylines = {};
+    Set<Marker> updatedMarkers = {};
+
+    for (var i = 0; i < parcours.length; i++) {
+      final isHighlighted = selectedParcourId == parcours[i].id;
+
+      final newPolilyne = Polyline(
+        polylineId: PolylineId(parcours[i].id),
+        points: parcours[i]
+            .allPoints
+            .map((position) =>
+            LatLng(position.latitude!, position.longitude!))
+            .toList(),
+        width: isHighlighted ? 8 : 5,
+        color: isHighlighted
+            ?  const Color(0xC026702A)
+            : (typeFilter == "public"
+            ? const Color(0xC005FF0C)
+            : typeFilter == "protected"
+            ? const Color(0xFFFFF200)
+            : const Color(0xFFFF2100)),
+        onTap: () {
+          selectedParcourId = parcours[i].id;
+          _controller.animateCamera(CameraUpdate.newLatLngBounds(
+              MapUtils.boundsFromLatLngList(parcours[i]
+                  .allPoints
+                  .map((e) => LatLng(e.latitude!, e.longitude!))
+                  .toList()),
+              12));
+        },
+      );
+      updatedPolylines.add(newPolilyne);
+
+      final newMarker = Marker(
+        markerId: MarkerId(parcours[i].id),
+        position: LatLng(parcours[i].allPoints.first.latitude!,
+            parcours[i].allPoints.first.longitude!),
+        onTap: () {
+          selectedParcourId = parcours[i].id;
+          buildPolylinesAndMarkers(parcours); // Rafraîchir les polylines et markers
+        },
+        infoWindow: InfoWindow(
+            title: parcours[i].title,
+            snippet:
+            "Par : ${await _userRepo.getUserWithId(userId: parcours[i].owner).then((value) => value.pseudo)}"),
+      );
+      updatedMarkers.add(newMarker);
+    }
+
+    polylines = updatedPolylines;
+    markers = updatedMarkers;
+    notifyListeners();
   }
 
   void setLocation() async {
