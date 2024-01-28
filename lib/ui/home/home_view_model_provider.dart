@@ -235,7 +235,6 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   void streamParcours() async {
-    print("StreamParcours");
     _subStreamParcours = parcours!.listen((List<Parcours> parcours) async {
       buildPolylinesAndMarkers(parcours);
     });
