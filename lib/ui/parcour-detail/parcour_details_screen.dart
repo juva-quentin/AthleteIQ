@@ -7,6 +7,7 @@ import 'package:athlete_iq/ui/parcour-detail/update_parcour_screen.dart';
 import 'package:athlete_iq/utils/stringCapitalize.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
@@ -35,8 +36,8 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final height = 1.sh;
+    final width = 1.sw;
     final Completer<GoogleMapController> _controller =
         Completer<GoogleMapController>();
     final Parcours parcour = widget.args as Parcours;
@@ -62,10 +63,9 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                 ),
                 child: Text(
                   model.title.capitalize(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.black54,
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -104,7 +104,7 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
             ),
             pinned: true,
             leading: IconButton(
-              icon: Icon(UniconsLine.arrow_left, size: width * .1),
+              icon: Icon(UniconsLine.arrow_left, size: 38.w),
               onPressed: () => Navigator.pop(context),
             ),
             actions: [
@@ -114,10 +114,10 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                     icon: user.fav.contains(parcour.id)
                         ? Icon(
                             UniconsLine.heart,
-                            size: width * .1,
+                            size: 38.w,
                             color: Colors.red,
                           )
-                        : Icon(UniconsLine.heart, size: width * .1),
+                        : Icon(UniconsLine.heart, size: 38.w),
                     onPressed: () {
                       user.fav.contains(parcour.id)
                           ? model.removeToFav(parcour)
@@ -137,7 +137,7 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                 data: (user) {
                   return user.id == parcour.owner
                       ? IconButton(
-                          icon: Icon(Icons.menu, size: width * .1),
+                          icon: Icon(Icons.menu, size: 38.w),
                           onPressed: () {
                             showMenu(
                               context: context,
@@ -146,9 +146,9 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                                 PopupMenuItem(
                                   value: "modifier",
                                   child: Row(
-                                    children: const [
+                                    children: [
                                       Icon(Icons.edit),
-                                      SizedBox(width: 10),
+                                      SizedBox(width: 10.w),
                                       Text("Modifier"),
                                     ],
                                   ),
@@ -156,15 +156,15 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                                 PopupMenuItem(
                                   value: "supprimer",
                                   child: Row(
-                                    children: const [
+                                    children: [
                                       Icon(Icons.delete),
-                                      SizedBox(width: 10),
+                                      SizedBox(width: 10.w),
                                       Text("Supprimer"),
                                     ],
                                   ),
                                 ),
                               ],
-                              elevation: 8.0,
+                              elevation: 8.0.h,
                             ).then((value) {
                               if (value == "modifier") {
                                 Navigator.of(context).push(
@@ -180,7 +180,8 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                                     context: context,
                                     builder: (context) {
                                       return AlertDialog(
-                                        title: const Text("Supprimer le parcour"),
+                                        title:
+                                            const Text("Supprimer le parcour"),
                                         content: const Text(
                                             "Êtes-vous sur de vouloir supprimer le parcour ?"),
                                         actions: [
@@ -237,18 +238,18 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'Description',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 24.0,
+                          fontSize: 24.0.sp,
                         ),
                       ),
                       Text(
                         "${parcour.totalDistance.toStringAsFixed(2)} km",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 24.0,
+                          fontSize: 24.0.sp,
                         ),
                       ),
                     ],

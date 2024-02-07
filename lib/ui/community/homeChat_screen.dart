@@ -4,6 +4,7 @@ import 'package:athlete_iq/ui/community/search-screen/search_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // Assurez-vous d'importer ceci
 
 import '../../model/Groups.dart';
 import '../../utils/routes/customPopupRoute.dart';
@@ -18,8 +19,6 @@ class HomeChatScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final groups = ref.watch(GroupsProvider);
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -33,14 +32,16 @@ class HomeChatScreen extends ConsumerWidget {
         ],
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
-        title: const Text(
+        title: Text(
           "Communauté",
           style: TextStyle(
-              fontSize: 30, fontWeight: FontWeight.w600, color: Colors.white),
+              fontSize: 24.sp, // Modifié
+              fontWeight: FontWeight.w600,
+              color: Colors.white),
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(width * .01, 0, width * .01, height * .01),
+        padding: EdgeInsets.fromLTRB(5.w, 0, 5.w, 10.h), // Modifié
         child: groups.when(data: (List<Groups> groups) {
           if (groups.isEmpty) {
             return noGroupWidget(ref, context);
@@ -61,7 +62,7 @@ class HomeChatScreen extends ConsumerWidget {
         }),
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 100.0),
+        padding: EdgeInsets.only(bottom: 90.h), // Modifié
         child: FloatingActionButton(
             onPressed: () async {
               await Navigator.of(context).push(
@@ -75,7 +76,7 @@ class HomeChatScreen extends ConsumerWidget {
             },
             elevation: 0,
             backgroundColor: Theme.of(context).primaryColor,
-            child: const Icon(Icons.add, color: Colors.white, size: 30)),
+            child: Icon(Icons.add, color: Colors.white, size: 30.sp)),
       ),
     );
   }

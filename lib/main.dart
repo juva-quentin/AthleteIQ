@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:json_theme/json_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,35 +42,39 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final firebaseAuth = ref.watch(firebaseAuthProvider);
     final cache = ref.watch(cacheProvider.future);
+    return ScreenUtilInit(
+      designSize: const Size(360, 690),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (_, child) {
+        return MaterialApp(
+          title: 'AthleteIQ',
+          debugShowCheckedModeBanner: false,
+          theme: theme,
+          home: FutureBuilder(
+            future: cache,
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container(
+                  color: Colors.white,
+                );
+              } else {
+                final SharedPreferences prefs = snapshot.data!;
+                final bool isLoggedIn = firebaseAuth.currentUser != null;
 
-    return MaterialApp(
-      title: 'AthleteIQ',
-      debugShowCheckedModeBanner: false,
-      theme: theme,
-      home: FutureBuilder(
-        future: cache,
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Container(
-              color: Colors.white,
-            );
-          } else {
-            final SharedPreferences prefs = snapshot.data!;
-            final bool isLoggedIn = firebaseAuth.currentUser != null;
-
-            bool hasSeenOnboarding =
-                prefs.getBool('seen') ?? false;
-            Widget targetScreen = hasSeenOnboarding
-                ? isLoggedIn
-                    ? const App()
-                    : LoginScreen()
-                : const OnboardingScreen();
-            return targetScreen;
-          }
-        },
-      ),
-      onGenerateRoute: AppRouter.onNavigate,
+                bool hasSeenOnboarding = prefs.getBool('seen') ?? false;
+                Widget targetScreen = hasSeenOnboarding
+                    ? isLoggedIn
+                        ? const App()
+                        : LoginScreen()
+                    : const OnboardingScreen();
+                return targetScreen;
+              }
+            },
+          ),
+          onGenerateRoute: AppRouter.onNavigate,
+        );
+      },
     );
   }
 }
-
