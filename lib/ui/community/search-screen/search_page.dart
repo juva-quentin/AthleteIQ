@@ -109,7 +109,7 @@ class SearchPage extends ConsumerWidget {
                       ? UniconsLine.exit
                       : UniconsLine.angle_right_b,
               color: isUser ? Colors.green : Colors.grey,
-              size: 24.r, // Ajusté pour la responsivité
+              size: 24.r,
             ),
           );
   }
