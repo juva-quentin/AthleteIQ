@@ -38,7 +38,7 @@ class LoginScreen extends ConsumerWidget {
                   _buildPasswordFormField(model),
                   _buildForgotPasswordButton(context),
                   SizedBox(height: 50.h),
-                  _buildLoginButton(context, model, ref),
+                  _buildLoginButton(context, model, ref, isLoading.loading),
                   SizedBox(height: 20.h),
                   _buildSignUpOption(context),
                 ],
@@ -91,46 +91,52 @@ class LoginScreen extends ConsumerWidget {
   }
 
   Widget _buildEmailFormField(AuthViewModel model) {
-    return TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      initialValue: model.email,
-      autocorrect: false,
-      textCapitalization: TextCapitalization.none,
-      textInputAction: TextInputAction.next,
-      decoration: InputDecoration(
-        prefixIcon: Icon(Icons.email_outlined),
-        labelText: "Email",
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+      child: TextFormField(
+        keyboardType: TextInputType.emailAddress,
+        initialValue: model.email,
+        autocorrect: false,
+        textCapitalization: TextCapitalization.none,
+        textInputAction: TextInputAction.next,
+        decoration: InputDecoration(
+          prefixIcon: Icon(Icons.email_outlined),
+          labelText: "Email",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.r),
+          ),
         ),
+        onChanged: (v) => model.email = v,
+        validator: (v) => model.emailValidate(v!),
       ),
-      onChanged: (v) => model.email = v,
-      validator: (v) => model.emailValidate(v!),
     );
   }
 
   Widget _buildPasswordFormField(AuthViewModel model) {
-    return TextFormField(
-      obscureText: model.obscurePassword,
-      keyboardType: TextInputType.visiblePassword,
-      initialValue: model.password,
-      decoration: InputDecoration(
-        prefixIcon: Icon(Icons.lock_outline_rounded),
-        labelText: "Mot de passe",
-        suffixIcon: IconButton(
-          onPressed: () {
-            model.obscurePassword = !model.obscurePassword;
-          },
-          icon: Icon(model.obscurePassword
-              ? Icons.visibility_off_outlined
-              : Icons.visibility_outlined),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+      child: TextFormField(
+        obscureText: model.obscurePassword,
+        keyboardType: TextInputType.visiblePassword,
+        initialValue: model.password,
+        decoration: InputDecoration(
+          prefixIcon: Icon(Icons.lock_outline_rounded),
+          labelText: "Mot de passe",
+          suffixIcon: IconButton(
+            onPressed: () {
+              model.obscurePassword = !model.obscurePassword;
+            },
+            icon: Icon(model.obscurePassword
+                ? Icons.visibility_off_outlined
+                : Icons.visibility_outlined),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.r),
+          ),
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-        ),
+        onChanged: (v) => model.password = v,
+        textInputAction: TextInputAction.done,
       ),
-      onChanged: (v) => model.password = v,
-      textInputAction: TextInputAction.done,
     );
   }
 
@@ -150,9 +156,9 @@ class LoginScreen extends ConsumerWidget {
   }
 
   Widget _buildLoginButton(
-      BuildContext context, AuthViewModel model, WidgetRef ref) {
-    return ElevatedButton(
-      onPressed: model.email.isNotEmpty && model.password.isNotEmpty
+      BuildContext context, AuthViewModel model, WidgetRef ref, bool loading) {
+    return InkWell(
+      onTap: model.email.isNotEmpty && model.password.isNotEmpty
           ? () async {
               if (_formLoginKey.currentState!.validate()) {
                 try {
@@ -164,15 +170,21 @@ class LoginScreen extends ConsumerWidget {
               }
             }
           : null,
-      style: ElevatedButton.styleFrom(
-        minimumSize: Size(160.w, 40.h),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.r),
+      child: Container(
+        height: 40.h,
+        width: 200.w,
+        decoration: BoxDecoration(
+          color: model.email.isNotEmpty && model.password.isNotEmpty
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).disabledColor,
+          borderRadius: BorderRadius.circular(10.r),
         ),
-      ),
-      child: Text(
-        "Connexion",
-        style: TextStyle(fontSize: 16.sp),
+        child: Center(
+          child: loading
+              ? const CircularProgressIndicator(color: Colors.white)
+              : Text("Connexion",
+                  style: TextStyle(color: Colors.white, fontSize: 16.sp)),
+        ),
       ),
     );
   }

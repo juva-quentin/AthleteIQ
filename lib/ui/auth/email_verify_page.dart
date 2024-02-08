@@ -1,23 +1,20 @@
-import 'package:athlete_iq/ui/auth/providers/auth_view_model_provider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:athlete_iq/ui/auth/providers/auth_view_model_provider.dart';
 import '../../app/app.dart';
 import '../../utils/utils.dart';
 
 class EmailVerifyScreen extends ConsumerStatefulWidget {
   const EmailVerifyScreen({Key? key}) : super(key: key);
   static const String route = "/verifyEmail";
+
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
       _EmailVerifyScreenState();
 }
 
 class _EmailVerifyScreenState extends ConsumerState<EmailVerifyScreen> {
-  final provider = authViewModelProvider;
-
   void onDone() {
     if (!mounted) return;
     Navigator.pushReplacementNamed(context, App.route);
@@ -25,78 +22,70 @@ class _EmailVerifyScreenState extends ConsumerState<EmailVerifyScreen> {
 
   @override
   void initState() {
-    ref.read(provider).streamCheck(onDone: onDone);
     super.initState();
+    ref.read(authViewModelProvider.notifier).streamCheck(onDone: onDone);
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final styles = theme.textTheme;
-    final model = ref.read(provider);
+    final model = ref.watch(authViewModelProvider);
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
+            icon: Icon(Icons.logout_outlined, size: 24.w),
             onPressed: () async {
               await model.logout();
               onDone();
             },
-            icon: const Icon(Icons.logout_outlined),
           ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(24.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Spacer(),
+            Spacer(),
             Text(
-              "Veuiller vérifier votre email",
-              style: styles.headlineLarge,
+              "Veuillez vérifier votre email",
+              style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text(
-              "Un email de vérification à été envoyé à ${model.user!.email!}",
+              "Un email de vérification a été envoyé à ${model.user!.email!}",
+              style: TextStyle(fontSize: 14.sp),
               textAlign: TextAlign.center,
             ),
-            const Spacer(),
-            Center(
-              child: ElevatedButton(
-                onPressed: () async {
-                  await model.reload();
-                  if (model.user!.emailVerified) {
-                    // ignore: use_build_context_synchronously
-                    onDone();
-                  } else {
-                    // ignore: use_build_context_synchronously
-                    Utils.flushBarErrorMessage(
-                        "Votre email n'est pas vérifé", context);
-                  }
-                },
-                child: const Text("OK"),
-              ),
+            Spacer(),
+            ElevatedButton(
+              onPressed: () async {
+                await model.reload();
+                if (model.user!.emailVerified) {
+                  onDone();
+                } else {
+                  Utils.flushBarErrorMessage(
+                      "Votre email n'est pas vérifié", context);
+                }
+              },
+              child: Text("OK", style: TextStyle(fontSize: 16.sp)),
+              style: ElevatedButton.styleFrom(minimumSize: Size(160.w, 40.h)),
             ),
-            Center(
-              child: TextButton(
-                onPressed: () async {
-                  try {
-                    await model.sendEmail();
-                    // ignore: use_build_context_synchronously
-                    Utils.flushBarErrorMessage(
-                        "Email de vérification réenvoyé", context);
-                  } catch (e) {
-                    if (kDebugMode) {
-                      print(e);
-                    }
-                  }
-                },
-                child: const Text("Renvoyer"),
-              ),
+            TextButton(
+              onPressed: () async {
+                try {
+                  await model.sendEmail();
+                  Utils.flushBarErrorMessage(
+                      "Email de vérification réenvoyé", context);
+                } catch (e) {
+                  Utils.flushBarErrorMessage(
+                      "Erreur lors de l'envoi de l'email", context);
+                }
+              },
+              child: Text("Renvoyer", style: TextStyle(fontSize: 14.sp)),
             ),
-            const Spacer(),
+            Spacer(),
           ],
         ),
       ),

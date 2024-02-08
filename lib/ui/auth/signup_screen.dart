@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:athlete_iq/ui/auth/providers/auth_view_model_provider.dart';
 import 'package:athlete_iq/ui/auth/email_verify_page.dart';
 import 'package:athlete_iq/ui/auth/login_screen.dart';
 import 'package:athlete_iq/utils/utils.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../providers/loading_provider.dart';
 import 'components/custom_radio.dart';
@@ -18,8 +18,6 @@ class SignupScreen extends ConsumerWidget {
     final model = ref.watch(authViewModelProvider);
     final isLoading = ref.watch(loadingProvider);
 
-    ScreenUtil.init(context, designSize: const Size(360, 690));
-
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
@@ -30,51 +28,50 @@ class SignupScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _buildHeader(context),
-              Form(
-                key: _formRegisterKey,
-                child: Column(
-                  children: [
-                    _buildTextFormField(
-                      context: context,
-                      controller: TextEditingController(text: model.pseudo),
-                      label: "Pseudo",
-                      icon: Icons.account_circle_outlined,
-                      onChanged: (v) => model.pseudo = v,
-                    ),
-                    _buildTextFormField(
-                      context: context,
-                      controller: TextEditingController(text: model.email),
-                      label: "Email",
-                      icon: Icons.email_outlined,
-                      onChanged: (v) => model.email = v,
-                      validator: (v) => model.emailValidate(v!),
-                    ),
-                    _buildPasswordField(
-                      context: context,
-                      label: "Mot de passe",
-                      isObscure: model.obscurePassword,
-                      controller: TextEditingController(text: model.password),
-                      onChanged: (v) => model.password = v,
-                      toggleObscure: () =>
-                          model.obscurePassword = !model.obscurePassword,
-                    ),
-                    _buildPasswordField(
-                      context: context,
-                      label: "Confirmer le mot de passe",
-                      isObscure: model.obscureConfirmPassword,
-                      controller:
-                          TextEditingController(text: model.confirmPassword),
-                      onChanged: (v) => model.confirmPassword = v,
-                      toggleObscure: () => model.obscureConfirmPassword =
-                          !model.obscureConfirmPassword,
-                      validator: (v) => v != model.password
-                          ? "Les mots de passe ne correspondent pas"
-                          : null,
-                    ),
-                    _buildGenderSelector(context, model),
-                    _buildSignupButton(context, model, isLoading),
-                    _buildLoginOption(context),
-                  ],
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: Form(
+                  key: _formRegisterKey,
+                  child: Column(
+                    children: [
+                      _buildTextFormField(
+                        context: context,
+                        label: "Pseudo",
+                        icon: Icons.account_circle_outlined,
+                        onChanged: (v) => model.pseudo = v,
+                      ),
+                      _buildTextFormField(
+                        context: context,
+                        label: "Email",
+                        icon: Icons.email_outlined,
+                        onChanged: (v) => model.email = v,
+                        validator: (v) => model.emailValidate(v!),
+                      ),
+                      _buildPasswordField(
+                        context: context,
+                        label: "Mot de passe",
+                        isObscure: model.obscurePassword,
+                        onChanged: (v) => model.password = v,
+                        toggleObscure: () =>
+                            model.obscurePassword = !model.obscurePassword,
+                      ),
+                      _buildPasswordField(
+                        context: context,
+                        label: "Confirmer le mot de passe",
+                        isObscure: model.obscureConfirmPassword,
+                        onChanged: (v) => model.confirmPassword = v,
+                        toggleObscure: () => model.obscureConfirmPassword =
+                            !model.obscureConfirmPassword,
+                        validator: (v) => v != model.password
+                            ? "Les mots de passe ne correspondent pas"
+                            : null,
+                      ),
+                      _buildGenderSelector(context, model),
+                      SizedBox(height: 20.h),
+                      _buildSignupButton(context, model, isLoading),
+                      _buildLoginOption(context),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -85,38 +82,47 @@ class SignupScreen extends ConsumerWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Container(
-      height: 120.h, // Ajustez selon la hauteur désirée pour l'en-tête
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(20.r)),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10.h),
-            Text('Bienvenue,',
-                style: TextStyle(
-                    fontSize: 24.sp,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold)),
-            Text('Inscrivez-vous pour continuer',
-                style: TextStyle(
-                    fontSize: 16.sp, color: Colors.white.withOpacity(0.7))),
-            SizedBox(height: 20.h),
-          ],
+    return Stack(
+      children: [
+        Container(
+          height: 0.3.sh,
+          width: 1.sw,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              bottomRight: Radius.circular(35.r),
+              bottomLeft: Radius.circular(35.r),
+            ),
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          child: Padding(
+            padding: EdgeInsets.only(left: 20.w, bottom: 20.h, right: 20.w),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image.asset("assets/images/logo.png", height: 0.15.sh),
+                Text(
+                  'Bienvenue,',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 26.sp,
+                      fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'Créer un compte pour continuer,',
+                  style: TextStyle(
+                      color: Colors.white.withOpacity(0.7), fontSize: 17.sp),
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
   Widget _buildTextFormField({
     required BuildContext context,
-    required TextEditingController controller,
     required String label,
     required IconData icon,
     required Function(String) onChanged,
@@ -125,7 +131,6 @@ class SignupScreen extends ConsumerWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
       child: TextFormField(
-        controller: controller,
         decoration: InputDecoration(
           labelText: label,
           prefixIcon: Icon(icon),
@@ -143,7 +148,6 @@ class SignupScreen extends ConsumerWidget {
     required BuildContext context,
     required String label,
     required bool isObscure,
-    required TextEditingController controller,
     required Function(String) onChanged,
     required VoidCallback toggleObscure,
     String? Function(String?)? validator,
@@ -151,7 +155,6 @@ class SignupScreen extends ConsumerWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
       child: TextFormField(
-        controller: controller,
         obscureText: isObscure,
         decoration: InputDecoration(
           labelText: label,
@@ -230,7 +233,7 @@ class SignupScreen extends ConsumerWidget {
         ),
         child: Center(
           child: loading.loading
-              ? const CircularProgressIndicator(color: Colors.white)
+              ? CircularProgressIndicator(color: Colors.white)
               : Text("Créer un compte",
                   style: TextStyle(color: Colors.white, fontSize: 16.sp)),
         ),
