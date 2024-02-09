@@ -45,19 +45,31 @@ class HomeScreen extends ConsumerWidget {
             opacity: model.courseStart ? 0.8 : 0,
             child: SafeArea(
               child: Container(
-                alignment: Alignment(0, 0),
-                height: 0.03.sh, // Adjusted for responsiveness
-                width: 0.31.sw, // Adjusted for responsiveness
+                alignment: Alignment.center,
+                height: 60.h, // Hauteur ajustée pour plus de visibilité
+                width: 150.w, // Largeur ajustée pour plus de visibilité
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.all(
-                      Radius.circular(20.r)), // Adjusted for responsiveness
+                  borderRadius: BorderRadius.all(Radius.circular(
+                      25.r)), // Bords arrondis pour une apparence moderne
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black
+                          .withOpacity(0.2), // Ombre pour la profondeur
+                      spreadRadius: 0,
+                      blurRadius: 10.r, // Flou de l'ombre
+                      offset: Offset(0, 4.h), // Position de l'ombre
+                    ),
+                  ],
                 ),
                 child: Text(
                   '${chrono.hour.toString().padLeft(2, '0')} : ${chrono.minute.toString().padLeft(2, '0')} : ${chrono.seconds.toString().padLeft(2, '0')} ',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20.sp, // Adjusted for responsiveness
+                    fontSize:
+                        16.sp, // Taille de police ajustée pour l'équilibre
+                    fontWeight:
+                        FontWeight.bold, // Gras pour une meilleure lisibilité
                   ),
                 ),
               ),
