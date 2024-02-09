@@ -9,7 +9,6 @@ import 'package:unicons/unicons.dart';
 
 import '../../data/network/userRepository.dart';
 import '../../model/Parcour.dart';
-import '../../model/User.dart';
 import '../../utils/visibility.dart';
 
 final parcourDetailsViewModel =

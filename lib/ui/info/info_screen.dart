@@ -16,33 +16,33 @@ class InfoScreen extends ConsumerWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return SafeArea(
-        maintainBottomViewPadding: true,
-        child: Stack(
-          children: [
-            PositionedDirectional(
-              end: width * .02,
-              bottom: height * .87,
-              child: IconButton(
-                icon: Icon(
-                  UniconsLine.setting,
-                  size: width * .1,
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, SettingsScreen.route);
-                },
+      maintainBottomViewPadding: true,
+      child: Stack(
+        children: [
+          PositionedDirectional(
+            end: width * .02,
+            bottom: height * .87,
+            child: IconButton(
+              icon: Icon(
+                UniconsLine.setting,
+                size: width * .1,
               ),
+              onPressed: () {
+                Navigator.pushNamed(context, SettingsScreen.route);
+              },
             ),
-            Column(
-              children: [
-                buildTopInfo(height, width, context),
-                buildMiddleNavInfo(height, width),
-                Expanded(
-                    child: model.widgetOptions.elementAt(model.selectedIndex)),
-              ],
-            ),
-          ],
-        ),
-      );
+          ),
+          Column(
+            children: [
+              buildTopInfo(context),
+              buildMiddleNavInfo(),
+              Expanded(
+                  child: model.widgetOptions.elementAt(model.selectedIndex)),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
 

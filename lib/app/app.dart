@@ -4,18 +4,19 @@ import 'package:athlete_iq/utils/rive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rive/rive.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // Assurez-vous que ceci est ajouté
 import '../model/rive_asset.dart';
 import 'app_view_model_provider.dart';
 
 class App extends ConsumerWidget {
   const App({Key? key}) : super(key: key);
   static const String route = "/home";
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
     final appModel = ref.watch(appViewModelProvider);
     final homeModel = ref.watch(homeViewModelProvider);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       extendBody: true,
@@ -28,16 +29,19 @@ class App extends ConsumerWidget {
           child: !homeModel.courseStart
               ? Container(
                   padding: EdgeInsets.only(
-                      bottom: height * .01,
-                      top: height * .01,
-                      left: width * .05,
-                      right: width * .05),
+                    bottom: 5.h,
+                    top: 5.h,
+                    left: 20.w,
+                    right: 20.w,
+                  ),
                   margin: EdgeInsets.symmetric(
-                      horizontal: width * .06, vertical: height * .04),
+                    horizontal: 18.w,
+                    vertical: 24.h,
+                  ),
                   decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withOpacity(0.9),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(24))),
+                    color: Theme.of(context).primaryColor.withOpacity(0.9),
+                    borderRadius: BorderRadius.all(Radius.circular(24.r)),
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -62,29 +66,33 @@ class App extends ConsumerWidget {
                                   isActive: bottomNavs[index] ==
                                       appModel.selectedBottomNav),
                               SizedBox(
-                                height: 40,
-                                width: 40,
+                                height: 40.h, // Modifié
+                                width: 40.w, // Modifié
                                 child: Opacity(
                                   opacity: bottomNavs[index] ==
                                           appModel.selectedBottomNav
                                       ? 1
                                       : 0.5,
-                                  child: RiveAnimation.asset(bottomNavs[1].src,
-                                      artboard: bottomNavs[index].artboard,
-                                      onInit: (artboard) {
-                                    StateMachineController controller =
-                                        RiveUtils.getRiveController(artboard,
-                                            stateMachineName: bottomNavs[index]
-                                                .stateMachineName);
-                                    bottomNavs[index].input =
-                                        controller.findSMI("active") as SMIBool;
-                                  }),
+                                  child: RiveAnimation.asset(
+                                    bottomNavs[1].src,
+                                    artboard: bottomNavs[index].artboard,
+                                    onInit: (artboard) {
+                                      StateMachineController controller =
+                                          RiveUtils.getRiveController(
+                                        artboard,
+                                        stateMachineName:
+                                            bottomNavs[index].stateMachineName,
+                                      );
+                                      bottomNavs[index].input = controller
+                                          .findSMI("active") as SMIBool;
+                                    },
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 )

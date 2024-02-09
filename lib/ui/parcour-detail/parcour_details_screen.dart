@@ -1,25 +1,26 @@
 import 'dart:async';
-
 import 'package:athlete_iq/model/Parcour.dart';
 import 'package:athlete_iq/ui/parcour-detail/parcour_details_view_model.dart';
 import 'package:athlete_iq/ui/info/provider/user_provider.dart';
 import 'package:athlete_iq/ui/parcour-detail/update_parcour_screen.dart';
+import 'package:athlete_iq/utils/map_utils.dart';
+import 'package:athlete_iq/utils/routes/customPopupRoute.dart';
 import 'package:athlete_iq/utils/stringCapitalize.dart';
+import 'package:athlete_iq/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
 import '../../app/app.dart';
-import '../../utils/map_utils.dart';
-import '../../utils/routes/customPopupRoute.dart';
-import '../../utils/utils.dart';
+import '../../model/User.dart';
 import '../info/components/caractéristiqueComponent.dart';
 
 class ParcourDetails extends ConsumerStatefulWidget {
-  const ParcourDetails(this.args, {Key? key}) : super(key: key);
   final Object args;
+  const ParcourDetails(this.args, {Key? key}) : super(key: key);
   static const route = "/parcours/details";
 
   @override
@@ -27,47 +28,45 @@ class ParcourDetails extends ConsumerStatefulWidget {
 }
 
 class ParcourDetailsState extends ConsumerState<ParcourDetails> {
+  late final Completer<GoogleMapController> _controller =
+      Completer<GoogleMapController>();
+
   @override
   void initState() {
     super.initState();
-    ref.read(parcourDetailsViewModel).initValue(widget.args as Parcours);
+    final Parcours parcour = widget.args as Parcours;
+    ref.read(parcourDetailsViewModel.notifier).initValue(parcour);
   }
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
-    final Completer<GoogleMapController> _controller =
-        Completer<GoogleMapController>();
-    final Parcours parcour = widget.args as Parcours;
+    ScreenUtil.init(context,
+        designSize: const Size(360, 690), minTextAdapt: true);
     final model = ref.watch(parcourDetailsViewModel);
-    final user = ref.watch(firestoreUserProvider);
+    final AsyncValue<UserModel> userAsyncValue =
+        ref.watch(firestoreUserProvider);
+    final Parcours parcour = widget.args as Parcours;
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 300.0,
+            expandedHeight: 300.h,
+            pinned: true,
             flexibleSpace: FlexibleSpaceBar(
+              centerTitle: true,
+              titlePadding: EdgeInsets.only(bottom: 13.h),
               title: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.9),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
+                width: double.infinity,
+                alignment: Alignment.bottomCenter,
                 child: Text(
                   model.title.capitalize(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.black54,
-                    fontSize: 18,
+                  style: TextStyle(
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
+                  textAlign: TextAlign.center,
                 ),
               ),
               background: GoogleMap(
@@ -78,77 +77,90 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                 scrollGesturesEnabled: false,
                 myLocationButtonEnabled: false,
                 mapType: MapType.normal,
-                initialCameraPosition: const CameraPosition(
-                  target: LatLng(0, 0),
-                  zoom: 11,
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(parcour.allPoints.first.latitude!,
+                      parcour.allPoints.first.longitude!),
+                  zoom: 14,
                 ),
                 polylines: {
                   Polyline(
-                    polylineId: PolylineId(model.title),
-                    points: parcour.allPoints
-                        .map((e) => LatLng(e.latitude!, e.longitude!))
-                        .toList(),
-                    width: 4,
-                    color: Colors.blue,
-                  )
+                      polylineId: PolylineId('parcourLine'),
+                      points: parcour.allPoints
+                          .map((e) => LatLng(e.latitude!, e.longitude!))
+                          .toList(),
+                      color: Colors.blue,
+                      width: 5),
                 },
-                onMapCreated: (GoogleMapController controller) {
+                onMapCreated: (GoogleMapController controller) async {
                   _controller.complete(controller);
+                  await Future.delayed(Duration(
+                      milliseconds: 100)); // Allow time for the map to render
                   controller.animateCamera(CameraUpdate.newLatLngBounds(
                       MapUtils.boundsFromLatLngList(parcour.allPoints
                           .map((e) => LatLng(e.latitude!, e.longitude!))
                           .toList()),
-                      50));
+                      100));
                 },
               ),
             ),
-            pinned: true,
             leading: IconButton(
-              icon: Icon(UniconsLine.arrow_left, size: width * .1),
-              onPressed: () => Navigator.pop(context),
-            ),
-            actions: [
-              user.when(
-                data: (user) {
-                  return IconButton(
-                    icon: user.fav.contains(parcour.id)
-                        ? Icon(
-                            UniconsLine.heart,
-                            size: width * .1,
-                            color: Colors.red,
-                          )
-                        : Icon(UniconsLine.heart, size: width * .1),
-                    onPressed: () {
+                icon: Icon(UniconsLine.arrow_left, size: 24.w),
+                onPressed: () => Navigator.of(context).pop()),
+            actions: <Widget>[
+              userAsyncValue.when(
+                data: (user) => IconButton(
+                  icon: Icon(
                       user.fav.contains(parcour.id)
-                          ? model.removeToFav(parcour)
-                          : model.addToFav(parcour);
-                    },
-                  );
-                },
-                error: (error, stackTrace) {
-                  if (kDebugMode) {
-                    print(error.toString());
-                  }
-                  return Text(error.toString());
-                },
-                loading: () => const CircularProgressIndicator(),
+                          ? UniconsLine.heart
+                          : UniconsLine.heart_alt,
+                      size: 24.w,
+                      color: user.fav.contains(parcour.id)
+                          ? Colors.red
+                          : Colors.white),
+                  onPressed: () {
+                    if (user.fav.contains(parcour.id)) {
+                      model.removeToFav(parcour);
+                    } else {
+                      model.addToFav(parcour);
+                    }
+                  },
+                ),
+                loading: () => CircularProgressIndicator(),
+                error: (_, __) => Icon(UniconsLine.circle, size: 24.w),
               ),
-              user.when(
+              userAsyncValue.when(
                 data: (user) {
                   return user.id == parcour.owner
                       ? IconButton(
-                          icon: Icon(Icons.menu, size: width * .1),
+                          icon: Icon(
+                            Icons.menu,
+                            size: 38.w,
+                            color: Colors.white,
+                          ),
                           onPressed: () {
+                            final RenderBox overlay = Overlay.of(context)!
+                                .context
+                                .findRenderObject() as RenderBox;
                             showMenu(
                               context: context,
-                              position: RelativeRect.fromLTRB(width, 100, 0, 0),
+                              position: RelativeRect.fromRect(
+                                Rect.fromPoints(
+                                  overlay.localToGlobal(Offset(0.95.sw - 48.w,
+                                      5.h)), // Ajustement pour le bouton menu en haut à droite
+                                  overlay.localToGlobal(Offset(
+                                      0.95.sw,
+                                      kToolbarHeight
+                                          .h)), // Ajustement pour la hauteur de la toolbar
+                                ),
+                                Offset.zero & overlay.size,
+                              ),
                               items: [
                                 PopupMenuItem(
                                   value: "modifier",
                                   child: Row(
-                                    children: const [
+                                    children: [
                                       Icon(Icons.edit),
-                                      SizedBox(width: 10),
+                                      SizedBox(width: 10.w),
                                       Text("Modifier"),
                                     ],
                                   ),
@@ -156,15 +168,15 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                                 PopupMenuItem(
                                   value: "supprimer",
                                   child: Row(
-                                    children: const [
+                                    children: [
                                       Icon(Icons.delete),
-                                      SizedBox(width: 10),
+                                      SizedBox(width: 10.w),
                                       Text("Supprimer"),
                                     ],
                                   ),
                                 ),
                               ],
-                              elevation: 8.0,
+                              elevation: 8.0.h,
                             ).then((value) {
                               if (value == "modifier") {
                                 Navigator.of(context).push(
@@ -180,7 +192,8 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                                     context: context,
                                     builder: (context) {
                                       return AlertDialog(
-                                        title: const Text("Supprimer le parcour"),
+                                        title:
+                                            const Text("Supprimer le parcour"),
                                         content: const Text(
                                             "Êtes-vous sur de vouloir supprimer le parcour ?"),
                                         actions: [
@@ -229,94 +242,57 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
             ],
           ),
           SliverToBoxAdapter(
-            child: Container(
-              padding: EdgeInsets.all(width * .04),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Description',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24.0,
-                        ),
-                      ),
-                      Text(
-                        "${parcour.totalDistance.toStringAsFixed(2)} km",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: height * .02),
+                  Text('Description',
+                      style: TextStyle(
+                          fontSize: 18.sp, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 10.h),
                   Text(
-                    model.description.isNotEmpty
-                        ? model.description.capitalize()
-                        : 'Aucune description',
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                    ),
-                  ),
-                  SizedBox(height: height * .04),
-                  const Text(
-                    'Caractéristiques',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24.0,
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: height * .007),
-                      CaracteristiqueWidget(
-                        iconData: Icons.speed,
-                        label: 'Vitesse moyenne',
-                        value: parcour.VM.toStringAsFixed(2),
-                        unit: 'km/h',
-                      ),
-                      const Divider(),
-                      CaracteristiqueWidget(
-                        iconData: Icons.speed,
-                        label: 'Vitesse maximale',
-                        value:
-                            model.caculatMaxSpeed(parcour)!.toStringAsFixed(2),
-                        unit: 'km/h',
-                      ),
-                      const Divider(),
-                      CaracteristiqueWidget(
-                        iconData: Icons.speed,
-                        label: 'Vitesse minimale',
-                        value:
-                            model.calculatMinSpeed(parcour)!.toStringAsFixed(2),
-                        unit: 'km/h',
-                      ),
-                      const Divider(),
-                      CaracteristiqueWidget(
-                        iconData: Icons.terrain,
-                        label: 'Altitude maximale',
-                        value: model
-                            .caculatMaxAltitude(parcour)!
-                            .toStringAsFixed(2),
-                        unit: 'm',
-                      ),
-                      const Divider(),
-                      CaracteristiqueWidget(
-                        iconData: Icons.terrain,
-                        label: 'Altitude minimale',
-                        value: model
-                            .calculatMinAltitude(parcour)!
-                            .toStringAsFixed(2),
-                        unit: 'm',
-                      ),
-                      SizedBox(height: height * .02),
-                    ],
-                  ),
+                      model.description.isNotEmpty
+                          ? model.description
+                          : 'Aucune description disponible',
+                      style: TextStyle(fontSize: 16.sp)),
+                  SizedBox(height: 20.h),
+                  Text('Caractéristiques',
+                      style: TextStyle(
+                          fontSize: 18.sp, fontWeight: FontWeight.bold)),
+                  CaracteristiqueWidget(
+                      iconData: Icons.speed,
+                      label: 'Vitesse moyenne',
+                      value:
+                          model.caculatMaxSpeed(parcour)?.toStringAsFixed(2) ??
+                              'N/A',
+                      unit: 'km/h'),
+                  Divider(),
+                  CaracteristiqueWidget(
+                      iconData: Icons.speed,
+                      label: 'Vitesse maximale',
+                      value:
+                          model.calculatMinSpeed(parcour)?.toStringAsFixed(2) ??
+                              'N/A',
+                      unit: 'km/h'),
+                  Divider(),
+                  CaracteristiqueWidget(
+                      iconData: Icons.terrain,
+                      label: 'Altitude maximale',
+                      value: model
+                              .caculatMaxAltitude(parcour)
+                              ?.toStringAsFixed(2) ??
+                          'N/A',
+                      unit: 'm'),
+                  Divider(),
+                  CaracteristiqueWidget(
+                      iconData: Icons.terrain,
+                      label: 'Altitude minimale',
+                      value: model
+                              .calculatMinAltitude(parcour)
+                              ?.toStringAsFixed(2) ??
+                          'N/A',
+                      unit: 'm'),
                 ],
               ),
             ),

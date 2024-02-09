@@ -3,8 +3,8 @@ import 'package:athlete_iq/ui/components/loading_layer.dart';
 import 'package:athlete_iq/ui/providers/loading_provider.dart';
 import 'package:athlete_iq/ui/settings/settings_view_model_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
@@ -15,254 +15,186 @@ import '../auth/providers/auth_view_model_provider.dart';
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
   static const route = "/settings";
+
   @override
   SettingsScreenState createState() => SettingsScreenState();
 }
 
 class SettingsScreenState extends ConsumerState<SettingsScreen> {
-
-
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   void initState() {
-    Future.delayed(Duration.zero, () async {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         await ref.read(settingsViewModelProvider).getUserInfo();
       } catch (e) {
         Utils.flushBarErrorMessage(e.toString(), context);
       }
     });
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context, designSize: const Size(360, 690));
     final model = ref.watch(settingsViewModelProvider);
     final authModel = ref.watch(authViewModelProvider);
     final isLoading = ref.watch(loadingProvider);
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
-        centerTitle: false,
-        title: const Text(
+        title: Text(
           "Paramètres",
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+          style: TextStyle(fontSize: 20.sp),
         ),
         leading: IconButton(
-            icon: Icon(UniconsLine.arrow_left, size: width * .1),
-            onPressed: () => Navigator.pop(context)),
+          icon: Icon(UniconsLine.arrow_left, size: 24.w),
+          onPressed: () => Navigator.pop(context),
+        ),
         actions: [
           IconButton(
-              onPressed: () async {
-                try {
-                  await authModel.logout().then((value) => {
-                  FirebaseFirestore.instance.terminate(),
-                      Navigator.pushNamedAndRemoveUntil(
-                      context, LoginScreen.route, (Route<dynamic> route) => false)
-                  });
-                } catch (e) {
-                  Utils.flushBarErrorMessage(e.toString(), context);
-                  if (kDebugMode) {
-                    print(e);
-                  }
-                }
-              },
-              icon: Icon(UniconsLine.exit, size: width * .1)),
+            icon: Icon(UniconsLine.exit, size: 24.w),
+            onPressed: () async {
+              await authModel.logout();
+              FirebaseFirestore.instance.terminate();
+              Navigator.pushNamedAndRemoveUntil(
+                  context, LoginScreen.route, (route) => false);
+            },
+          ),
         ],
       ),
-      resizeToAvoidBottomInset: false,
-      body: LoadingLayer(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: width * .02),
-          height: height * .50,
-          width: double.infinity,
-          child: Form(
-            key: model.formSettingKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextFormField(
-                  controller: model.pseudoController,
-                  keyboardType: TextInputType.name,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.account_circle_outlined),
-                    labelText: "Pseudo",
-                  ),
-                  onChanged: (value) {
-                    model.actu();
-                  },
-                ),
-                TextFormField(
-                  controller: model.emailController,
-                  autocorrect: false,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.email_outlined),
-                    labelText: "Email",
-                  ),
-                  onChanged: (value) {
-                    model.actu();
-                  },
-                  validator: (v) => model.emailValidate(v!),
-                ),
-                TextFormField(
-                  obscureText: model.obscurePassword,
-                  controller: model.passwordController,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.lock_outline_rounded),
-                    labelText: "Mot de passe",
-                    suffixIcon: IconButton(
+      body: isLoading.loading
+          ? LoadingLayer(child: SizedBox.shrink())
+          : SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+              child: Form(
+                key: model.formSettingKey,
+                child: Column(
+                  children: [
+                    _buildTextFormField(model.pseudoController, "Pseudo",
+                        UniconsLine.user_circle),
+                    _buildTextFormField(model.emailController, "Email",
+                        UniconsLine.envelope_open),
+                    _buildPasswordField("Mot de passe",
+                        model.passwordController, _obscurePassword, () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    }),
+                    _buildPasswordField(
+                        "Confirmer le mot de passe",
+                        model.confirmPasswordController,
+                        _obscureConfirmPassword, () {
+                      setState(() {
+                        _obscureConfirmPassword = !_obscureConfirmPassword;
+                      });
+                    }),
+                    _buildTextFormField(model.objectifController, "Objectif",
+                        UniconsLine.award),
+                    SizedBox(height: 30.h),
+                    _buildActionButton(
+                      text: "Modifier",
                       onPressed: () {
-                        model.obscurePassword = !model.obscurePassword;
+                        // Action de modification ici.
                       },
-                      icon: Icon(model.obscurePassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined),
+                      color: Theme.of(context).primaryColor,
                     ),
-                  ),
-                  onChanged: (value) {
-                    model.actu();
-                  },
-                ),
-                TextFormField(
-                  obscureText: model.obscureConfirmPassword,
-                  controller: model.confirmPasswordController,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.lock_outline_rounded),
-                    labelText: "Confirmer le mot de passe",
-                    suffixIcon: IconButton(
+                    SizedBox(height: 10.h),
+                    _buildActionButton(
+                      text: "Supprimer votre compte",
                       onPressed: () {
-                        model.obscureConfirmPassword =
-                            !model.obscureConfirmPassword;
+                        // Action de suppression ici.
                       },
-                      icon: Icon(model.obscureConfirmPassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined),
+                      color: Colors.red,
                     ),
-                  ),
-                  validator: (v) => v != model.password
-                      ? "Les mots de passe ne correspondent pas"
-                      : null,
-                  onChanged: (value) {
-                    model.actu();
-                  },
+                  ],
                 ),
-                TextFormField(
-                  controller: model.objectifController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.flag),
-                    labelText: "Objectif",
-                  ),
-                  onChanged: (value) {
-                    model.actu();
-                  },
-                ),
-                SizedBox(
-                  height: height * .015,
-                ),
-                InkWell(
-                  onTap: model.valideForm()
-                      ? () async {
-                          if (model.formSettingKey.currentState!.validate()) {
-                            try {
-                              await model.updateUser().then((value) =>
-                                  Utils.toastMessage(
-                                      "Votre profile à été mis  à jour"));
-                            } catch (e) {
-                              Utils.flushBarErrorMessage(e.toString(), context);
-                            }
-                          }
-                        }
-                      : null,
-                  child: Container(
-                    height: 40,
-                    width: 200,
-                    decoration: BoxDecoration(
-                        color: model.valideForm()
-                            ? Theme.of(context).buttonTheme.colorScheme!.primary
-                            : Theme.of(context).disabledColor,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Center(
-                      child: Text(
-                              "Modifier",
-                              style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.background),
-                            ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () async {
-                    if (model.formSettingKey.currentState!.validate()) {
-                      _showConfirmationDialog(context, model, authModel);
-                    }
-                  },
-                  child: Container(
-                    height: 40,
-                    width: 200,
-                    decoration: BoxDecoration(
-                        color: Colors.redAccent,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Center(
-                      child: Text(
-                              "Supprimer votre compte",
-                              style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.background),
-                            ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+    );
+  }
+
+  Widget _buildTextFormField(
+      TextEditingController controller, String label, IconData icon) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+      ),
+    );
+  }
+
+  Widget _buildPasswordField(String label, TextEditingController controller,
+      bool obscureText, VoidCallback toggleVisibility) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(UniconsLine.lock),
+        suffixIcon: IconButton(
+          icon: Icon(obscureText ? UniconsLine.eye_slash : UniconsLine.eye),
+          onPressed: toggleVisibility,
         ),
       ),
     );
-
-
-
   }
-}
 
-void _showConfirmationDialog(BuildContext context, SettingsViewModel model, AuthViewModel authModel) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
+  Widget _buildActionButton({
+    required String text,
+    required VoidCallback onPressed,
+    required Color color,
+  }) {
+    return Container(
+      height: 48.h, // Hauteur du bouton
+      width: double.infinity, // Largeur du bouton
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.r), // Arrondi des angles
+          ),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+              fontSize: 16.sp, color: Colors.white // Taille du texte adaptée
+              ),
+        ),
+      ),
+    );
+  }
+
+  void _showConfirmationDialog(
+      BuildContext context, SettingsViewModel model, AuthViewModel authModel) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
         title: Text("Confirmation"),
-        content: Text("Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible."),
+        content: Text(
+            "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible."),
         actions: [
           TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Ferme la boîte de dialogue
-            },
-            child: Text("Annuler"),
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text("Annuler", style: TextStyle(fontSize: 14.sp)),
           ),
           TextButton(
             onPressed: () async {
-              try {
-                await model.deleteUser().then((value) =>
-                    Utils.toastMessage("Votre compte à été supprimé"));
-                await authModel.logout().then((value) => {
-                FirebaseFirestore.instance.terminate(),
-                    Navigator.of(context).pop(),
-                Navigator.pushNamedAndRemoveUntil(
-                    context, LoginScreen.route, (Route<dynamic> route) => false)
-                }
-                );
-              } catch (e) {
-                Utils.flushBarErrorMessage(e.toString(), context);
-              }
+              await model.deleteUser();
+              await authModel.logout();
+              FirebaseFirestore.instance.terminate();
+              Navigator.pushNamedAndRemoveUntil(
+                  context, LoginScreen.route, (_) => false);
             },
-            child: Text("Supprimer"),
+            child: Text("Supprimer",
+                style: TextStyle(fontSize: 14.sp, color: Colors.red)),
           ),
         ],
-      );
-    },
-  );
+      ),
+    );
+  }
 }

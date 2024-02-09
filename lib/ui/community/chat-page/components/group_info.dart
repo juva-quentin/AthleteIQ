@@ -3,6 +3,7 @@ import 'package:athlete_iq/ui/community/chat-page/chat_view_model_provider.dart'
 import 'package:athlete_iq/ui/community/chat-page/components/update_group_screen.dart';
 import 'package:athlete_iq/ui/community/providers/active_groups_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
@@ -10,18 +11,18 @@ import '../../../../app/app.dart';
 import '../../../../data/network/userRepository.dart';
 import '../../../../utils/routes/customPopupRoute.dart';
 import '../../../../utils/utils.dart';
-import '../../../parcour-detail/update_parcour_screen.dart';
 
 class GroupInfo extends ConsumerWidget {
-  const GroupInfo(this.args, {Key, key}) : super(key: key);
+  const GroupInfo(this.args, {Key? key}) : super(key: key);
   final Object args;
   static const route = "/groups/group_info";
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final width = MediaQuery.of(context).size.width;
     final group = ref.watch(streamGroupsProvider(args.toString()));
     final userRepo = ref.watch(userRepositoryProvider);
     final model = ref.watch(chatViewModelProvider);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -30,175 +31,182 @@ class GroupInfo extends ConsumerWidget {
         leading: IconButton(
           icon: Icon(
             UniconsLine.arrow_left,
-            size: width * .1,
+            size: 35.w,
             color: Colors.white,
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text("Information",
-            style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w600,
-                color: Colors.white)),
+        title: Text(
+          "Information",
+          style: TextStyle(
+            fontSize: 24.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
         actions: [
           group.when(
-              data: (data) {
-                return FutureBuilder<UserModel>(
-                    future:
-                    userRepo.getUserWithId(userId: data.admin),
-                    builder:
-                        (context, AsyncSnapshot<UserModel> snapshot) {
-                      if (snapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.connectionState ==
-                          ConnectionState.done) {
-                        if (snapshot.hasError) {
-                          return const Text('Error');
-                        } else if (snapshot.hasData) {
-                          return model.isAdmin(data.admin) ? IconButton(
+            data: (data) {
+              return FutureBuilder<UserModel>(
+                future: userRepo.getUserWithId(userId: data.admin),
+                builder: (context, AsyncSnapshot<UserModel> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasError) {
+                      return const Text('Error');
+                    } else if (snapshot.hasData) {
+                      return model.isAdmin(data.admin)
+                          ? IconButton(
                               onPressed: () {
                                 Navigator.of(context).push(
                                   CustomPopupRoute(
                                     builder: (BuildContext context) {
-                                      return UpdateGroupScreen(groupId: args.toString(),);
+                                      return UpdateGroupScreen(
+                                        groupId: args.toString(),
+                                      );
                                     },
                                   ),
                                 );
                               },
                               icon: Icon(Icons.edit,
-                                  size: width * .07, color: Colors.white)) : IconButton(
+                                  size: 28.w, color: Colors.white),
+                            )
+                          : IconButton(
                               onPressed: () {
                                 showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: const Text("Quitter le groupe"),
-                                        content: const Text(
-                                            "Êtes-vous sur de vouloir quitter le groupe ?"),
-                                        actions: [
-                                          IconButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            icon: const Icon(
-                                              Icons.cancel,
-                                              color: Colors.red,
-                                            ),
+                                  barrierDismissible: false,
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text("Quitter le groupe"),
+                                      content: const Text(
+                                          "Êtes-vous sûr de vouloir quitter le groupe ?"),
+                                      actions: [
+                                        IconButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          icon: const Icon(
+                                            Icons.cancel,
+                                            color: Colors.red,
                                           ),
-                                          IconButton(
-                                            icon: const Icon(
-                                              Icons.done,
-                                              color: Colors.green,
-                                            ),
-                                            onPressed: () async {
-                                              try {
-                                                await model.removeUserToGroup();
-
-                                              } catch (e) {
-                                                Utils.flushBarErrorMessage(
-                                                    e.toString(), context);
-                                              }
-                                              Navigator.pushNamed(context, App.route);
-                                            },
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.done,
+                                            color: Colors.green,
                                           ),
-                                        ],
-                                      );
-                                    });
+                                          onPressed: () async {
+                                            try {
+                                              await model.removeUserToGroup();
+                                            } catch (e) {
+                                              Utils.flushBarErrorMessage(
+                                                  e.toString(), context);
+                                            }
+                                            Navigator.pushNamed(
+                                                context, App.route);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
                               },
                               icon: Icon(Icons.exit_to_app,
-                                  size: width * .1, color: Colors.white));
-                        } else {
-                          return const Text('Empty data');
-                        }
-                      } else {
-                        return Text(
-                            'State: ${snapshot.connectionState}');
-                      }
-                    });
-              },
-              error: (error, _) {
-                return Text(Error as String);
-              },
-              loading: () => const CircularProgressIndicator()),
+                                  size: 35.w, color: Colors.white),
+                            );
+                    } else {
+                      return const Text('Empty data');
+                    }
+                  } else {
+                    return Text('State: ${snapshot.connectionState}');
+                  }
+                },
+              );
+            },
+            error: (error, _) => Text(error.toString()),
+            loading: () => const CircularProgressIndicator(),
+          ),
         ],
       ),
       body: group.when(
-          data: (data) {
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Theme.of(context).primaryColor.withOpacity(0.2)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Theme.of(context).primaryColor,
-                          child: Text(
-                            data.groupName.substring(0, 1).toUpperCase(),
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white),
+        data: (data) {
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(20.r),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30.r),
+                    color: Theme.of(context).primaryColor.withOpacity(0.2),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        radius: 30.r,
+                        backgroundColor: Theme.of(context).primaryColor,
+                        child: Text(
+                          data.groupName.substring(0, 1).toUpperCase(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            fontSize: 18.sp,
                           ),
                         ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Group: ${data.groupName}",
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      SizedBox(width: 20.w),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Group: ${data.groupName}",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18.sp,
                             ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            FutureBuilder<UserModel>(
-                                future:
-                                    userRepo.getUserWithId(userId: data.admin),
-                                builder:
-                                    (context, AsyncSnapshot<UserModel> snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return const CircularProgressIndicator();
-                                  } else if (snapshot.connectionState ==
-                                      ConnectionState.done) {
-                                    if (snapshot.hasError) {
-                                      return const Text('Error');
-                                    } else if (snapshot.hasData) {
-                                      return Text(
-                                          "Admin: ${snapshot.data?.pseudo}");
-                                    } else {
-                                      return const Text('Empty data');
-                                    }
-                                  } else {
-                                    return Text(
-                                        'State: ${snapshot.connectionState}');
-                                  }
-                                }),
-                          ],
-                        )
-                      ],
-                    ),
+                          ),
+                          SizedBox(height: 5.h),
+                          FutureBuilder<UserModel>(
+                            future: userRepo.getUserWithId(userId: data.admin),
+                            builder:
+                                (context, AsyncSnapshot<UserModel> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              } else if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                if (snapshot.hasError) {
+                                  return const Text('Error');
+                                } else if (snapshot.hasData) {
+                                  return Text(
+                                    "Admin: ${snapshot.data?.pseudo}",
+                                    style: TextStyle(fontSize: 16.sp),
+                                  );
+                                } else {
+                                  return const Text('Empty data');
+                                }
+                              } else {
+                                return Text(
+                                    'State: ${snapshot.connectionState}');
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  memberList(args.toString()),
-                ],
-              ),
-            );
-          },
-          error: (error, _) {
-            return Text(Error as String);
-          },
-          loading: () => const CircularProgressIndicator()),
+                ),
+                memberList(args.toString()),
+              ],
+            ),
+          );
+        },
+        error: (error, _) => Text(error.toString()),
+        loading: () => const CircularProgressIndicator(),
+      ),
     );
   }
 
@@ -208,59 +216,63 @@ class GroupInfo extends ConsumerWidget {
         final group = ref.watch(streamGroupsProvider(id));
         final userRepo = ref.watch(userRepositoryProvider);
         return group.when(
-            data: (data) {
-              return ListView.builder(
-                itemCount: data.members.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return FutureBuilder<UserModel>(
-                      future:
-                          userRepo.getUserWithId(userId: data.members[index]),
-                      builder: (context, AsyncSnapshot<UserModel> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.connectionState ==
-                            ConnectionState.done) {
-                          if (snapshot.hasError) {
-                            return const Text('Error');
-                          } else if (snapshot.hasData) {
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 10),
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  radius: 30,
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor,
-                                  child: Text(
-                                    snapshot.data!.pseudo
-                                        .substring(0, 1)
-                                        .toUpperCase(),
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold),
-                                  ),
+          data: (data) {
+            return ListView.builder(
+              itemCount: data.members.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return FutureBuilder<UserModel>(
+                  future: userRepo.getUserWithId(userId: data.members[index]),
+                  builder: (context, AsyncSnapshot<UserModel> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.done) {
+                      if (snapshot.hasError) {
+                        return const Text('Error');
+                      } else if (snapshot.hasData) {
+                        return Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 5.w, vertical: 10.h),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              radius: 30.r,
+                              backgroundColor: Theme.of(context).primaryColor,
+                              child: Text(
+                                snapshot.data!.pseudo
+                                    .substring(0, 1)
+                                    .toUpperCase(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                title: Text(snapshot.data!.pseudo),
-                                subtitle: const Text('Utilisateur'),
                               ),
-                            );
-                          } else {
-                            return const Text('Empty data');
-                          }
-                        } else {
-                          return Text('State: ${snapshot.connectionState}');
-                        }
-                      });
-                },
-              );
-            },
-            error: (error, _) {
-              return Text(Error as String);
-            },
-            loading: () => const CircularProgressIndicator());
+                            ),
+                            title: Text(
+                              snapshot.data!.pseudo,
+                              style: TextStyle(fontSize: 16.sp),
+                            ),
+                            subtitle: Text(
+                              'Utilisateur',
+                              style: TextStyle(fontSize: 14.sp),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return const Text('Empty data');
+                      }
+                    } else {
+                      return Text('State: ${snapshot.connectionState}');
+                    }
+                  },
+                );
+              },
+            );
+          },
+          error: (error, _) => Text(error.toString()),
+          loading: () => const CircularProgressIndicator(),
+        );
       },
     );
   }

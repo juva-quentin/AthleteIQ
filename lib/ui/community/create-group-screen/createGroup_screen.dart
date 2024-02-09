@@ -2,16 +2,14 @@ import 'dart:io';
 
 import 'package:athlete_iq/ui/community/create-group-screen/create_group_view_model_provider.dart';
 import 'package:athlete_iq/ui/components/loading_layer.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../utils/utils.dart';
 
 class CreateGroupScreen extends ConsumerWidget {
-  CreateGroupScreen({Key, key}) : super(key: key);
+  const CreateGroupScreen({Key, key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -93,13 +91,18 @@ class CreateGroupScreen extends ConsumerWidget {
                         width: width * .34,
                         decoration: const BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(15))),
-                        padding: EdgeInsets.fromLTRB(
-                            width * .02, height * .02, width * .02, height * .02),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15))),
+                        padding: EdgeInsets.fromLTRB(width * .02, height * .02,
+                            width * .02, height * .02),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(model.switchCaseChangeType(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                            Text(
+                              model.switchCaseChangeType(),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
                           ],
                         ),
                       ),
