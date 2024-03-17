@@ -289,12 +289,7 @@ class HomeViewModel extends ChangeNotifier {
             title: parcours[i].title,
             snippet:
                 "Par : ${await _userRepo.getUserWithId(userId: parcours[i].owner).then((value) => value.pseudo)}"),
-        position: LatLng(
-          parcours[i].allPoints.first.latitude!,
-          parcours[i].allPoints.first.longitude!,
-        ),
         icon: _customMarkerIcon!,
-          buildPolylinesAndMarkers(parcours);
       );
       updatedMarkers.add(newMarker);
     }
