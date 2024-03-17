@@ -5,18 +5,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../data/network/userRepository.dart';
-import '../providers/loading_provider.dart';
+import '../../../data/network/userRepository.dart';
+import '../../providers/loading_provider.dart';
 
-final settingsViewModelProvider =
-    ChangeNotifierProvider.autoDispose<SettingsViewModel>(
-  (ref) => SettingsViewModel(ref),
+final profileViewModelProvider =
+    ChangeNotifierProvider.autoDispose<ProfileViewModel>(
+  (ref) => ProfileViewModel(ref),
 );
 
-class SettingsViewModel extends ChangeNotifier {
+class ProfileViewModel extends ChangeNotifier {
   final Ref _reader;
 
-  SettingsViewModel(this._reader);
+  ProfileViewModel(this._reader);
 
   Loading get _loading => _reader.read(loadingProvider);
 
