@@ -77,7 +77,7 @@ class UserRepository {
       final result =
           docRef.get().then((value) => UserModel.fromFirestore(value));
       return result;
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       rethrow;
     }
   }
@@ -92,7 +92,7 @@ class UserRepository {
               UserModel.fromFirestore(e.data() as DocumentSnapshot<Object?>))
           .toList();
       return result;
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       rethrow;
     }
   }
@@ -121,7 +121,7 @@ class UserRepository {
   Future<void> delete(String id) async {
     try {
       await _firestore.collection('users').doc(id).delete();
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       rethrow;
     }
   }

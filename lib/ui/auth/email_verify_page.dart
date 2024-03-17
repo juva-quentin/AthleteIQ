@@ -6,7 +6,7 @@ import '../../app/app.dart';
 import '../../utils/utils.dart';
 
 class EmailVerifyScreen extends ConsumerStatefulWidget {
-  const EmailVerifyScreen({Key? key}) : super(key: key);
+  const EmailVerifyScreen({super.key});
   static const String route = "/verifyEmail";
 
   @override
@@ -46,7 +46,7 @@ class _EmailVerifyScreenState extends ConsumerState<EmailVerifyScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Spacer(),
+            const Spacer(),
             Text(
               "Veuillez vérifier votre email",
               style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
@@ -58,7 +58,7 @@ class _EmailVerifyScreenState extends ConsumerState<EmailVerifyScreen> {
               style: TextStyle(fontSize: 14.sp),
               textAlign: TextAlign.center,
             ),
-            Spacer(),
+            const Spacer(),
             ElevatedButton(
               onPressed: () async {
                 await model.reload();
@@ -69,8 +69,8 @@ class _EmailVerifyScreenState extends ConsumerState<EmailVerifyScreen> {
                       "Votre email n'est pas vérifié", context);
                 }
               },
-              child: Text("OK", style: TextStyle(fontSize: 16.sp)),
               style: ElevatedButton.styleFrom(minimumSize: Size(160.w, 40.h)),
+              child: Text("OK", style: TextStyle(fontSize: 16.sp)),
             ),
             TextButton(
               onPressed: () async {
@@ -85,7 +85,7 @@ class _EmailVerifyScreenState extends ConsumerState<EmailVerifyScreen> {
               },
               child: Text("Renvoyer", style: TextStyle(fontSize: 14.sp)),
             ),
-            Spacer(),
+            const Spacer(),
           ],
         ),
       ),

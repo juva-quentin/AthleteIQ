@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedBar extends StatelessWidget {
@@ -15,11 +14,10 @@ class AnimatedBar extends StatelessWidget {
       duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.only(bottom: 2),
       height: 4,
-      width: isActive ?  30 : 0,
+      width: isActive ? 30 : 0,
       decoration: BoxDecoration(
-          color:Theme.of(context).highlightColor,
-          borderRadius: const BorderRadius.all(Radius.circular(12))
-      ),
+          color: Theme.of(context).highlightColor,
+          borderRadius: const BorderRadius.all(Radius.circular(12))),
     );
   }
 }

@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../utils/utils.dart';
 
 class FriendsListScreen extends ConsumerStatefulWidget {
-  const FriendsListScreen({Key? key}) : super(key: key);
+  const FriendsListScreen({super.key});
 
   @override
   FriendsListState createState() => FriendsListState();

@@ -1,6 +1,5 @@
 import 'package:athlete_iq/ui/info/components/parcourTileComponent.dart';
 import 'package:athlete_iq/utils/utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +9,7 @@ import '../../model/Parcour.dart';
 import 'info_view_model_provider.dart';
 
 class CoursesListScreen extends ConsumerWidget {
-  const CoursesListScreen({Key? key}) : super(key: key);
+  const CoursesListScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

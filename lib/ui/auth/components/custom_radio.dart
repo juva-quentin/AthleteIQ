@@ -5,13 +5,13 @@ import '../../../model/Gender.dart';
 class CustomRadio extends StatelessWidget {
   final Gender _gender;
 
-  const CustomRadio(this._gender, {Key? key}) : super(key: key);
+  const CustomRadio(this._gender, {super.key});
 
   @override
   Widget build(BuildContext context) {
     // Utilisation de ScreenUtil pour des dimensions flexibles
     return Card(
-      color: _gender.isSelected ? Color(0xFF3B4257) : Colors.white,
+      color: _gender.isSelected ? const Color(0xFF3B4257) : Colors.white,
       child: Container(
         // Ajustement des dimensions du container
         height: 90.h, // Ajustez cette valeur si nécessaire

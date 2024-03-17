@@ -7,13 +7,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
 class SearchPage extends ConsumerWidget {
-  const SearchPage({Key? key}) : super(key: key);
+  const SearchPage({super.key});
 
   static const route = "/groups/search";
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final model = ref.watch(searchPageViewModelProvider);
-    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
     return Scaffold(
       appBar: AppBar(
         title: Card(
@@ -73,7 +73,7 @@ class SearchPage extends ConsumerWidget {
                             NetworkImage(isUser ? data.image : data.groupIcon),
                         radius: 25.r, // Ajusté pour la responsivité
                       ),
-                      trailing: buildTrailingIcon(isUser, data, _auth, model),
+                      trailing: buildTrailingIcon(isUser, data, auth, model),
                     ),
                   ),
                 );
@@ -86,26 +86,26 @@ class SearchPage extends ConsumerWidget {
   }
 
   Widget buildTrailingIcon(
-      bool isUser, data, FirebaseAuth _auth, SearchPageViewModel model) {
-    return isUser && data.awaitFriends.contains(_auth.currentUser?.uid)
+      bool isUser, data, FirebaseAuth auth, SearchPageViewModel model) {
+    return isUser && data.awaitFriends.contains(auth.currentUser?.uid)
         ? Text('En attente',
             style: TextStyle(fontSize: 14.sp)) // Ajusté pour la responsivité
         : IconButton(
             onPressed: () {
               isUser
-                  ? data.friends.contains(_auth.currentUser?.uid)
+                  ? data.friends.contains(auth.currentUser?.uid)
                       ? model.removeFriend(data)
                       : model.addFriend(data.id)
-                  : data.members.contains(_auth.currentUser?.uid)
+                  : data.members.contains(auth.currentUser?.uid)
                       ? model.removeUserToGroup(data)
                       : model.addUserToGroup(data);
             },
             icon: Icon(
               isUser
-                  ? data.friends.contains(_auth.currentUser?.uid)
+                  ? data.friends.contains(auth.currentUser?.uid)
                       ? UniconsLine.user_minus
                       : UniconsLine.user_plus
-                  : data.members.contains(_auth.currentUser?.uid)
+                  : data.members.contains(auth.currentUser?.uid)
                       ? UniconsLine.exit
                       : UniconsLine.angle_right_b,
               color: isUser ? Colors.green : Colors.grey,

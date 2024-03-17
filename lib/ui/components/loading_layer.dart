@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/loading_provider.dart';
 
 class LoadingLayer extends StatelessWidget {
-  const LoadingLayer({Key? key, required this.child}) : super(key: key);
+  const LoadingLayer({super.key, required this.child});
 
   final Widget child;
   @override

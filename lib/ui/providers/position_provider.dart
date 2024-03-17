@@ -21,7 +21,7 @@ class PositionModel extends ChangeNotifier {
 
   HomeViewModel get homeProvider => _reader.read(homeViewModelProvider);
 
-  List<LocationData> _allPosition = [];
+  final List<LocationData> _allPosition = [];
   List<LocationData> get allPostion => _allPosition;
   set allPosition(List<LocationData> allPosition) {
     allPosition = _allPosition;
@@ -38,13 +38,13 @@ class PositionModel extends ChangeNotifier {
   }
 
   Future<bool> _handleLocationPermission() async {
-    bool _serviceEnabled;
+    bool serviceEnabled;
     PermissionStatus permission;
 
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
         return false;
       }
     }

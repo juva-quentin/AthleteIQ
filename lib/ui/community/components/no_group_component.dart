@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -19,7 +18,7 @@ Widget noGroupWidget(WidgetRef ref, BuildContext context) {
             await Navigator.of(context).push(
               CustomPopupRoute(
                 builder: (BuildContext context) {
-                  return CreateGroupScreen();
+                  return const CreateGroupScreen();
                 },
               ),
             );

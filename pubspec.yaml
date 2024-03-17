@@ -74,13 +74,17 @@ dependencies:
   material_design_icons_flutter: ^7.0.7296
   url_launcher: ^6.1.11
   flutter_screenutil: ^5.9.0
+  flutter_blue_plus: ^1.31.14
+  riverpod_annotation: ^2.3.4
 
 dev_dependencies:
   hive_generator: ^2.0.0
 #  flutter_launcher_icons: ^0.11.0
   flutter_test:
     sdk: flutter
-
+  build_runner:
+  # the code generator
+  riverpod_generator:
 #flutter_icons:
   #android: "launcher_icon"
   #ios: true

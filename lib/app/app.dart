@@ -9,7 +9,7 @@ import '../model/rive_asset.dart';
 import 'app_view_model_provider.dart';
 
 class App extends ConsumerWidget {
-  const App({Key? key}) : super(key: key);
+  const App({super.key});
   static const String route = "/home";
 
   @override

@@ -9,7 +9,7 @@ import 'components/message_tile.dart';
 import 'components/group_info.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
-  const ChatPage(this.args, {Key? key}) : super(key: key);
+  const ChatPage(this.args, {super.key});
 
   static const route = "/groups/chat";
 

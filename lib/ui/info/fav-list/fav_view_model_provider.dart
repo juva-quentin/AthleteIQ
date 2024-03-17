@@ -6,7 +6,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../data/network/userRepository.dart';
 import '../../../model/Parcour.dart';
 import '../../../model/User.dart';
-import '../../providers/loading_provider.dart';
 
 final favListViewModelProvider =
     ChangeNotifierProvider.autoDispose<favListViewModel>(

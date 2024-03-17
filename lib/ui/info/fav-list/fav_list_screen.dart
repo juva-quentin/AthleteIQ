@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'fav_view_model_provider.dart';
 
 class FavListScreen extends ConsumerStatefulWidget {
-  const FavListScreen({Key? key}) : super(key: key);
+  const FavListScreen({super.key});
 
   @override
   FavListState createState() => FavListState();

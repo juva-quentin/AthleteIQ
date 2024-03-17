@@ -32,7 +32,7 @@ class GroupsRepository {
         group.copyWith(groupIcon: imageUrl).toMap(),
         SetOptions(merge: true),
       );
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       rethrow;
     }
   }
@@ -51,7 +51,7 @@ class GroupsRepository {
   Future<void> deleteGroup(String id) async {
     try {
       await _firestore.collection("groups").doc(id).delete();
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       rethrow;
     }
   }
@@ -62,7 +62,7 @@ class GroupsRepository {
       final result =
       docRef.get().then((value) => Groups.fromFirestore(value));
       return result;
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       rethrow;
     }
   }
@@ -105,7 +105,7 @@ class GroupsRepository {
       await groupCollection.doc(groupId).update(
           (imageUrl == null ? group : group.copyWith(groupIcon: imageUrl))
               .toMap());
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       rethrow;
     }
   }

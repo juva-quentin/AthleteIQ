@@ -9,7 +9,7 @@ import '../providers/loading_provider.dart';
 import 'components/custom_radio.dart';
 
 class SignupScreen extends ConsumerWidget {
-  SignupScreen({Key? key}) : super(key: key);
+  SignupScreen({super.key});
   static const String route = "/register";
   final _formRegisterKey = GlobalKey<FormState>();
 
@@ -158,7 +158,7 @@ class SignupScreen extends ConsumerWidget {
         obscureText: isObscure,
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(Icons.lock_outline_rounded),
+          prefixIcon: const Icon(Icons.lock_outline_rounded),
           suffixIcon: IconButton(
             icon: Icon(isObscure ? Icons.visibility_off : Icons.visibility),
             onPressed: toggleObscure,
@@ -233,7 +233,7 @@ class SignupScreen extends ConsumerWidget {
         ),
         child: Center(
           child: loading.loading
-              ? CircularProgressIndicator(color: Colors.white)
+              ? const CircularProgressIndicator(color: Colors.white)
               : Text("Créer un compte",
                   style: TextStyle(color: Colors.white, fontSize: 16.sp)),
         ),

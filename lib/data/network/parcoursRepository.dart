@@ -1,11 +1,7 @@
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:athlete_iq/model/Parcour.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -24,7 +20,7 @@ class ParcourRepository {
         parcours.toMap(),
         SetOptions(merge: true),
       );
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       rethrow;
     }
   }
@@ -46,7 +42,7 @@ class ParcourRepository {
       final result =
       docRef.get().then((value) => Parcours.fromFirestoreDoc(value));
       return result;
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       rethrow;
     }
   }
@@ -106,7 +102,7 @@ class ParcourRepository {
     batch.delete(_firestore.collection('parcours').doc(id));
 
     await batch.commit();
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       rethrow;
     }
   }

@@ -11,7 +11,7 @@ import '../../utils/utils.dart';
 import '../providers/loading_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,9 +39,9 @@ class HomeScreen extends ConsumerWidget {
           zoomControlsEnabled: false,
         ),
         Align(
-          alignment: Alignment(0, -1),
+          alignment: const Alignment(0, -1),
           child: AnimatedOpacity(
-            duration: Duration(milliseconds: 500),
+            duration: const Duration(milliseconds: 500),
             opacity: model.courseStart ? 0.8 : 0,
             child: SafeArea(
               child: Container(
@@ -77,13 +77,13 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
         AnimatedContainer(
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           alignment: Alignment(0, !model.courseStart ? 0.71 : 0.9),
           child: const GoBtn(),
         ),
         SafeArea(
           child: Align(
-            alignment: Alignment(-0.97, -1),
+            alignment: const Alignment(-0.97, -1),
             child: Padding(
               padding: EdgeInsets.all(8.w), // Adjusted for responsiveness
               child: FloatingActionButton(
@@ -106,7 +106,7 @@ class HomeScreen extends ConsumerWidget {
         ),
         SafeArea(
           child: Align(
-            alignment: Alignment(0.97, 0),
+            alignment: const Alignment(0.97, 0),
             child: Column(
               children: [
                 Padding(

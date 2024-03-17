@@ -6,7 +6,6 @@ import 'package:athlete_iq/ui/auth/providers/auth_view_model_provider.dart';
 import 'package:athlete_iq/ui/onboarding_screen.dart';
 import 'package:athlete_iq/ui/providers/cache_provider.dart';
 import 'package:athlete_iq/utils/routes/router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';

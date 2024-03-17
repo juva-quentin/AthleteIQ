@@ -118,7 +118,7 @@ class HomeViewModel extends ChangeNotifier {
 
   StreamSubscription<List<Parcours>>? _subStreamParcours;
 
-  BitmapDescriptor _markerIcon = BitmapDescriptor.defaultMarker;
+  final BitmapDescriptor _markerIcon = BitmapDescriptor.defaultMarker;
 
   late GoogleMapController _controller;
 
@@ -201,7 +201,7 @@ class HomeViewModel extends ChangeNotifier {
         break;
       default:
         try {
-          parcours = await _parcourRepo.parcoursPublicStream;
+          parcours = _parcourRepo.parcoursPublicStream;
           polylines.clear();
           markers.clear();
           streamParcours();

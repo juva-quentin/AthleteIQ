@@ -1,11 +1,9 @@
 import 'package:athlete_iq/data/network/groupsRepository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
-import '../../../model/Groups.dart' as groupsModel;
 import '../../../model/Groups.dart';
 import '../../../utils/visibility.dart';
 import '../../providers/loading_provider.dart';
@@ -110,6 +108,9 @@ class GroupsViewModel extends ChangeNotifier {
 
   Future<void> updateUser() async {
     _loading.start();
+    print(title);
+    print(share);
+    print(currentGroupe?.groupName);
     try {
       await _groupRepo.updateGroup(
           currentGroupe!.id,
