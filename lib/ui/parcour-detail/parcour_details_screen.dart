@@ -20,7 +20,7 @@ import '../info/components/caractéristiqueComponent.dart';
 
 class ParcourDetails extends ConsumerStatefulWidget {
   final Object args;
-  const ParcourDetails(this.args, {Key? key}) : super(key: key);
+  const ParcourDetails(this.args, {super.key});
   static const route = "/parcours/details";
 
   @override
@@ -84,7 +84,7 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                 ),
                 polylines: {
                   Polyline(
-                      polylineId: PolylineId('parcourLine'),
+                      polylineId: const PolylineId('parcourLine'),
                       points: parcour.allPoints
                           .map((e) => LatLng(e.latitude!, e.longitude!))
                           .toList(),
@@ -93,7 +93,7 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                 },
                 onMapCreated: (GoogleMapController controller) async {
                   _controller.complete(controller);
-                  await Future.delayed(Duration(
+                  await Future.delayed(const Duration(
                       milliseconds: 100)); // Allow time for the map to render
                   controller.animateCamera(CameraUpdate.newLatLngBounds(
                       MapUtils.boundsFromLatLngList(parcour.allPoints
@@ -125,7 +125,7 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                     }
                   },
                 ),
-                loading: () => CircularProgressIndicator(),
+                loading: () => const CircularProgressIndicator(),
                 error: (_, __) => Icon(UniconsLine.circle, size: 24.w),
               ),
               userAsyncValue.when(
@@ -138,7 +138,7 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                             color: Colors.white,
                           ),
                           onPressed: () {
-                            final RenderBox overlay = Overlay.of(context)!
+                            final RenderBox overlay = Overlay.of(context)
                                 .context
                                 .findRenderObject() as RenderBox;
                             showMenu(
@@ -159,9 +159,9 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                                   value: "modifier",
                                   child: Row(
                                     children: [
-                                      Icon(Icons.edit),
+                                      const Icon(Icons.edit),
                                       SizedBox(width: 10.w),
-                                      Text("Modifier"),
+                                      const Text("Modifier"),
                                     ],
                                   ),
                                 ),
@@ -169,9 +169,9 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                                   value: "supprimer",
                                   child: Row(
                                     children: [
-                                      Icon(Icons.delete),
+                                      const Icon(Icons.delete),
                                       SizedBox(width: 10.w),
-                                      Text("Supprimer"),
+                                      const Text("Supprimer"),
                                     ],
                                   ),
                                 ),
@@ -267,7 +267,7 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                           model.caculatMaxSpeed(parcour)?.toStringAsFixed(2) ??
                               'N/A',
                       unit: 'km/h'),
-                  Divider(),
+                  const Divider(),
                   CaracteristiqueWidget(
                       iconData: Icons.speed,
                       label: 'Vitesse maximale',
@@ -275,7 +275,7 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                           model.calculatMinSpeed(parcour)?.toStringAsFixed(2) ??
                               'N/A',
                       unit: 'km/h'),
-                  Divider(),
+                  const Divider(),
                   CaracteristiqueWidget(
                       iconData: Icons.terrain,
                       label: 'Altitude maximale',
@@ -284,7 +284,7 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                               ?.toStringAsFixed(2) ??
                           'N/A',
                       unit: 'm'),
-                  Divider(),
+                  const Divider(),
                   CaracteristiqueWidget(
                       iconData: Icons.terrain,
                       label: 'Altitude minimale',

@@ -2,7 +2,6 @@ import 'package:athlete_iq/data/network/parcoursRepository.dart';
 import 'package:athlete_iq/ui/auth/providers/auth_view_model_provider.dart';
 import 'package:athlete_iq/utils/speedConverter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';

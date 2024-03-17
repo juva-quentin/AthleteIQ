@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CustomTimer {
   int hours;
@@ -27,9 +26,9 @@ class CustomTimer {
 
   Map<String, dynamic> toMap() {
     return {
-      'hours': this.hours,
-      'minutes': this.minutes,
-      'seconds': this.seconds,
+      'hours': hours,
+      'minutes': minutes,
+      'seconds': seconds,
     };
   }
 

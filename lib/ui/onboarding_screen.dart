@@ -20,7 +20,7 @@ class OnboardingItem {
 }
 
 class OnboardingScreen extends HookConsumerWidget {
-  const OnboardingScreen({Key? key}) : super(key: key);
+  const OnboardingScreen({super.key});
 
   static const List<OnboardingItem> _items = [
     OnboardingItem(
@@ -167,7 +167,8 @@ class OnboardingScreen extends HookConsumerWidget {
                                             if (await canLaunchUrl(url)) {
                                               await launchUrl(url);
                                             } else {
-                                              Utils.toastMessage('Impossible d\'ouvrir l\'URL : $url');
+                                              Utils.toastMessage(
+                                                  'Impossible d\'ouvrir l\'URL : $url');
                                             }
                                           },
                                       ),

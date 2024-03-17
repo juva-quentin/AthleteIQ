@@ -7,7 +7,7 @@ import 'components/middleNavComponent.dart';
 import 'info_view_model_provider.dart';
 
 class InfoScreen extends ConsumerWidget {
-  const InfoScreen({Key? key}) : super(key: key);
+  const InfoScreen({super.key});
 
   static const route = "/info";
   @override

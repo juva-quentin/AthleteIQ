@@ -3,14 +3,13 @@ import 'package:athlete_iq/utils/visibility.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:unicons/unicons.dart';
 
 import '../../utils/utils.dart';
 import '../home/providers/timer_provider.dart';
 import '../info/provider/user_provider.dart';
 
 class RegisterScreen extends ConsumerWidget {
-  RegisterScreen({Key? key}) : super(key: key);
+  RegisterScreen({super.key});
   final _formRegisterKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -1,14 +1,9 @@
-import 'package:athlete_iq/data/network/groupsRepository.dart';
 import 'package:athlete_iq/data/network/parcoursRepository.dart';
 import 'package:athlete_iq/data/network/userRepository.dart';
-import 'package:athlete_iq/ui/auth/providers/auth_view_model_provider.dart';
 import 'package:athlete_iq/ui/info/fav-list/fav_list_screen.dart';
 import 'package:athlete_iq/ui/info/friend-list/friends_list_screen.dart';
 import 'package:athlete_iq/ui/info/info_screen.dart';
-import 'package:athlete_iq/ui/info/provider/user_provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';

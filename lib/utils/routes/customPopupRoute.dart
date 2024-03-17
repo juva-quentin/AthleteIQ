@@ -5,8 +5,8 @@ class CustomPopupRoute extends PopupRoute {
   // 2
   CustomPopupRoute({
     required this.builder,
-    RouteSettings? settings,
-  }) : super(settings: settings);
+    super.settings,
+  });
 
   final WidgetBuilder builder;
 

@@ -10,7 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LoginScreen extends ConsumerWidget {
-  LoginScreen({Key? key}) : super(key: key);
+  LoginScreen({super.key});
   final _formLoginKey = GlobalKey<FormState>();
   static const route = "/login";
 
@@ -100,7 +100,7 @@ class LoginScreen extends ConsumerWidget {
         textCapitalization: TextCapitalization.none,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.email_outlined),
+          prefixIcon: const Icon(Icons.email_outlined),
           labelText: "Email",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.r),
@@ -120,7 +120,7 @@ class LoginScreen extends ConsumerWidget {
         keyboardType: TextInputType.visiblePassword,
         initialValue: model.password,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.lock_outline_rounded),
+          prefixIcon: const Icon(Icons.lock_outline_rounded),
           labelText: "Mot de passe",
           suffixIcon: IconButton(
             onPressed: () {

@@ -7,7 +7,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-import '../../../model/User.dart';
 import '../../../utils/utils.dart';
 import '../info_view_model_provider.dart';
 
@@ -36,7 +35,7 @@ Widget buildTopInfo(BuildContext context) {
               },
               child: Container(
                 width: 0.35.sw,
-                alignment: Alignment(0.90, 0.90),
+                alignment: const Alignment(0.90, 0.90),
                 decoration: BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.all(Radius.circular(20.r)),
@@ -44,8 +43,8 @@ Widget buildTopInfo(BuildContext context) {
                     image: user.when(
                       data: (user) => NetworkImage(user.image),
                       error: (error, stackTrace) =>
-                          AssetImage("assets/images/error.png"),
-                      loading: () => AssetImage("assets/gif/Loading_icon.gif"),
+                          const AssetImage("assets/images/error.png"),
+                      loading: () => const AssetImage("assets/gif/Loading_icon.gif"),
                     ),
                     fit: BoxFit.cover,
                   ),
@@ -79,7 +78,7 @@ Widget buildTopInfo(BuildContext context) {
                       Text(
                         "Objectif hebdo: ",
                         style: TextStyle(
-                          color: Color(0xFF121212),
+                          color: const Color(0xFF121212),
                           fontSize: 17.sp,
                           fontWeight: FontWeight.normal,
                         ),
@@ -101,7 +100,7 @@ Widget buildTopInfo(BuildContext context) {
                       Text(
                         "${user.when(data: (user) => user.totalDist, error: (error, stackTrace) => 0.0, loading: () => 0.0).toStringAsFixed(2)}Km",
                         style: TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
+                          color: const Color.fromARGB(255, 0, 0, 0),
                           fontSize: 18.sp,
                           fontWeight: FontWeight.w700,
                         ),

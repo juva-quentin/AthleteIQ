@@ -6,7 +6,7 @@ import '../../utils/routes/customPopupRoute.dart';
 import '../../utils/utils.dart';
 
 class GoBtn extends ConsumerWidget {
-  const GoBtn({Key? key}) : super(key: key);
+  const GoBtn({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

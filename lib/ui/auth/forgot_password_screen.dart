@@ -7,7 +7,7 @@ import 'package:athlete_iq/utils/utils.dart';
 import '../providers/loading_provider.dart';
 
 class ForgotPasswordScreen extends ConsumerWidget {
-  ForgotPasswordScreen({Key? key}) : super(key: key);
+  ForgotPasswordScreen({super.key});
   static const route = "/forgot_password";
 
   final _formForgotPasswordKey = GlobalKey<FormState>();
@@ -47,7 +47,7 @@ class ForgotPasswordScreen extends ConsumerWidget {
                       ),
                       SizedBox(height: 30.h),
                       isLoading.loading
-                          ? CircularProgressIndicator()
+                          ? const CircularProgressIndicator()
                           : _buildSendButton(context, model),
                       SizedBox(height: 20.h),
                       _buildBackButton(context),
@@ -113,15 +113,15 @@ class ForgotPasswordScreen extends ConsumerWidget {
           }
         }
       },
-      child: Text(
-        'Envoyer',
-        style: TextStyle(fontSize: 16.sp, color: Colors.white),
-      ),
       style: ElevatedButton.styleFrom(
-        primary: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
         minimumSize: Size(160.w, 40.h),
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+      ),
+      child: Text(
+        'Envoyer',
+        style: TextStyle(fontSize: 16.sp, color: Colors.white),
       ),
     );
   }

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 import 'Timer.dart';
@@ -62,16 +61,16 @@ class Parcours {
 
   Map<String, dynamic> toMap() {
     return {
-      'owner': this.owner,
-      'title': this.title,
-      'description': this.description,
-      'type': this.type,
-      'shareTo': this.shareTo,
-      'timer': this.timer.toMap(),
-      'createdAt': this.createdAt,
-      'VM': this.VM,
-      'totalDistance': this.totalDistance,
-      'allPoints': this.allPoints.map((pointItem) {
+      'owner': owner,
+      'title': title,
+      'description': description,
+      'type': type,
+      'shareTo': shareTo,
+      'timer': timer.toMap(),
+      'createdAt': createdAt,
+      'VM': VM,
+      'totalDistance': totalDistance,
+      'allPoints': allPoints.map((pointItem) {
         return {
           'latitude': pointItem.latitude,
           'longitude': pointItem.longitude,

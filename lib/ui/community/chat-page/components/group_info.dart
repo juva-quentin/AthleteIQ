@@ -13,7 +13,7 @@ import '../../../../utils/routes/customPopupRoute.dart';
 import '../../../../utils/utils.dart';
 
 class GroupInfo extends ConsumerWidget {
-  const GroupInfo(this.args, {Key? key}) : super(key: key);
+  const GroupInfo(this.args, {super.key});
   final Object args;
   static const route = "/groups/group_info";
 
