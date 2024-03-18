@@ -14,6 +14,7 @@ import '../../generated/assets.dart';
 import '../../model/Parcour.dart';
 import '../../utils/map_utils.dart';
 import '../providers/loading_provider.dart';
+import 'dart:io' show Platform;
 
 final homeViewModelProvider = ChangeNotifierProvider.autoDispose<HomeViewModel>(
   (ref) => HomeViewModel(ref),
@@ -135,8 +136,10 @@ class HomeViewModel extends ChangeNotifier {
   Future<void> loadCustomMarkerIcon() async {
     try {
       _customMarkerIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(size: Size(48, 48)),
-        Assets.marker2,
+        const ImageConfiguration(
+          size: Size(48, 48),
+        ),
+        Platform.isIOS ? Assets.marker2Ios : Assets.marker2,
       );
     } catch (e) {
       _customMarkerIcon = BitmapDescriptor.defaultMarker;
