@@ -10,9 +10,11 @@ import 'package:unicons/unicons.dart';
 import 'package:wakelock/wakelock.dart';
 
 import '../../data/network/userRepository.dart';
+import '../../generated/assets.dart';
 import '../../model/Parcour.dart';
 import '../../utils/map_utils.dart';
 import '../providers/loading_provider.dart';
+import 'dart:io' show Platform;
 
 final homeViewModelProvider = ChangeNotifierProvider.autoDispose<HomeViewModel>(
   (ref) => HomeViewModel(ref),
@@ -35,6 +37,13 @@ class HomeViewModel extends ChangeNotifier {
   bool get courseStart => _courseStart;
   set courseStart(bool courseStart) {
     _courseStart = courseStart;
+    notifyListeners();
+  }
+
+  String? _selectedParcourId;
+  String? get selectedParcourId => _selectedParcourId;
+  set selectedParcourId(String? id) {
+    _selectedParcourId = id;
     notifyListeners();
   }
 
@@ -122,13 +131,29 @@ class HomeViewModel extends ChangeNotifier {
 
   late GoogleMapController _controller;
 
+  BitmapDescriptor? _customMarkerIcon;
+
+  Future<void> loadCustomMarkerIcon() async {
+    try {
+      _customMarkerIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(
+          size: Size(48, 48),
+        ),
+        Platform.isIOS ? Assets.marker2Ios : Assets.marker2,
+      );
+    } catch (e) {
+      _customMarkerIcon = BitmapDescriptor.defaultMarker;
+    }
+  }
+
   Future<void> onMapCreated(GoogleMapController controller) async {
+    _controller = controller;
+    await loadCustomMarkerIcon();
     try {
       getParcour();
     } catch (e) {
       rethrow;
     }
-    _controller = controller;
     setLocation();
     notifyListeners();
   }
@@ -201,7 +226,7 @@ class HomeViewModel extends ChangeNotifier {
         break;
       default:
         try {
-          parcours = _parcourRepo.parcoursPublicStream;
+          parcours = await _parcourRepo.parcoursPublicStream;
           polylines.clear();
           markers.clear();
           streamParcours();
@@ -214,46 +239,67 @@ class HomeViewModel extends ChangeNotifier {
 
   void streamParcours() async {
     _subStreamParcours = parcours!.listen((List<Parcours> parcours) async {
-      for (var i = 0; i < parcours.length; i++) {
-        final newPolilyne = Polyline(
-            polylineId: PolylineId(parcours[i].id),
-            points: parcours[i]
-                .allPoints
-                .map((position) =>
-                    LatLng(position.latitude!, position.longitude!))
-                .toList(),
-            width: 5,
-            color: typeFilter == "public"
+      buildPolylinesAndMarkers(parcours);
+    });
+  }
+
+  Future<void> buildPolylinesAndMarkers(List<Parcours> parcours) async {
+    Set<Polyline> updatedPolylines = {};
+    Set<Marker> updatedMarkers = {};
+    if (_customMarkerIcon == null) {
+      await loadCustomMarkerIcon();
+    }
+
+    for (var i = 0; i < parcours.length; i++) {
+      final isHighlighted = selectedParcourId == parcours[i].id;
+
+      final newPolilyne = Polyline(
+        polylineId: PolylineId(parcours[i].id),
+        points: parcours[i]
+            .allPoints
+            .map((position) => LatLng(position.latitude!, position.longitude!))
+            .toList(),
+        width: isHighlighted ? 8 : 5,
+        color: isHighlighted
+            ? const Color(0xC026702A)
+            : (typeFilter == "public"
                 ? const Color(0xC005FF0C)
                 : typeFilter == "protected"
                     ? const Color(0xFFFFF200)
-                    : const Color(0xFFFF2100),
-            onTap: () async {
-              await _controller.animateCamera(CameraUpdate.newLatLngBounds(
-                  MapUtils.boundsFromLatLngList(parcours[i]
-                      .allPoints
-                      .map((e) => LatLng(e.latitude!, e.longitude!))
-                      .toList()),
-                  12));
-              notifyListeners();
-            });
-        final newMarker = Marker(
-            markerId: MarkerId(parcours[i].id),
-            position: LatLng(parcours[i].allPoints.first.latitude!,
-                parcours[i].allPoints.first.longitude!),
-            infoWindow: InfoWindow(
-                title: parcours[i].title,
-                snippet:
-                    "Par : ${await _userRepo.getUserWithId(userId: parcours[i].owner).then((value) => value.pseudo)}"));
-        if (!polylines.contains(newPolilyne)) {
-          polylines.add(newPolilyne);
-        }
-        if (!markers.contains(newMarker)) {
-          markers.add(newMarker);
-        }
-        notifyListeners();
-      }
-    });
+                    : const Color(0xFFFF2100)),
+        onTap: () {
+          selectedParcourId = parcours[i].id;
+          _controller.animateCamera(CameraUpdate.newLatLngBounds(
+              MapUtils.boundsFromLatLngList(parcours[i]
+                  .allPoints
+                  .map((e) => LatLng(e.latitude!, e.longitude!))
+                  .toList()),
+              12));
+        },
+      );
+      updatedPolylines.add(newPolilyne);
+
+      final newMarker = Marker(
+        markerId: MarkerId(parcours[i].id),
+        position: LatLng(parcours[i].allPoints.first.latitude!,
+            parcours[i].allPoints.first.longitude!),
+        onTap: () {
+          selectedParcourId = parcours[i].id;
+          buildPolylinesAndMarkers(
+              parcours); // Rafraîchir les polylines et markers
+        },
+        infoWindow: InfoWindow(
+            title: parcours[i].title,
+            snippet:
+                "Par : ${await _userRepo.getUserWithId(userId: parcours[i].owner).then((value) => value.pseudo)}"),
+        icon: _customMarkerIcon!,
+      );
+      updatedMarkers.add(newMarker);
+    }
+
+    polylines = updatedPolylines;
+    markers = updatedMarkers;
+    notifyListeners();
   }
 
   void setLocation() async {
