@@ -97,7 +97,9 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
                     _buildActionButton(
                       text: "Modifier",
                       onPressed: () {
-                        // Action de modification ici.
+                        if (model.valideForm()) {
+                          model.updateUser();
+                        }
                       },
                       color: Theme.of(context).primaryColor,
                     ),
@@ -105,7 +107,7 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
                     _buildActionButton(
                       text: "Supprimer votre compte",
                       onPressed: () {
-                        // Action de suppression ici.
+                        _showConfirmationDialog(context);
                       },
                       color: Colors.red,
                     ),
@@ -169,8 +171,7 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  void _showConfirmationDialog(
-      BuildContext context, SettingsViewModel model, AuthViewModel authModel) {
+  void _showConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -183,12 +184,11 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: Text("Annuler", style: TextStyle(fontSize: 14.sp)),
           ),
           TextButton(
-            onPressed: () async {
-              await model.deleteUser();
-              await authModel.logout();
-              FirebaseFirestore.instance.terminate();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, LoginScreen.route, (_) => false);
+            onPressed: () {
+              Navigator.of(context).pop(); // Fermez le dialogue de confirmation
+              ref
+                  .read(settingsViewModelProvider)
+                  .deleteUser(); // Appeler la méthode deleteUser
             },
             child: Text("Supprimer",
                 style: TextStyle(fontSize: 14.sp, color: Colors.red)),
