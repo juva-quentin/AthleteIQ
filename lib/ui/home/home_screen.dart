@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../utils/utils.dart';
 import '../providers/loading_provider.dart';
+import 'cluster/components/cluster_item_dialog.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -18,6 +19,19 @@ class HomeScreen extends ConsumerWidget {
     final model = ref.watch(homeViewModelProvider);
     final chrono = ref.watch(timerProvider);
     final isLoading = ref.watch(loadingProvider);
+
+    model.setOnClusterTapCallback((clusterItems) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ClusterItemsDialog(
+            clusterItems: clusterItems,
+            onSelectParcour: model.highlightAndZoomToParcour,
+          );
+        },
+      );
+    });
+
     return Stack(
       children: <Widget>[
         GoogleMap(
@@ -34,6 +48,13 @@ class HomeScreen extends ConsumerWidget {
             } catch (e) {
               Utils.flushBarErrorMessage(e.toString(), context);
             }
+          },
+          onCameraMove: (CameraPosition position) {
+            model.clusterManager.onCameraMove(position); // Informe le clusterManager du mouvement de la caméra
+            model.handleCameraMove(position); // Ajoutez cette ligne
+          },
+          onCameraIdle: () {
+            model.clusterManager.updateMap(); // Recalcule et met à jour les clusters lorsque l'utilisateur a fini de bouger la caméra
           },
           initialCameraPosition: model.initialPosition,
           zoomControlsEnabled: false,
