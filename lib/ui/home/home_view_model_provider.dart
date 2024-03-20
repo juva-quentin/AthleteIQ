@@ -16,6 +16,8 @@ import '../../generated/assets.dart';
 import '../../model/Parcour.dart';
 import '../../utils/calculate_distance.dart';
 import '../../utils/map_utils.dart';
+import '../parcour-detail/parcour_details_screen.dart';
+import '../parcour-detail/parcours_details_overlay_screen.dart';
 import '../providers/loading_provider.dart';
 import 'dart:io' show Platform;
 import 'cluster/parcours_cluster_item.dart';
@@ -139,9 +141,7 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  StreamSubscription<List<Parcours>>? _subStreamParcours;
-
-  final BitmapDescriptor _markerIcon = BitmapDescriptor.defaultMarker;
+  OverlayEntry? _overlayEntry;
 
   late GoogleMapController _controller;
 
@@ -171,7 +171,6 @@ class HomeViewModel extends ChangeNotifier {
         markerId: MarkerId(item.id),
         position: item.location,
         icon: _customMarkerIcon!, // Utiliser la fonction pour charger l'icône personnalisée
-        infoWindow: InfoWindow(title: item.title, snippet: item.snippet),
         onTap: () => highlightAndZoomToParcour(item.id),
       );
     } else {
@@ -341,7 +340,7 @@ class HomeViewModel extends ChangeNotifier {
     });
   }
 
-  void onParcourSelected(String parcourId) {
+  Future<void> onParcourSelected(String parcourId) async {
     selectedParcourId = parcourId;
 
     Set<Polyline> updatedPolylines = {};
@@ -419,6 +418,43 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  Future<void> showParcourDetailsOverlay(String parcourId) async {
+    final selectedParcour = _currentParcoursList.firstWhere((parcour) => parcour.id == parcourId);
+
+    if (selectedParcour != null) {
+      final ownerName = await _userRepo.getUserWithId(userId: selectedParcour.owner).then((value) => value.pseudo);
+      final screenHeight = navigatorKey.currentState!.context.size!.height;
+      const overlayHeight = 250; // Hauteur estimée de votre Overlay
+      const bottomElementsHeight = 100; // Hauteur estimée des éléments en bas de l'écran, comme le bouton Go
+      final topPosition = screenHeight - overlayHeight - bottomElementsHeight; // Calcule la position top de l'Overlay
+      _overlayEntry?.remove();
+
+      _overlayEntry = OverlayEntry(
+        builder: (context) => Positioned(
+          top: topPosition, // Utilisez la position calculée
+          left: 0,
+          right: 0,
+          child: ParcourDetailsOverlay(
+            parcourId: selectedParcour.id,
+            title: selectedParcour.title,
+            ownerName: ownerName,
+            onViewDetails: () {
+              // Fermer l'overlay
+              _overlayEntry?.remove();
+              _overlayEntry = null;
+
+              // Naviguer vers la page de détails du parcours
+              Navigator.pushNamed(context, ParcourDetails.route, arguments: selectedParcour);
+            },
+          ),
+        ),
+      );
+      navigatorKey.currentState!.overlay!.insert(_overlayEntry!);
+    }
+  }
+
   void handleCameraMove(CameraPosition position) async {
     if (_selectedParcourId != null) {
       final selectedParcour = _currentParcoursList.firstWhere(
@@ -434,12 +470,13 @@ class HomeViewModel extends ChangeNotifier {
         );
 
         final double distance = calculateDistance(position.target, parcourLatLng);
-        print("Distance au parcours sélectionné: $distance mètres");
 
         if (distance > 7000) {
-          print("Éloignement du parcours détecté, désélection en cours...");
           selectedParcourId = null;
           buildPolylinesAndMarkers(_currentParcoursList);
+          // Fermer l'overlay ici si l'utilisateur s'éloigne
+          _overlayEntry?.remove();
+          _overlayEntry = null;
           notifyListeners();
         }
       }
@@ -469,7 +506,7 @@ class HomeViewModel extends ChangeNotifier {
         90.0,
       ));
     }
-
+    showParcourDetailsOverlay(parcourId);
     notifyListeners();
   }
 

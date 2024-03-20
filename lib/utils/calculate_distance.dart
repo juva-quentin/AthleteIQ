@@ -6,13 +6,9 @@ double calculateDistance(LatLng start, LatLng end) {
   const double earthRadius = 6371e3; // Rayon de la Terre en mètres
   double dLat = _degreesToRadians(end.latitude - start.latitude);
   double dLon = _degreesToRadians(end.longitude - start.longitude);
-  print("dlat: " + dLat.toString());
-  print("dLon: " + dLon.toString());
 
   double lat1 = _degreesToRadians(start.latitude);
   double lat2 = _degreesToRadians(end.latitude);
-  print("lat1: " + lat1.toString());
-  print("lat2: " + lat2.toString());
 
 
   double a = sin(dLat/2) * sin(dLat/2) +
