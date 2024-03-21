@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:athlete_iq/app/app.dart';
 import 'package:athlete_iq/ui/auth/login_screen.dart';
 import 'package:athlete_iq/ui/auth/providers/auth_view_model_provider.dart';
+import 'package:athlete_iq/ui/home/home_view_model_provider.dart';
 import 'package:athlete_iq/ui/onboarding_screen.dart';
 import 'package:athlete_iq/ui/providers/cache_provider.dart';
 import 'package:athlete_iq/utils/routes/router.dart';
@@ -50,6 +51,7 @@ class MyApp extends ConsumerWidget {
           title: 'AthleteIQ',
           debugShowCheckedModeBanner: false,
           theme: theme,
+          navigatorKey: ref.watch(homeViewModelProvider).navigatorKey,
           home: FutureBuilder(
             future: cache,
             builder: (context, AsyncSnapshot snapshot) {
