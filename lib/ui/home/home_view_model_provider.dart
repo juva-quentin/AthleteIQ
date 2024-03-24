@@ -16,8 +16,6 @@ import '../../generated/assets.dart';
 import '../../model/Parcour.dart';
 import '../../utils/calculate_distance.dart';
 import '../../utils/map_utils.dart';
-import '../parcour-detail/parcour_details_screen.dart';
-import '../parcour-detail/parcours_details_overlay_screen.dart';
 import '../providers/loading_provider.dart';
 import 'dart:io' show Platform;
 import 'cluster/parcours_cluster_item.dart';
@@ -32,11 +30,8 @@ class HomeViewModel extends ChangeNotifier {
   final Ref _reader;
 
   HomeViewModel(this._reader) {
-    clusterManager = ClusterManager<ParcoursClusterItem>(
-      [],
-      _updateMarkers,
-      markerBuilder: _markerBuilder
-    );
+    clusterManager = ClusterManager<ParcoursClusterItem>([], _updateMarkers,
+        markerBuilder: _markerBuilder);
   }
 
   Loading get _loading => _reader.read(loadingProvider);
@@ -49,6 +44,7 @@ class HomeViewModel extends ChangeNotifier {
   ParcourRepository get _parcourRepo => _reader.read(parcourRepositoryProvider);
 
   bool _courseStart = false;
+
   bool get courseStart => _courseStart;
 
   set courseStart(bool courseStart) {
@@ -57,35 +53,45 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   String? _selectedParcourId;
+
   String? get selectedParcourId => _selectedParcourId;
+
   set selectedParcourId(String? id) {
     _selectedParcourId = id;
     notifyListeners();
   }
 
   bool _traffic = false;
+
   bool get traffic => _traffic;
+
   set traffic(bool traffic) {
     _traffic = traffic;
     notifyListeners();
   }
 
   String _visibilityFilter = '';
+
   String get visibilityFilter => _visibilityFilter;
+
   set visibilityFilter(String visibilityFilter) {
     _visibilityFilter = visibilityFilter;
     notifyListeners();
   }
 
   String _typeFilter = 'public';
+
   String get typeFilter => _typeFilter;
+
   set typeFilter(String typeFilter) {
     _typeFilter = typeFilter;
     notifyListeners();
   }
 
   MapType _defaultMapType = MapType.normal;
+
   MapType get defaultMapType => _defaultMapType;
+
   set defaultMapType(MapType defaultMapType) {
     _defaultMapType = defaultMapType;
     notifyListeners();
@@ -93,55 +99,67 @@ class HomeViewModel extends ChangeNotifier {
 
   CameraPosition _initialPosition =
       const CameraPosition(target: LatLng(0, 0), zoom: 10);
+
   CameraPosition get initialPosition => _initialPosition;
+
   set initialPosition(CameraPosition initialPosition) {
     _initialPosition = initialPosition;
     notifyListeners();
   }
 
   CameraPosition? _currentPosition;
+
   CameraPosition? get currentPosition => _currentPosition;
+
   set currentPosition(CameraPosition? currentPosition) {
     _currentPosition = currentPosition;
     notifyListeners();
   }
 
   Set<Polyline> _polylines = <Polyline>{};
+
   Set<Polyline> get polylines => _polylines;
+
   set polylines(Set<Polyline> polylines) {
     _polylines = polylines;
     notifyListeners();
   }
 
   Set<Marker> _markers = <Marker>{};
+
   Set<Marker> get markers => _markers;
+
   set markers(Set<Marker> markers) {
     _markers = markers;
     notifyListeners();
   }
 
   Set<Polyline> _tempPolylines = {};
+
   Set<Polyline> get tempPolylines => _tempPolylines;
+
   set tempPolylines(Set<Polyline> tempPolylines) {
     _tempPolylines = tempPolylines;
     notifyListeners();
   }
 
   Stream<List<Parcours>>? _parcours;
+
   Stream<List<Parcours>>? get parcours => _parcours;
+
   set parcours(Stream<List<Parcours>>? parcours) {
     _parcours = parcours;
     notifyListeners();
   }
 
   IconData _filterParcourIcon = UniconsLine.globe;
+
   IconData get filterParcourIcon => _filterParcourIcon;
+
   set filterParcourIcon(IconData filterParcourIcon) {
     _filterParcourIcon = filterParcourIcon;
     notifyListeners();
   }
-
-  OverlayEntry? _overlayEntry;
 
   late GoogleMapController _controller;
 
@@ -150,8 +168,8 @@ class HomeViewModel extends ChangeNotifier {
   OnClusterTap? _onClusterTap;
 
   List<Parcours> _currentParcoursList = [];
-  List<Parcours> get currentParcoursList => _currentParcoursList;
 
+  List<Parcours> get currentParcoursList => _currentParcoursList;
 
   void setOnClusterTapCallback(OnClusterTap onClusterTap) {
     _onClusterTap = onClusterTap;
@@ -166,11 +184,13 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<Marker> _markerBuilder(Cluster<ParcoursClusterItem> cluster) async {
     if (!cluster.isMultiple) {
-      ParcoursClusterItem item = cluster.items.first; // Récupérer le seul élément
+      ParcoursClusterItem item =
+          cluster.items.first; // Récupérer le seul élément
       return Marker(
         markerId: MarkerId(item.id),
         position: item.location,
-        icon: _customMarkerIcon!, // Utiliser la fonction pour charger l'icône personnalisée
+        icon: _customMarkerIcon!,
+        // Utiliser la fonction pour charger l'icône personnalisée
         onTap: () => highlightAndZoomToParcour(item.id),
       );
     } else {
@@ -191,7 +211,11 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<BitmapDescriptor> _getClusterIcon(int clusterSize) async {
     // Définir la taille du cercle en fonction de clusterSize si nécessaire
-    final int size = (clusterSize < 10) ? 100 : (clusterSize < 100) ? 120 : 140;
+    final int size = (clusterSize < 10)
+        ? 100
+        : (clusterSize < 100)
+            ? 120
+            : 140;
 
     // Créer un Canvas pour dessiner l'icône du cluster
     final PictureRecorder pictureRecorder = PictureRecorder();
@@ -367,8 +391,9 @@ class HomeViewModel extends ChangeNotifier {
     }
     if (selectedParcourItem != null) {
       _controller.animateCamera(CameraUpdate.newLatLngBounds(
-          MapUtils.boundsFromLatLngList(
-              selectedParcourItem.allPoints.map((e) => LatLng(e.latitude, e.longitude)).toList()),
+        MapUtils.boundsFromLatLngList(selectedParcourItem.allPoints
+            .map((e) => LatLng(e.latitude, e.longitude))
+            .toList()),
         50,
       ));
     }
@@ -384,16 +409,18 @@ class HomeViewModel extends ChangeNotifier {
     }
 
     for (var parcours in parcoursList) {
-      final polylinePoints = parcours.allPoints.map((e) => LatLng(e.latitude!, e.longitude!)).toList();
+      final polylinePoints = parcours.allPoints
+          .map((e) => LatLng(e.latitude!, e.longitude!))
+          .toList();
       final newPolyline = Polyline(
-        polylineId: PolylineId(parcours.id),
-        points: polylinePoints,
-        width: 5,
-        color: typeFilter == "public"
-            ? const Color(0xC005FF0C)
-            : typeFilter == "protected"
-            ? const Color(0xFFFFF200)
-            : const Color(0xFFFF2100));
+          polylineId: PolylineId(parcours.id),
+          points: polylinePoints,
+          width: 5,
+          color: typeFilter == "public"
+              ? const Color(0xC005FF0C)
+              : typeFilter == "protected"
+                  ? const Color(0xFFFFF200)
+                  : const Color(0xFFFF2100));
       updatedPolylines.add(newPolyline);
 
       // Créer et ajouter les éléments de cluster
@@ -401,82 +428,88 @@ class HomeViewModel extends ChangeNotifier {
         // Créer et ajouter les éléments de cluster
         final parcourItem = ParcoursClusterItem(
           id: parcours.id,
-          position: LatLng(parcours.allPoints.first.latitude!, parcours.allPoints.first.longitude!),
+          position: LatLng(parcours.allPoints.first.latitude!,
+              parcours.allPoints.first.longitude!),
           icon: _customMarkerIcon ?? BitmapDescriptor.defaultMarker,
           title: parcours.title,
-          snippet: "Par : ${await _userRepo.getUserWithId(userId: parcours.owner).then((value) => value.pseudo)}",
+          snippet:
+              "Par : ${await _userRepo.getUserWithId(userId: parcours.owner).then((value) => value.pseudo)}",
           allPoints: polylinePoints,
         );
         parcoursItems.add(parcourItem);
 
-    // Mise à jour des Polylines et des Clusters
-    polylines = updatedPolylines;
-    clusterManager.setItems(parcoursItems);
-    clusterManager.updateMap();
+        // Mise à jour des Polylines et des Clusters
+        polylines = updatedPolylines;
+        clusterManager.setItems(parcoursItems);
+        clusterManager.updateMap();
+        notifyListeners();
+      }
+    }
+  }
+
+  Parcours? selectedParcourForOverlay;
+  String ownerNameForOverlay = "";
+  bool _showParcourOverlay = false;
+  bool _isOverlayDisplayed = false;
+
+  bool get isOverlayDisplayed => _isOverlayDisplayed;
+
+  void setOverlayDisplayed(bool displayed) {
+    _isOverlayDisplayed = displayed;
     notifyListeners();
   }
+
+  bool get showParcourOverlay => _showParcourOverlay;
+
+  Future<void> prepareToShowParcourDetailsOverlay(String parcourId) async {
+    try {
+      final selectedParcour =
+          _currentParcoursList.firstWhere((parcour) => parcour.id == parcourId);
+      final ownerName = await _userRepo
+          .getUserWithId(userId: selectedParcour.owner)
+          .then((value) => value.pseudo);
+
+      this.selectedParcourForOverlay = selectedParcour;
+      this.ownerNameForOverlay = ownerName;
+
+      _showParcourOverlay = true;
+
+      notifyListeners();
+    } catch (e) {
+      print("Erreur lors de la préparation de l'overlay: $e");
     }
   }
 
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-  Future<void> showParcourDetailsOverlay(String parcourId) async {
-    final selectedParcour = _currentParcoursList.firstWhere((parcour) => parcour.id == parcourId);
-
-    if (selectedParcour != null) {
-      final ownerName = await _userRepo.getUserWithId(userId: selectedParcour.owner).then((value) => value.pseudo);
-      final screenHeight = navigatorKey.currentState!.context.size!.height;
-      const overlayHeight = 250; // Hauteur estimée de votre Overlay
-      const bottomElementsHeight = 100; // Hauteur estimée des éléments en bas de l'écran, comme le bouton Go
-      final topPosition = screenHeight - overlayHeight - bottomElementsHeight; // Calcule la position top de l'Overlay
-      _overlayEntry?.remove();
-
-      _overlayEntry = OverlayEntry(
-        builder: (context) => Positioned(
-          top: topPosition, // Utilisez la position calculée
-          left: 0,
-          right: 0,
-          child: ParcourDetailsOverlay(
-            parcourId: selectedParcour.id,
-            title: selectedParcour.title,
-            ownerName: ownerName,
-            onViewDetails: () {
-              // Fermer l'overlay
-              _overlayEntry?.remove();
-              _overlayEntry = null;
-
-              // Naviguer vers la page de détails du parcours
-              Navigator.pushNamed(context, ParcourDetails.route, arguments: selectedParcour);
-            },
-          ),
-        ),
-      );
-      navigatorKey.currentState!.overlay!.insert(_overlayEntry!);
-    }
+  void hideParcourDetailsOverlay() {
+    this.selectedParcourForOverlay = null;
+    _showParcourOverlay = false;
+    _isOverlayDisplayed = false; // Ajouté pour réinitialiser l'état d'affichage
+    notifyListeners();
   }
 
   void handleCameraMove(CameraPosition position) async {
     if (_selectedParcourId != null) {
-      final selectedParcour = _currentParcoursList.firstWhere(
-              (p) => p.id == _selectedParcourId);
+      final selectedParcour =
+          _currentParcoursList.firstWhere((p) => p.id == _selectedParcourId);
 
       if (selectedParcour.allPoints.isNotEmpty) {
         int medianIndex = (selectedParcour.allPoints.length / 2).floor();
-        medianIndex = medianIndex.clamp(0, selectedParcour.allPoints.length - 1);
+        medianIndex =
+            medianIndex.clamp(0, selectedParcour.allPoints.length - 1);
 
         final LatLng parcourLatLng = LatLng(
           selectedParcour.allPoints[medianIndex].latitude!,
           selectedParcour.allPoints[medianIndex].longitude!,
         );
 
-        final double distance = calculateDistance(position.target, parcourLatLng);
+        final double distance =
+            calculateDistance(position.target, parcourLatLng);
 
         if (distance > 7000) {
           selectedParcourId = null;
           buildPolylinesAndMarkers(_currentParcoursList);
           // Fermer l'overlay ici si l'utilisateur s'éloigne
-          _overlayEntry?.remove();
-          _overlayEntry = null;
+          hideParcourDetailsOverlay();
           notifyListeners();
         }
       }
@@ -486,9 +519,10 @@ class HomeViewModel extends ChangeNotifier {
   void highlightAndZoomToParcour(String parcourId) {
     selectedParcourId = parcourId;
 
-    final selectedParcour = currentParcoursList.firstWhere((p) => p.id == parcourId);
+    final selectedParcour =
+        currentParcoursList.firstWhere((p) => p.id == parcourId);
 
-    if (selectedParcour != null) {
+    if (selectedParcour != null && !courseStart) {
       Set<Polyline> updatedPolylines = {};
       for (var polyline in _polylines) {
         final isHighlighted = polyline.polylineId.value == selectedParcourId;
@@ -502,11 +536,15 @@ class HomeViewModel extends ChangeNotifier {
       _polylines = updatedPolylines;
 
       _controller.animateCamera(CameraUpdate.newLatLngBounds(
-        MapUtils.boundsFromLatLngList(selectedParcour.allPoints.map((e) => LatLng(e.latitude!, e.longitude!)).toList()),
+        MapUtils.boundsFromLatLngList(selectedParcour.allPoints
+            .map((e) => LatLng(e.latitude!, e.longitude!))
+            .toList()),
         90.0,
       ));
+      if (!_isOverlayDisplayed) {
+        prepareToShowParcourDetailsOverlay(parcourId);
+      }
     }
-    showParcourDetailsOverlay(parcourId);
     notifyListeners();
   }
 
