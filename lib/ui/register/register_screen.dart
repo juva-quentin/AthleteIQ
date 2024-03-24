@@ -3,7 +3,9 @@ import 'package:athlete_iq/utils/visibility.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../model/User.dart';
 import '../../utils/utils.dart';
 import '../home/providers/timer_provider.dart';
 import '../info/provider/user_provider.dart';
@@ -11,327 +13,336 @@ import '../info/provider/user_provider.dart';
 class RegisterScreen extends ConsumerWidget {
   RegisterScreen({super.key});
   final _formRegisterKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
     final model = ref.watch(registerViewModelProvider);
     final modelChrono = ref.watch(timerProvider);
     final user = ref.watch(firestoreUserProvider);
-    return SafeArea(
-      child: AnimatedPadding(
-        padding: EdgeInsets.only(right: width * .04, left: width * .04),
-        duration: const Duration(milliseconds: 100),
-        child: Material(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              40.0,
-            ),
-          ),
-          color: Colors.white,
+
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.only(bottom: height * .02),
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formRegisterKey,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: height * .3,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                          40.0,
-                        ),
-                        child: GoogleMap(
-                          polylines: model.polylines,
-                          indoorViewEnabled: true,
-                          myLocationButtonEnabled: false,
-                          mapType: MapType.normal,
-                          onMapCreated: model.onMapCreated,
-                          initialCameraPosition: model.initialPosition,
-                          scrollGesturesEnabled: false,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(
-                          width * .03, height * .01, width * .03, height * .01),
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            keyboardType: TextInputType.text,
-                            decoration: const InputDecoration(
-                              labelText: "Titre",
-                            ),
-                            onChanged: (v) => model.title = v,
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: Form(
+              key: _formRegisterKey,
+              child: Column(
+                children: [
+                  SizedBox(height: 20.h),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12.r),
+                    child: Container(
+                      height: 250.h,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: Offset(0, 3),
                           ),
-                          SizedBox(
-                            width: double.infinity,
-                            height: height * .02,
-                          ),
-                          TextFormField(
-                            keyboardType: TextInputType.text,
-                            decoration: const InputDecoration(
-                              labelText: "Description",
-                            ),
-                            onChanged: (v) => model.description = v,
-                            maxLines: 3,
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            height: height * .02,
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(width * .05,
-                                height * .02, width * .05, height * .02),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(30),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Theme.of(context)
-                                      .shadowColor
-                                      .withOpacity(0.15),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: const Offset(
-                                      0, 3), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            height: height * .3,
-                            width: double.infinity,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      width: width * .34,
-                                      height: height * .12,
-                                      decoration: const BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      padding: EdgeInsets.fromLTRB(
-                                          width * .04,
-                                          height * .02,
-                                          width * .04,
-                                          height * .02),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text("Temps"),
-                                          SizedBox(
-                                            height: height * .02,
-                                          ),
-                                          Text(
-                                              "${modelChrono.hour.toString().padLeft(2, '0')}:${modelChrono.minute.toString().padLeft(2, '0')}:${modelChrono.seconds.toString().padLeft(2, '0')}"),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      width: width * .34,
-                                      height: height * .12,
-                                      decoration: const BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      padding: EdgeInsets.fromLTRB(
-                                          width * .04,
-                                          height * .02,
-                                          width * .04,
-                                          height * .02),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text("Distance"),
-                                          SizedBox(
-                                            height: height * .02,
-                                          ),
-                                          Text(
-                                              "${model.totalDistance.toStringAsFixed(2)} KM"),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: model.changeVisibility,
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        width: width * .34,
-                                        height: height * .13,
-                                        decoration: const BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15))),
-                                        padding: EdgeInsets.fromLTRB(
-                                            width * .04,
-                                            height * .02,
-                                            width * .04,
-                                            height * .02),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(model.switchCaseVisibility()),
-                                            SizedBox(
-                                              height: height * .01,
-                                            ),
-                                            Icon(
-                                              model.switchCaseIconVisibility(),
-                                              size: height * .05,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      width: width * .34,
-                                      height: height * .13,
-                                      decoration: const BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      padding: EdgeInsets.fromLTRB(
-                                          width * .04,
-                                          height * .02,
-                                          width * .04,
-                                          height * .02),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text("V/Moyenne"),
-                                          SizedBox(
-                                            height: height * .02,
-                                          ),
-                                          Text(
-                                              "${model.VM.toStringAsFixed(1)} Km/h"),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: height * .01,
-                          ),
-                          model.visibility == ParcourVisibility.Protected
-                              ? Container(
-                                  padding: const EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor,
-                                      borderRadius: BorderRadius.circular(30)),
-                                  height: height * .15,
-                                  child: user.when(
-                                    data: (user) {
-                                      return user.friends.isNotEmpty
-                                          ? ListView.builder(
-                                              itemCount: user.friends.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                final friend = ref.watch(
-                                                    firestoreUserFriendsProvider(
-                                                        user.friends[index]));
-                                                return CheckboxListTile(
-                                                  tileColor: Colors.white,
-                                                  title: friend.when(
-                                                    data: (data) {
-                                                      return Text(data.pseudo);
-                                                    },
-                                                    error: (error,
-                                                            stackTrace) =>
-                                                        Text(error.toString()),
-                                                    loading: () =>
-                                                        const CircularProgressIndicator(),
-                                                  ),
-                                                  value: model.share.contains(
-                                                      user.friends[index]),
-                                                  onChanged: (bool? value) {
-                                                    model.addRemoveFriend(value,
-                                                        user.friends[index]);
-                                                  },
-                                                );
-                                              },
-                                            )
-                                          : const Text(
-                                              'Vous n avez pas encore d amis');
-                                    },
-                                    error: (error, stackTrace) =>
-                                        Text(error.toString()),
-                                    loading: () =>
-                                        const CircularProgressIndicator(),
-                                  ))
-                              : const SizedBox(),
-                          SizedBox(
-                            height: height * .01,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              GestureDetector(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.all(width * .05),
-                                  decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(15))),
-                                  child: const Text('Annuler'),
-                                ),
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              GestureDetector(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.all(width * .05),
-                                  decoration: const BoxDecoration(
-                                      color: Colors.green,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(15))),
-                                  child: const Text('Valider'),
-                                ),
-                                onTap: () async {
-                                  try{
-                                    model.register();
-                                    Navigator.of(context).pop();
-                                  }catch(e){
-                                    Utils.flushBarErrorMessage(e.toString(), context);
-                                  }
-                                },
-                              )
-                            ],
-                          )
                         ],
                       ),
+                      child: GoogleMap(
+                        polylines: model.polylines,
+                        indoorViewEnabled: true,
+                        myLocationButtonEnabled: false,
+                        mapType: MapType.normal,
+                        onMapCreated: model.onMapCreated,
+                        initialCameraPosition: model.initialPosition,
+                        scrollGesturesEnabled: false,
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                  SizedBox(height: 20.h),
+                  Container(
+                    padding: EdgeInsets.all(20.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          spreadRadius: 2,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Temps:',
+                              style: TextStyle(
+                                  fontSize: 16.sp, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '${modelChrono.hour.toString().padLeft(2, '0')}:${modelChrono.minute.toString().padLeft(2, '0')}:${modelChrono.seconds.toString().padLeft(2, '0')}',
+                              style: TextStyle(fontSize: 16.sp),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Distance:',
+                              style: TextStyle(
+                                  fontSize: 16.sp, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '${model.totalDistance.toStringAsFixed(2)} KM',
+                              style: TextStyle(fontSize: 16.sp),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Vitesse Moyenne:',
+                              style: TextStyle(
+                                  fontSize: 16.sp, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '${model.VM.toStringAsFixed(1)} Km/h',
+                              style: TextStyle(fontSize: 16.sp),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Titre',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
+                    onChanged: (v) => model.title = v,
+                  ),
+                  SizedBox(height: 20.h),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
+                    onChanged: (v) => model.description = v,
+                    maxLines: 3,
+                  ),
+                  SizedBox(height: 20.h),
+                  VisibilitySwitch(model: model),
+                  SizedBox(height: 20.h),
+                  if (model.visibility == ParcourVisibility.Protected)
+                    FriendsShareList(model: model),
+                  SizedBox(height: 3.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        // Bouton 'Annuler'
+                        ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Colors.redAccent, // Couleur du bouton
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 30.w,
+                                vertical: 15.h), // Padding du bouton
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  18.r), // Arrondissement des coins
+                            ),
+                          ),
+                          child: Text(
+                            'Annuler',
+                            style: TextStyle(
+                                fontSize: 16.sp,
+                                color:
+                                    Colors.white), // Taille et couleur du texte
+                          ),
+                        ),
+
+                        // Bouton 'Valider'
+                        ElevatedButton(
+                          onPressed: () async {
+                            try {
+                              model.register();
+                              Navigator.of(context).pop();
+                            } catch (e) {
+                              Utils.flushBarErrorMessage(e.toString(), context);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green, // Couleur du bouton
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 30.w,
+                                vertical: 15.h), // Padding du bouton
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  18.r), // Arrondissement des coins
+                            ),
+                          ),
+                          child: Text(
+                            'Valider',
+                            style: TextStyle(
+                                fontSize: 16.sp,
+                                color:
+                                    Colors.white), // Taille et couleur du texte
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class VisibilitySwitch extends StatelessWidget {
+  const VisibilitySwitch({Key? key, required this.model}) : super(key: key);
+
+  final RegisterViewModel model;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: model.changeVisibility,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColorLight,
+          borderRadius: BorderRadius.all(Radius.circular(30.r)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(model.switchCaseVisibility(),
+                style: TextStyle(fontSize: 16.sp)),
+            Icon(model.switchCaseIconVisibility(), size: 24.w),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class FriendsShareList extends ConsumerWidget {
+  const FriendsShareList({
+    Key? key,
+    required this.model,
+  }) : super(key: key);
+
+  final RegisterViewModel model;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    AsyncValue<UserModel> user = ref.watch(firestoreUserProvider);
+
+    return user.when(
+      data: (userData) {
+        if (userData.friends.isNotEmpty) {
+          return Container(
+            padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 5.w),
+            margin: EdgeInsets.only(top: 10.h),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 2,
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Text(
+                  "Partager avec des amis",
+                  style:
+                      TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10.h),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: userData.friends.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final friendId = userData.friends[index];
+                    return ref
+                        .watch(firestoreUserFriendsProvider(friendId))
+                        .when(
+                          data: (friendDetails) => CheckboxListTile(
+                            title: Text(
+                              friendDetails.pseudo,
+                              style: TextStyle(fontSize: 14.sp),
+                            ),
+                            value: model.share.contains(friendId),
+                            onChanged: (bool? value) {
+                              model.addRemoveFriend(value, friendId);
+                            },
+                            secondary: CircleAvatar(
+                              // Ajoutez ici l'image de l'ami si disponible
+                              backgroundImage:
+                                  NetworkImage(friendDetails.image),
+                            ),
+                            contentPadding: EdgeInsets.zero,
+                            controlAffinity: ListTileControlAffinity.leading,
+                          ),
+                          loading: () => SizedBox(
+                              width: 20.w,
+                              height: 20.h,
+                              child: CircularProgressIndicator()),
+                          error: (error, stack) => ListTile(
+                            title: Text('Impossible de charger les détails',
+                                style: TextStyle(fontSize: 14.sp)),
+                          ),
+                        );
+                  },
+                ),
+              ],
+            ),
+          );
+        } else {
+          return Padding(
+            padding: EdgeInsets.all(8.w),
+            child: Text(
+              'Vous n\'avez pas encore d\'amis à partager',
+              style: TextStyle(fontSize: 14.sp),
+              textAlign: TextAlign.center,
+            ),
+          );
+        }
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Text('Erreur lors du chargement des données',
+          style: TextStyle(fontSize: 14.sp)),
     );
   }
 }
