@@ -10,15 +10,21 @@ import '../../utils/utils.dart';
 import '../home/providers/timer_provider.dart';
 import '../info/provider/user_provider.dart';
 
-class RegisterScreen extends ConsumerWidget {
-  RegisterScreen({super.key});
+class RegisterScreen extends ConsumerStatefulWidget {
+  RegisterScreen({Key? key}) : super(key: key);
+
+  @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formRegisterKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final model = ref.watch(registerViewModelProvider);
+
     final modelChrono = ref.watch(timerProvider);
-    final user = ref.watch(firestoreUserProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -128,6 +134,12 @@ class RegisterScreen extends ConsumerWidget {
                       ),
                     ),
                     onChanged: (v) => model.title = v,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Veuillez entrer un titre';
+                      }
+                      return null; // Si le champ est valide
+                    },
                   ),
                   SizedBox(height: 20.h),
                   TextFormField(
@@ -139,6 +151,10 @@ class RegisterScreen extends ConsumerWidget {
                     ),
                     onChanged: (v) => model.description = v,
                     maxLines: 3,
+                    validator: (value) {
+                      // Ajoutez une validation si nécessaire pour la description
+                      return null; // Si le champ est valide ou non requis
+                    },
                   ),
                   SizedBox(height: 20.h),
                   VisibilitySwitch(model: model),
@@ -177,11 +193,14 @@ class RegisterScreen extends ConsumerWidget {
                         // Bouton 'Valider'
                         ElevatedButton(
                           onPressed: () async {
-                            try {
-                              model.register();
-                              Navigator.of(context).pop();
-                            } catch (e) {
-                              Utils.flushBarErrorMessage(e.toString(), context);
+                            if (_formRegisterKey.currentState!.validate()) {
+                              try {
+                                model.register();
+                                Navigator.of(context).pop();
+                              } catch (e) {
+                                Utils.flushBarErrorMessage(
+                                    e.toString(), context);
+                              }
                             }
                           },
                           style: ElevatedButton.styleFrom(
