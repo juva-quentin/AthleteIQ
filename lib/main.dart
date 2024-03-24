@@ -51,7 +51,6 @@ class MyApp extends ConsumerWidget {
           title: 'AthleteIQ',
           debugShowCheckedModeBanner: false,
           theme: theme,
-          navigatorKey: ref.watch(homeViewModelProvider).navigatorKey,
           home: FutureBuilder(
             future: cache,
             builder: (context, AsyncSnapshot snapshot) {
