@@ -16,8 +16,6 @@ import '../../generated/assets.dart';
 import '../../model/Parcour.dart';
 import '../../utils/calculate_distance.dart';
 import '../../utils/map_utils.dart';
-import '../parcour-detail/parcour_details_screen.dart';
-import '../parcour-detail/parcours_details_overlay_screen.dart';
 import '../providers/loading_provider.dart';
 import 'dart:io' show Platform;
 import 'cluster/parcours_cluster_item.dart';
@@ -471,17 +469,13 @@ class HomeViewModel extends ChangeNotifier {
           .getUserWithId(userId: selectedParcour.owner)
           .then((value) => value.pseudo);
 
-      // Préparez les données pour l'overlay
       this.selectedParcourForOverlay = selectedParcour;
       this.ownerNameForOverlay = ownerName;
 
-      // Mettez à jour le champ pour indiquer que l'overlay doit être affiché
       _showParcourOverlay = true;
 
-      // Signalez à la vue qu'elle doit afficher l'overlay
       notifyListeners();
     } catch (e) {
-      // Gérez l'erreur comme il se doit
       print("Erreur lors de la préparation de l'overlay: $e");
     }
   }
@@ -515,6 +509,7 @@ class HomeViewModel extends ChangeNotifier {
           selectedParcourId = null;
           buildPolylinesAndMarkers(_currentParcoursList);
           // Fermer l'overlay ici si l'utilisateur s'éloigne
+          hideParcourDetailsOverlay();
           notifyListeners();
         }
       }
@@ -522,8 +517,6 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   void highlightAndZoomToParcour(String parcourId) {
-    print(
-        "-------------------------------------------------------------------------");
     selectedParcourId = parcourId;
 
     final selectedParcour =

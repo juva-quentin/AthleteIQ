@@ -7,57 +7,20 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../model/Parcour.dart';
 import '../../utils/utils.dart';
 import '../parcour-detail/parcour_details_screen.dart';
-import '../parcour-detail/parcours_details_overlay_screen.dart';
+import '../parcour-detail/parcour_overlay_widget.dart.dart';
 import '../providers/loading_provider.dart';
 import 'cluster/components/cluster_item_dialog.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final homeViewModel = ref.watch(homeViewModelProvider);
     final chrono = ref.watch(timerProvider);
     final isLoading = ref.watch(loadingProvider);
-
-    void showParcourDetailsOverlay(BuildContext context, Parcours selectedParcour, String ownerName) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ParcourDetailsOverlay(
-            parcourId: selectedParcour.id,
-            title: selectedParcour.title,
-            ownerName: ownerName,
-            onViewDetails: () {
-              // Fermer l'overlay
-              Navigator.of(context).pop();
-              // Naviguer vers la page de détails du parcours si nécessaire
-              Navigator.pushNamed(context, ParcourDetails.route, arguments: selectedParcour);
-            },
-          );
-        },
-      ).then((_) {
-        // Cette ligne est exécutée après que l'overlay est fermé, peu importe comment
-        ref.read(homeViewModelProvider.notifier).setOverlayDisplayed(false);
-        ref.read(homeViewModelProvider.notifier).hideParcourDetailsOverlay(); // Ajoutez ceci si vous voulez réinitialiser showParcourOverlay également
-      });
-    }
-
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (homeViewModel.showParcourOverlay && !homeViewModel.isOverlayDisplayed && homeViewModel.selectedParcourForOverlay != null) {
-        showParcourDetailsOverlay(context, homeViewModel.selectedParcourForOverlay!, homeViewModel.ownerNameForOverlay);
-        homeViewModel.setOverlayDisplayed(true); // Marquez comme affiché ici
-        print("--------------------------------- Show parcour overlay -----------------------------");
-        print(homeViewModel.showParcourOverlay);
-        print(homeViewModel.isOverlayDisplayed);
-      }
-    });
-
 
     homeViewModel.setOnClusterTapCallback((clusterItems) {
       showDialog(
@@ -89,15 +52,31 @@ class HomeScreen extends ConsumerWidget {
             }
           },
           onCameraMove: (CameraPosition position) {
-            homeViewModel.clusterManager.onCameraMove(position); // Informe le clusterManager du mouvement de la caméra
+            homeViewModel.clusterManager.onCameraMove(
+                position); // Informe le clusterManager du mouvement de la caméra
             homeViewModel.handleCameraMove(position); // Ajoutez cette ligne
           },
           onCameraIdle: () {
-            homeViewModel.clusterManager.updateMap(); // Recalcule et met à jour les clusters lorsque l'utilisateur a fini de bouger la caméra
+            homeViewModel.clusterManager
+                .updateMap(); // Recalcule et met à jour les clusters lorsque l'utilisateur a fini de bouger la caméra
           },
           initialCameraPosition: homeViewModel.initialPosition,
           zoomControlsEnabled: false,
         ),
+        if (homeViewModel.showParcourOverlay &&
+            homeViewModel.selectedParcourForOverlay != null)
+          ParcourOverlayWidget(
+            title: homeViewModel.selectedParcourForOverlay!.title,
+            ownerName: homeViewModel.ownerNameForOverlay,
+            onViewDetails: () {
+              Navigator.pushNamed(
+                context,
+                ParcourDetails.route,
+                arguments: homeViewModel.selectedParcourForOverlay,
+              );
+              homeViewModel.hideParcourDetailsOverlay();
+            },
+          ),
         Align(
           alignment: const Alignment(0, -1),
           child: AnimatedOpacity(
@@ -106,8 +85,10 @@ class HomeScreen extends ConsumerWidget {
             child: SafeArea(
               child: Container(
                 alignment: Alignment.center,
-                height: 60.h, // Hauteur ajustée pour plus de visibilité
-                width: 150.w, // Largeur ajustée pour plus de visibilité
+                height: 60.h,
+                // Hauteur ajustée pour plus de visibilité
+                width: 150.w,
+                // Largeur ajustée pour plus de visibilité
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.all(Radius.circular(
@@ -217,8 +198,10 @@ class HomeScreen extends ConsumerWidget {
                     },
                     child: Icon(
                       UniconsLine.traffic_light,
-                      color: homeViewModel.traffic ? Colors.lightGreen : Colors.red,
-                      size: 24.r, // Adjusted for responsiveness
+                      color: homeViewModel.traffic
+                          ? Colors.lightGreen
+                          : Colors.red,
+                      size: 24.r,
                     ),
                   ),
                 ),
