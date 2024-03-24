@@ -4,6 +4,7 @@ import 'package:athlete_iq/utils/speedConverter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:unicons/unicons.dart';
 
 import '../../data/network/userRepository.dart';
@@ -99,6 +100,13 @@ class ParcourDetailsViewModel extends ChangeNotifier {
       return Future.error(e);
     }
     notifyListeners();
+  }
+
+  void shareParcour(BuildContext context, Parcours parcour) {
+    String parcourLink = "athleteiq://parcours/details/${parcour.id}";
+    String message = "Découvrez ce parcours sur Athlete IQ: $parcourLink";
+
+    Share.share(message);
   }
 
   void initValue(Parcours args) {

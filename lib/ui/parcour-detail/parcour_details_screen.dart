@@ -40,8 +40,6 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        designSize: const Size(360, 690), minTextAdapt: true);
     final model = ref.watch(parcourDetailsViewModel);
     final AsyncValue<UserModel> userAsyncValue =
         ref.watch(firestoreUserProvider);
@@ -175,6 +173,16 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                                     ],
                                   ),
                                 ),
+                                PopupMenuItem(
+                                  value: "share",
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.share),
+                                      SizedBox(width: 10.w),
+                                      const Text("Partager"),
+                                    ],
+                                  ),
+                                ),
                               ],
                               elevation: 8.0.h,
                             ).then((value) {
@@ -225,6 +233,8 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                                         ],
                                       );
                                     });
+                              } else if (value == "share") {
+                                model.shareParcour(context, parcour);
                               }
                             });
                           },
