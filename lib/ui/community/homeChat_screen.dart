@@ -28,16 +28,14 @@ class HomeChatScreen extends ConsumerWidget {
               onPressed: () {
                 Navigator.pushNamed(context, SearchPage.route);
               },
-              icon: const Icon(Icons.search, color: Colors.white))
+              icon: const Icon(Icons.search))
         ],
         centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor,
         title: Text(
           "Communauté",
           style: TextStyle(
               fontSize: 24.sp, // Modifié
-              fontWeight: FontWeight.w600,
-              color: Colors.white),
+              fontWeight: FontWeight.w600,),
         ),
       ),
       body: Padding(
