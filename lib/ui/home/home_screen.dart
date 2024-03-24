@@ -64,7 +64,7 @@ class HomeScreen extends ConsumerWidget {
           zoomControlsEnabled: false,
         ),
         if (homeViewModel.showParcourOverlay &&
-            homeViewModel.selectedParcourForOverlay != null)
+            homeViewModel.selectedParcourForOverlay != null && !homeViewModel.courseStart)
           ParcourOverlayWidget(
             title: homeViewModel.selectedParcourForOverlay!.title,
             ownerName: homeViewModel.ownerNameForOverlay,
