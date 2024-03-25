@@ -1,46 +1,51 @@
-import 'package:athlete_iq/ui/community/providers/active_groups_provider.dart';
-import 'package:athlete_iq/ui/community/chat-page/chat_view_model_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
+import '../providers/active_groups_provider.dart';
 import 'components/message_tile.dart';
 import 'components/group_info.dart';
+import 'chat_view_model_provider.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   const ChatPage(this.args, {super.key});
 
-  static const route = "/groups/chat";
-
   final Object args;
 
+  static const route = "/groups/chat";
+
   @override
-  ConsumerState<ChatPage> createState() => _ChatPageState();
+  _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends ConsumerState<ChatPage> {
+  late final ScrollController _scrollController;
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(
-      Duration.zero,
-      () async {
-        final model = ref.read(chatViewModelProvider);
-        model.groupeId = widget.args.toString();
-        model.init().then(
-              (value) => WidgetsBinding.instance.addPostFrameCallback(
-                (_) {
-                  model.scrollController.animateTo(
-                    model.scrollController.position.maxScrollExtent,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeOut,
-                  );
-                },
-              ),
-            );
-      },
-    );
+    _scrollController = ScrollController();
+    Future.delayed(Duration.zero, () async {
+      final model = ref.read(chatViewModelProvider);
+      model.groupeId = widget.args.toString();
+      await model.init();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
