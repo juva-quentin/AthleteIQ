@@ -34,7 +34,7 @@ Widget groupTile(Groups group, BuildContext context, WidgetRef ref) {
             ),
             child: CircleAvatar(
               backgroundImage: NetworkImage(group.groupIcon),
-              radius: 30.r,
+              radius: 25.r,
             ),
           ),
           SizedBox(width: 16.w),
@@ -51,7 +51,7 @@ Widget groupTile(Groups group, BuildContext context, WidgetRef ref) {
                         child: Text(
                           group.groupName,
                           style: TextStyle(
-                            fontSize: 16.sp,
+                            fontSize: 15.sp,
                             fontWeight: FontWeight.bold,
                           ),
                           maxLines: 1,
@@ -76,7 +76,7 @@ Widget groupTile(Groups group, BuildContext context, WidgetRef ref) {
                         : group.recentMessage,
                     style: TextStyle(
                       color: Colors.grey,
-                      fontSize: 14.sp,
+                      fontSize: 12.sp,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -91,7 +91,7 @@ Widget groupTile(Groups group, BuildContext context, WidgetRef ref) {
               "${group.recentMessageTime.hour.toString().padLeft(2, '0')}:${group.recentMessageTime.minute.toString().padLeft(2, '0')}",
               style: TextStyle(
                 color: Colors.grey,
-                fontSize: 12.sp,
+                fontSize: 11.sp,
               ),
             ),
           ),

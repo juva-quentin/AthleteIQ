@@ -30,6 +30,11 @@ class SearchPageViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearName() {
+    name = "";
+    notifyListeners();
+  }
+
   CombineLatestStream<List<Object>, dynamic> combineStream() {
     final userStream = _userRepo.usersStream.map((snapshot) => snapshot.docs
         .map((e) => userModel.UserModel.fromFirestore(e))

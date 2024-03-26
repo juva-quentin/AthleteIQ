@@ -23,10 +23,11 @@ class CreateGroupScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Text('Créer un groupe', style: TextStyle(color: Colors.black)),
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const Text('Créer un groupe',
+            style: TextStyle(color: Colors.black)),
         leading: IconButton(
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -89,7 +90,7 @@ class CreateGroupScreen extends HookConsumerWidget {
                     }
                   : null,
               style: ElevatedButton.styleFrom(
-                primary: viewModel.enabled
+                backgroundColor: viewModel.enabled
                     ? Theme.of(context).primaryColor
                     : Colors.grey,
                 minimumSize: const Size(double.infinity, 50),

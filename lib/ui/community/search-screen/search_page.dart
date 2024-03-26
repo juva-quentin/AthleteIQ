@@ -1,4 +1,6 @@
 import 'package:athlete_iq/ui/community/search-screen/search_page_view_model_provider.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import '../../../model/Groups.dart';
 import '../../../model/User.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,81 +8,219 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:unicons/unicons.dart';
 
+import '../../../resources/components/middleAnimatedBar.dart';
+
+enum SearchTab { Groupes, Utilisateurs }
+
 class SearchPage extends ConsumerWidget {
   const SearchPage({super.key});
 
   static const route = "/groups/search";
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final model = ref.watch(searchPageViewModelProvider);
-    final FirebaseAuth auth = FirebaseAuth.instance;
+    final selectedTab = ValueNotifier<SearchTab>(SearchTab.Utilisateurs);
+    final TextEditingController searchController = TextEditingController();
+    print(selectedTab.value);
+
     return Scaffold(
       appBar: AppBar(
-        title: Card(
-          child: TextField(
-            decoration: InputDecoration(
-              prefixIcon:
-                  Icon(Icons.search, size: 24.r), // Ajusté pour la responsivité
-              hintText: "Rechercher...",
-              border: InputBorder.none,
-            ),
-            onChanged: (val) => model.name = val,
-          ),
+        title: const Text("Recherche"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: StreamBuilder(
-        stream: model.combineStream(),
-        builder: (context, AsyncSnapshot snapshots) {
-          if (snapshots.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            return ListView.builder(
-              itemCount: snapshots.data!.length,
-              itemBuilder: (context, index) {
-                var data = snapshots.data[index];
-                var isUser = data.runtimeType == UserModel;
-                return Padding(
-                  padding: EdgeInsets.all(8.r), // Ajusté pour la responsivité
-                  child: Material(
-                    elevation: 3.0,
-                    shadowColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          15.r), // Ajusté pour la responsivité
-                    ),
-                    child: ListTile(
-                      title: Text(
-                        isUser ? data.pseudo : data.groupName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.sp, // Ajusté pour la responsivité
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Text(
-                        isUser ? "Utilisateur" : "Groupe",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 14.sp), // Ajusté pour la responsivité
-                      ),
-                      leading: CircleAvatar(
-                        backgroundImage:
-                            NetworkImage(isUser ? data.image : data.groupIcon),
-                        radius: 25.r, // Ajusté pour la responsivité
-                      ),
-                      trailing: buildTrailingIcon(isUser, data, auth, model),
-                    ),
-                  ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search, size: 24.r),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    searchController.clear();
+                    model.clearName();
+                  },
+                ),
+                hintText: "Rechercher...",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.r)),
+                fillColor: Colors.white,
+                filled: true,
+              ),
+              onChanged: (value) {
+                searchController.value = TextEditingValue(
+                  text: value,
+                  selection: TextSelection.collapsed(offset: value.length),
                 );
               },
-            );
-          }
-        },
+            ),
+          ),
+          ValueListenableBuilder(
+            valueListenable: selectedTab,
+            builder: (context, SearchTab value, _) {
+              return Container(
+                margin: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      width: 2,
+                      color: Colors.blue, // La couleur de la barre
+                    ),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    buildTabButton(context, SearchTab.Utilisateurs,
+                        value == SearchTab.Utilisateurs, selectedTab),
+                    buildTabButton(context, SearchTab.Groupes,
+                        value == SearchTab.Groupes, selectedTab),
+                  ],
+                ),
+              );
+            },
+          ),
+          Expanded(
+            child: ValueListenableBuilder<SearchTab>(
+              valueListenable: selectedTab,
+              builder: (_, value, __) {
+                return StreamBuilder(
+                  stream: model.combineStream(),
+                  builder: (context, AsyncSnapshot snapshots) {
+                    if (snapshots.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else {
+                      List<UserModel> usersList =
+                          snapshots.data!.whereType<UserModel>().toList();
+                      List<Groups> groupsList =
+                          snapshots.data!.whereType<Groups>().toList();
+
+                      switch (value) {
+                        case SearchTab.Utilisateurs:
+                          return SizedBox(
+                            child: buildUsersList(usersList, model, context),
+                          );
+                        case SearchTab.Groupes:
+                          return SizedBox(
+                            child: buildGroupsList(groupsList, model, context),
+                          );
+                        default:
+                          return Container();
+                      }
+                    }
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildGroupsList(
+      List<Groups> groups, SearchPageViewModel model, BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: groups.length,
+      itemBuilder: (context, index) {
+        return buildGroupTile(groups[index], model, context);
+      },
+    );
+  }
+
+  Widget buildUsersList(
+      List<UserModel> users, SearchPageViewModel model, BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: users.length,
+      itemBuilder: (context, index) {
+        return buildUserTile(users[index], model, context);
+      },
+    );
+  }
+
+  Widget buildUserTile(
+      UserModel user, SearchPageViewModel model, BuildContext context) {
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(user.image),
+        radius: 25.r,
+      ),
+      title: Text(
+        user.pseudo,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: 16.sp,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      subtitle: Text(
+        "Utilisateur",
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(fontSize: 14.sp),
+      ),
+      trailing: buildTrailingIcon(true, user, FirebaseAuth.instance, model),
+    );
+  }
+
+  Widget buildGroupTile(
+      Groups group, SearchPageViewModel model, BuildContext context) {
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(group.groupIcon),
+        radius: 25.r,
+      ),
+      title: Text(
+        group.groupName,
+        style: TextStyle(
+          fontSize: 16.sp,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      subtitle: Text(
+        "Groupe",
+        style: TextStyle(fontSize: 14.sp),
+      ),
+      trailing: buildTrailingIcon(false, group, FirebaseAuth.instance, model),
+    );
+  }
+
+  Widget buildTabButton(BuildContext context, SearchTab tab, bool isSelected,
+      ValueNotifier<SearchTab> selectedTab) {
+    String text = tab == SearchTab.Utilisateurs ? "Utilisateurs" : "Groupes";
+    return Expanded(
+      child: InkWell(
+        onTap: () => selectedTab.value = tab,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                text,
+                style: TextStyle(
+                  color: isSelected ? Colors.black : Colors.grey,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+              if (isSelected) SizedBox(height: 3.h),
+              MiddleAnimatedBar(
+                isActive: isSelected,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -88,8 +228,7 @@ class SearchPage extends ConsumerWidget {
   Widget buildTrailingIcon(
       bool isUser, data, FirebaseAuth auth, SearchPageViewModel model) {
     return isUser && data.awaitFriends.contains(auth.currentUser?.uid)
-        ? Text('En attente',
-            style: TextStyle(fontSize: 14.sp)) // Ajusté pour la responsivité
+        ? Text('En attente', style: TextStyle(fontSize: 14.sp))
         : IconButton(
             onPressed: () {
               isUser
@@ -103,12 +242,11 @@ class SearchPage extends ConsumerWidget {
             icon: Icon(
               isUser
                   ? data.friends.contains(auth.currentUser?.uid)
-                      ? UniconsLine.user_minus
-                      : UniconsLine.user_plus
+                      ? MdiIcons.accountCancel
+                      : MdiIcons.accountPlus
                   : data.members.contains(auth.currentUser?.uid)
-                      ? UniconsLine.exit
-                      : UniconsLine.angle_right_b,
-              color: isUser ? Colors.green : Colors.grey,
+                      ? MdiIcons.accountMultipleRemove
+                      : MdiIcons.accountMultiplePlus,
               size: 24.r,
             ),
           );
