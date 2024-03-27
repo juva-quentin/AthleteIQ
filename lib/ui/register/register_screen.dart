@@ -27,6 +27,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final modelChrono = ref.watch(timerProvider);
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Enregistrement de parcours"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -161,74 +168,27 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   SizedBox(height: 20.h),
                   if (model.visibility == ParcourVisibility.Protected)
                     FriendsShareList(model: model),
-                  SizedBox(height: 3.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5.h),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        // Bouton 'Annuler'
-                        ElevatedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Colors.redAccent, // Couleur du bouton
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 30.w,
-                                vertical: 15.h), // Padding du bouton
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  18.r), // Arrondissement des coins
-                            ),
-                          ),
-                          child: Text(
-                            'Annuler',
-                            style: TextStyle(
-                                fontSize: 16.sp,
-                                color:
-                                    Colors.white), // Taille et couleur du texte
-                          ),
-                        ),
-
-                        // Bouton 'Valider'
-                        ElevatedButton(
-                          onPressed: () async {
-                            if (_formRegisterKey.currentState!.validate()) {
-                              try {
-                                model.register();
-                                Navigator.of(context).pop();
-                              } catch (e) {
-                                Utils.flushBarErrorMessage(
-                                    e.toString(), context);
-                              }
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green, // Couleur du bouton
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 30.w,
-                                vertical: 15.h), // Padding du bouton
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  18.r), // Arrondissement des coins
-                            ),
-                          ),
-                          child: Text(
-                            'Valider',
-                            style: TextStyle(
-                                fontSize: 16.sp,
-                                color:
-                                    Colors.white), // Taille et couleur du texte
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  SizedBox(height: 60.h),
                 ],
               ),
             ),
           ),
+
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          if (_formRegisterKey.currentState!.validate()) {
+            try {
+              model.register();
+              Navigator.of(context).pop();
+            } catch (e) {
+              Utils.flushBarErrorMessage(e.toString(), context);
+            }
+          }
+        },
+        backgroundColor: Colors.blue, // Couleur du bouton changée en bleu
+        child: Icon(Icons.check, color: Colors.white), // Icône du bouton "Valider"
       ),
     );
   }
@@ -246,13 +206,13 @@ class VisibilitySwitch extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColorLight,
-          borderRadius: BorderRadius.all(Radius.circular(30.r)),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
+              color: Colors.grey.withOpacity(0.2),
               spreadRadius: 2,
-              blurRadius: 5,
+              blurRadius: 4,
               offset: Offset(0, 2),
             ),
           ],
@@ -290,10 +250,10 @@ class FriendsShareList extends ConsumerWidget {
             margin: EdgeInsets.only(top: 10.h),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(20.r),
+              borderRadius: BorderRadius.circular(12.r),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey.withOpacity(0.2),
                   spreadRadius: 2,
                   blurRadius: 4,
                   offset: Offset(0, 2),

@@ -58,6 +58,7 @@ class MyApp extends ConsumerWidget {
         debugShowCheckedModeBanner: false,
         title: 'AthleteIQ',
         theme: theme,
+        debugShowCheckedModeBanner: false,
         home: FutureBuilder(
           future: Future.wait([cache, Future.value(initialLink)]),
           builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {

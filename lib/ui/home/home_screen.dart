@@ -81,36 +81,32 @@ class HomeScreen extends ConsumerWidget {
           alignment: const Alignment(0, -1),
           child: AnimatedOpacity(
             duration: const Duration(milliseconds: 500),
-            opacity: homeViewModel.courseStart ? 0.8 : 0,
+            opacity: homeViewModel.courseStart ? 1 : 0,
             child: SafeArea(
               child: Container(
                 alignment: Alignment.center,
-                height: 60.h,
-                // Hauteur ajustée pour plus de visibilité
-                width: 150.w,
-                // Largeur ajustée pour plus de visibilité
+                height: 50.h,
+                width: 130.w,
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.all(Radius.circular(
-                      25.r)), // Bords arrondis pour une apparence moderne
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black
-                          .withOpacity(0.2), // Ombre pour la profondeur
-                      spreadRadius: 0,
-                      blurRadius: 10.r, // Flou de l'ombre
-                      offset: Offset(0, 4.h), // Position de l'ombre
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 4,
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
                     ),
                   ],
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
                 child: Text(
                   '${chrono.hour.toString().padLeft(2, '0')} : ${chrono.minute.toString().padLeft(2, '0')} : ${chrono.seconds.toString().padLeft(2, '0')} ',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize:
-                        16.sp, // Taille de police ajustée pour l'équilibre
+                        16.sp,
                     fontWeight:
-                        FontWeight.bold, // Gras pour une meilleure lisibilité
+                        FontWeight.bold,
                   ),
                 ),
               ),
@@ -126,7 +122,7 @@ class HomeScreen extends ConsumerWidget {
           child: Align(
             alignment: const Alignment(-0.97, -1),
             child: Padding(
-              padding: EdgeInsets.all(8.w), // Adjusted for responsiveness
+              padding: EdgeInsets.all(8.w),
               child: FloatingActionButton(
                 backgroundColor: Theme.of(context).cardColor,
                 heroTag: "modeParcourBtn",

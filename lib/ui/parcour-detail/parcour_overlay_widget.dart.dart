@@ -46,7 +46,14 @@ class ParcourOverlayWidget extends StatelessWidget {
               label: const Text('Voir les détails', style: TextStyle(color: Colors.white)),
               onPressed: onViewDetails,
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white, backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Colors.white,
+                backgroundColor: Theme.of(context).primaryColor,
+                shadowColor: Colors.black.withOpacity(0.2),
+                elevation: 10,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 20.w),
               ),
             ),
           ],
