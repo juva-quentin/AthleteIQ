@@ -278,6 +278,7 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<void> changeFilterParcour() async {
+
     final provVal = _typeFilter;
     if (_typeFilter == "public") {
       _filterParcourIcon = Icons.shield;

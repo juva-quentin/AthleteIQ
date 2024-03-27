@@ -32,10 +32,13 @@ class CoursesListScreen extends ConsumerWidget {
             List<Parcours> parcours = snapshot.data;
             return ListView.builder(
                 itemCount: parcours.length,
-                padding: EdgeInsets.symmetric(
-                    vertical: 0.02.sh, horizontal: 0.02.sw),
+                padding: EdgeInsets.only(bottom: 70.h, top: 10.h),
                 itemBuilder: (context, index) {
-                  return parcourTile(parcours[index], context, ref);
+                  return Padding(
+                    padding:  EdgeInsets.symmetric(
+                        vertical: 0.00.sh, horizontal: 0.02.sw),
+                    child: parcourTile(parcours[index], context, ref),
+                  );
                 });
           } else {
             return const Center(

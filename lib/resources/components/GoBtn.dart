@@ -51,7 +51,7 @@ class GoBtn extends ConsumerWidget {
               offset: const Offset(0, 4),
             ),
           ],
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(18.r),
         ),
         child: Center(
           child: Text(

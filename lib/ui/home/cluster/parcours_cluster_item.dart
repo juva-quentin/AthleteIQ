@@ -7,7 +7,7 @@ class ParcoursClusterItem implements ClusterItem {
   final BitmapDescriptor icon;
   final String title;
   final String snippet;
-  final List<LatLng> allPoints; // Ajout de la propriété allPoints
+  final List<LatLng> allPoints;
 
   ParcoursClusterItem({
     required this.id,
@@ -15,7 +15,7 @@ class ParcoursClusterItem implements ClusterItem {
     required this.icon,
     required this.title,
     required this.snippet,
-    required this.allPoints, // Ajouter un paramètre pour les points du parcours
+    required this.allPoints,
   });
 
   @override

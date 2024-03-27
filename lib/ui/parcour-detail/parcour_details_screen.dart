@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:unicons/unicons.dart';
 
 import '../../app/app.dart';
@@ -20,7 +22,9 @@ import '../info/components/caractéristiqueComponent.dart';
 
 class ParcourDetails extends ConsumerStatefulWidget {
   final Object args;
+
   const ParcourDetails(this.args, {super.key});
+
   static const route = "/parcours/details";
 
   @override
@@ -46,28 +50,234 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
     final Parcours parcour = widget.args as Parcours;
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 300.h,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              centerTitle: true,
-              titlePadding: EdgeInsets.only(bottom: 13.h),
-              title: Container(
-                width: double.infinity,
-                alignment: Alignment.bottomCenter,
-                child: Text(
-                  model.title.capitalize(),
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          parcour.title.capitalize(),
+          style: const TextStyle(color: Colors.black),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
+          textAlign: TextAlign.center,
+        ),
+        centerTitle: true,
+        actions: <Widget>[
+          userAsyncValue.when(
+            data: (user) => IconButton(
+              icon: Icon(
+                user.fav.contains(parcour.id)
+                    ? MdiIcons.heart
+                    : MdiIcons.heartOutline,
+                size: 24.w,
+                color:
+                    user.fav.contains(parcour.id) ? Colors.blue : Colors.blue,
               ),
-              background: GoogleMap(
+              onPressed: () {
+                if (user.fav.contains(parcour.id)) {
+                  model.removeToFav(parcour);
+                } else {
+                  model.addToFav(parcour);
+                }
+              },
+            ),
+            loading: () => const CircularProgressIndicator(),
+            error: (_, __) => Icon(UniconsLine.circle, size: 24.w),
+          ),
+          userAsyncValue.when(
+            data: (user) {
+              return user.id == parcour.owner
+                  ? IconButton(
+                      icon: Icon(
+                        Icons.more_vert,
+                        size: 24.w,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Dialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0)),
+                              elevation: 5,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20.0),
+                                child: Container(
+                                  color: Colors.white,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).primaryColor,
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20),
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 15, horizontal: 20),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text(
+                                              'Options',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            InkWell(
+                                              onTap: () =>
+                                                  Navigator.of(context).pop(),
+                                              child: const Icon(Icons.close,
+                                                  color: Colors.white),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10),
+                                        child: Column(
+                                          children: [
+                                            ListTile(
+                                              leading: const Icon(UniconsLine.edit, color: Colors.blue),
+                                              title: const Text("Modifier"),
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                  CustomPopupRoute(
+                                                    builder: (BuildContext context) {
+                                                      return UpdateParcourScreen();
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                            ListTile(
+                                              leading: const Icon(UniconsLine.trash_alt, color: Colors.red),
+                                              title: const Text("Supprimer"),
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context) {
+                                                    return Dialog(
+                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                                                      elevation: 5,
+                                                      child: ClipRRect(
+                                                        borderRadius: BorderRadius.circular(20.0),
+                                                        child: Container(
+                                                          color: Colors.white,
+                                                          child: IntrinsicHeight( // Assurez-vous que le widget prend la hauteur de son contenu
+                                                            child: Column(
+                                                              mainAxisSize: MainAxisSize.min,
+                                                              children: [
+                                                                Container(
+                                                                  width: double.infinity,
+                                                                  decoration: BoxDecoration(
+                                                                    color: Theme.of(context).errorColor, // Couleur rouge pour l'en-tête
+                                                                    borderRadius: const BorderRadius.only(
+                                                                      topLeft: Radius.circular(20),
+                                                                      topRight: Radius.circular(20),
+                                                                    ),
+                                                                  ),
+                                                                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20), // Augmentation de l'espace vertical
+                                                                  child: const Text(
+                                                                    "Supprimer le parcours",
+                                                                    style: TextStyle(
+                                                                      fontSize: 20,
+                                                                      fontWeight: FontWeight.bold,
+                                                                      color: Colors.white,
+                                                                    ),
+                                                                    textAlign: TextAlign.center,
+                                                                  ),
+                                                                ),
+                                                                const Padding(
+                                                                  padding: EdgeInsets.all(20), // Augmentation de l'espace autour du texte
+                                                                  child: Text(
+                                                                    "Êtes-vous sûr de vouloir supprimer ce parcours ? Cette action est irréversible.",
+                                                                    style: TextStyle(fontSize: 16),
+                                                                    textAlign: TextAlign.center,
+                                                                  ),
+                                                                ),
+                                                                Padding( // Ajout de Padding pour créer plus d'espace
+                                                                  padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20), // Ajustez selon le besoin
+                                                                  child: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                    children: [
+                                                                      TextButton(
+                                                                        onPressed: () => Navigator.pop(context),
+                                                                        child: Text("Annuler", style: TextStyle(color: Theme.of(context).primaryColor)), // Couleur bleue pour annuler
+                                                                      ),
+                                                                      TextButton(
+                                                                        onPressed: () async {
+                                                                          try {
+                                                                            await model.deleteParcour();
+                                                                            Navigator.pushNamed(context, App.route);
+                                                                          } catch (e) {
+                                                                            Utils.flushBarErrorMessage(e.toString(), context);
+                                                                          }
+                                                                        },
+                                                                        child: Text("Supprimer", style: TextStyle(color: Colors.red)), // Texte Supprimer en rouge
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                            ListTile(
+                                              leading: const Icon(UniconsLine.share_alt, color: Colors.blue),
+                                              title: const Text("Partager"),
+                                              onTap: () {
+                                                model.shareParcour(context, parcour);
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    )
+                  : Container();
+            },
+            error: (error, stackTrace) {
+              if (kDebugMode) {
+                print(error.toString());
+              }
+              return Text(error.toString());
+            },
+            loading: () => const CircularProgressIndicator(),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 250.h,
+              child: GoogleMap(
                 compassEnabled: false,
                 mapToolbarEnabled: false,
                 zoomControlsEnabled: false,
@@ -101,213 +311,47 @@ class ParcourDetailsState extends ConsumerState<ParcourDetails> {
                 },
               ),
             ),
-            leading: IconButton(
-                icon: Icon(UniconsLine.arrow_left, size: 24.w),
-                onPressed: () => Navigator.of(context).pop()),
-            actions: <Widget>[
-              userAsyncValue.when(
-                data: (user) => IconButton(
-                  icon: Icon(
-                      user.fav.contains(parcour.id)
-                          ? UniconsLine.heart
-                          : UniconsLine.heart_alt,
-                      size: 24.w,
-                      color: user.fav.contains(parcour.id)
-                          ? Colors.red
-                          : Colors.white),
-                  onPressed: () {
-                    if (user.fav.contains(parcour.id)) {
-                      model.removeToFav(parcour);
-                    } else {
-                      model.addToFav(parcour);
-                    }
-                  },
-                ),
-                loading: () => const CircularProgressIndicator(),
-                error: (_, __) => Icon(UniconsLine.circle, size: 24.w),
-              ),
-              userAsyncValue.when(
-                data: (user) {
-                  return user.id == parcour.owner
-                      ? IconButton(
-                          icon: Icon(
-                            Icons.menu,
-                            size: 38.w,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            final RenderBox overlay = Overlay.of(context)
-                                .context
-                                .findRenderObject() as RenderBox;
-                            showMenu(
-                              context: context,
-                              position: RelativeRect.fromRect(
-                                Rect.fromPoints(
-                                  overlay.localToGlobal(Offset(0.95.sw - 48.w,
-                                      5.h)), // Ajustement pour le bouton menu en haut à droite
-                                  overlay.localToGlobal(Offset(
-                                      0.95.sw,
-                                      kToolbarHeight
-                                          .h)), // Ajustement pour la hauteur de la toolbar
-                                ),
-                                Offset.zero & overlay.size,
-                              ),
-                              items: [
-                                PopupMenuItem(
-                                  value: "modifier",
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.edit),
-                                      SizedBox(width: 10.w),
-                                      const Text("Modifier"),
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItem(
-                                  value: "supprimer",
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.delete),
-                                      SizedBox(width: 10.w),
-                                      const Text("Supprimer"),
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItem(
-                                  value: "share",
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.share),
-                                      SizedBox(width: 10.w),
-                                      const Text("Partager"),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                              elevation: 8.0.h,
-                            ).then((value) {
-                              if (value == "modifier") {
-                                Navigator.of(context).push(
-                                  CustomPopupRoute(
-                                    builder: (BuildContext context) {
-                                      return UpdateParcourScreen();
-                                    },
-                                  ),
-                                );
-                              } else if (value == "supprimer") {
-                                showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title:
-                                            const Text("Supprimer le parcour"),
-                                        content: const Text(
-                                            "Êtes-vous sur de vouloir supprimer le parcour ?"),
-                                        actions: [
-                                          IconButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            icon: const Icon(
-                                              Icons.cancel,
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(
-                                              Icons.done,
-                                              color: Colors.green,
-                                            ),
-                                            onPressed: () async {
-                                              try {
-                                                await model.deleteParcour();
-                                              } catch (e) {
-                                                Utils.flushBarErrorMessage(
-                                                    e.toString(), context);
-                                              }
-                                              Navigator.pushNamed(
-                                                  context, App.route);
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              } else if (value == "share") {
-                                model.shareParcour(context, parcour);
-                              }
-                            });
-                          },
-                        )
-                      : Container();
-                },
-                error: (error, stackTrace) {
-                  if (kDebugMode) {
-                    print(error.toString());
-                  }
-                  return Text(error.toString());
-                },
-                loading: () => const CircularProgressIndicator(),
-              ),
-            ],
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            Padding(
+              padding: EdgeInsets.all(20.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Description',
-                      style: TextStyle(
-                          fontSize: 18.sp, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 10.h),
                   Text(
-                      model.description.isNotEmpty
-                          ? model.description
-                          : 'Aucune description disponible',
-                      style: TextStyle(fontSize: 16.sp)),
+                    "Description",
+                    style:
+                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    parcour.description.isNotEmpty
+                        ? parcour.description
+                        : "Aucune description disponible",
+                    style: TextStyle(fontSize: 16.sp),
+                  ),
                   SizedBox(height: 20.h),
-                  Text('Caractéristiques',
-                      style: TextStyle(
-                          fontSize: 18.sp, fontWeight: FontWeight.bold)),
+                  Text(
+                    "Caractéristiques",
+                    style:
+                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+                  ),
                   CaracteristiqueWidget(
-                      iconData: Icons.speed,
-                      label: 'Vitesse moyenne',
-                      value:
-                          model.caculatMaxSpeed(parcour)?.toStringAsFixed(2) ??
-                              'N/A',
-                      unit: 'km/h'),
-                  const Divider(),
+                    iconData: UniconsLine.mouse,
+                    label: "Distance",
+                    value: "${parcour.totalDistance.toStringAsFixed(2)}",
+                    unit: 'Km',
+                  ),
                   CaracteristiqueWidget(
-                      iconData: Icons.speed,
-                      label: 'Vitesse maximale',
-                      value:
-                          model.calculatMinSpeed(parcour)?.toStringAsFixed(2) ??
-                              'N/A',
-                      unit: 'km/h'),
-                  const Divider(),
-                  CaracteristiqueWidget(
-                      iconData: Icons.terrain,
-                      label: 'Altitude maximale',
-                      value: model
-                              .caculatMaxAltitude(parcour)
-                              ?.toStringAsFixed(2) ??
-                          'N/A',
-                      unit: 'm'),
-                  const Divider(),
-                  CaracteristiqueWidget(
-                      iconData: Icons.terrain,
-                      label: 'Altitude minimale',
-                      value: model
-                              .calculatMinAltitude(parcour)
-                              ?.toStringAsFixed(2) ??
-                          'N/A',
-                      unit: 'm'),
+                    iconData: UniconsLine.clock,
+                    label: "Durée",
+                    value: "${parcour.totalDistance}",
+                    unit: '',
+                  ),
+                  // Add more caracteristique widgets as needed
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

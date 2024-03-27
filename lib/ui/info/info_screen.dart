@@ -25,7 +25,7 @@ class InfoScreen extends ConsumerWidget {
             child: IconButton(
               icon: Icon(
                 UniconsLine.setting,
-                size: width * .1,
+                size: width * .07,
               ),
               onPressed: () {
                 Navigator.pushNamed(context, SettingsScreen.route);

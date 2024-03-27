@@ -42,14 +42,15 @@ class FavListState extends ConsumerState<FavListScreen> {
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 SliverPadding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: 0.02.sh,
-                      horizontal: 0.02.sw), // Ajusté pour la responsivité
+                  padding: EdgeInsets.only(bottom: 70.h, top: 10.h),
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        return parcourTile(
-                            model.favParcour[index], context, ref);
+                        return Padding(
+                          padding:  EdgeInsets.symmetric(
+                              vertical: 0.00.sh, horizontal: 0.02.sw),
+                          child: parcourTile(model.favParcour[index], context, ref),
+                        );
                       },
                       childCount: model.favParcour.length,
                     ),

@@ -54,7 +54,7 @@ class HomeScreen extends ConsumerWidget {
           onCameraMove: (CameraPosition position) {
             homeViewModel.clusterManager.onCameraMove(
                 position); // Informe le clusterManager du mouvement de la caméra
-            homeViewModel.handleCameraMove(position); // Ajoutez cette ligne
+            homeViewModel.handleCameraMove(position);
           },
           onCameraIdle: () {
             homeViewModel.clusterManager
@@ -157,7 +157,7 @@ class HomeScreen extends ConsumerWidget {
                               ? MapType.satellite
                               : MapType.normal;
                       Utils.toastMessage(
-                          "Mode ${homeViewModel.defaultMapType == MapType.normal ? 'normal' : 'satellite'} activé");
+                          "Mode ${homeViewModel.defaultMapType == MapType.normal ? 'carte' : 'satellite'} activé");
                     },
                     child: const Icon(UniconsLine.layer_group,
                         size: 24), // Adjusted for responsiveness

@@ -40,7 +40,15 @@ class App extends ConsumerWidget {
                   ),
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor.withOpacity(0.9),
-                    borderRadius: BorderRadius.all(Radius.circular(24.r)),
+                    borderRadius: BorderRadius.all(Radius.circular(20.r)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 4,
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

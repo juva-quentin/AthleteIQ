@@ -10,7 +10,7 @@ import '../../../utils/utils.dart';
 Widget userTile(
     UserModel user, BuildContext context, WidgetRef ref, bool friendRequest) {
   return Padding(
-    padding: EdgeInsets.only(top: 10.h), // Ajusté pour la responsivité
+    padding: EdgeInsets.only(top: 10.h, right: 5.h, left: 5.h), // Ajusté pour la responsivité
     child: Material(
       elevation: 3.0,
       shadowColor: Colors.black,

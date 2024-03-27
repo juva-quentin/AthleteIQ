@@ -69,7 +69,7 @@ Widget buildTopInfo(BuildContext context) {
                     ),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 26.sp,
+                      fontSize: 23.sp,
                     ),
                   ),
                   Row(
@@ -79,7 +79,7 @@ Widget buildTopInfo(BuildContext context) {
                         "Objectif hebdo: ",
                         style: TextStyle(
                           color: const Color(0xFF121212),
-                          fontSize: 17.sp,
+                          fontSize: 15.sp,
                           fontWeight: FontWeight.normal,
                         ),
                       ),
@@ -101,7 +101,7 @@ Widget buildTopInfo(BuildContext context) {
                         "${user.when(data: (user) => user.totalDist, error: (error, stackTrace) => 0.0, loading: () => 0.0).toStringAsFixed(2)}Km",
                         style: TextStyle(
                           color: const Color.fromARGB(255, 0, 0, 0),
-                          fontSize: 18.sp,
+                          fontSize: 15.sp,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -131,10 +131,11 @@ Widget buildTopInfo(BuildContext context) {
                         loading: () => 0,
                       ),
                     ),
-                    barRadius: Radius.circular(16.r),
+                    barRadius: const Radius.circular(9),
                     center: Text(
                       "${(model.advencement(user.when(data: (user) => user.objectif.toInt(), error: (error, stackTrace) => 0, loading: () => 0), user.when(data: (user) => user.totalDist.toInt(), error: (error, stackTrace) => 0, loading: () => 0)) * 100).toStringAsFixed(2)}%",
                       style: TextStyle(
+                        color: Colors.white,
                           fontSize: 14.sp), // Adjust for responsiveness
                     ),
                     progressColor: Theme.of(context).primaryColor,
