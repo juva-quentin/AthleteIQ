@@ -9,7 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:location/location.dart';
 import 'package:unicons/unicons.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../data/network/userRepository.dart';
 import '../../generated/assets.dart';
@@ -597,11 +597,11 @@ class HomeViewModel extends ChangeNotifier {
         ),
       );
       notifyListeners();
-      Wakelock.disable();
+      WakelockPlus.disable();
       return false;
     } else {
       _courseStart = true;
-      Wakelock.enable();
+      WakelockPlus.enable();
       tempPolylines.clear();
       _chrono.startTimer();
       try {

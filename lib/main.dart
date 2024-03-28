@@ -55,6 +55,7 @@ class MyApp extends ConsumerWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) => MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'AthleteIQ',
         theme: theme,
         home: FutureBuilder(
