@@ -15,6 +15,10 @@ class BluetoothDevicesScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: const Text('Appareils Bluetooth'),
         actions: [
           IconButton(

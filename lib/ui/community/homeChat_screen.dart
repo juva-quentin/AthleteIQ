@@ -34,7 +34,6 @@ class HomeChatScreen extends ConsumerWidget {
         title: Text(
           "Communauté",
           style: TextStyle(
-              fontSize: 24.sp, // Modifié
               fontWeight: FontWeight.w600,),
         ),
       ),

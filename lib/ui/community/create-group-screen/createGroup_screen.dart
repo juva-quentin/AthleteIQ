@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:unicons/unicons.dart';
 import '../../../utils/visibility.dart';
 import 'create_group_view_model_provider.dart';
 
@@ -55,7 +57,7 @@ class CreateGroupScreen extends HookConsumerWidget {
               decoration: InputDecoration(
                 labelText: 'Nom du groupe',
                 border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
                 prefixIcon: const Icon(Icons.group),
               ),
             ),
@@ -77,31 +79,39 @@ class CreateGroupScreen extends HookConsumerWidget {
               decoration: InputDecoration(
                 labelText: 'Type de groupe',
                 border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
                 prefixIcon: const Icon(Icons.visibility),
               ),
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: viewModel.enabled
-                  ? () async {
-                      await viewModel.write();
-                      Navigator.of(context).pop();
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: viewModel.enabled
-                    ? Theme.of(context).primaryColor
-                    : Colors.grey,
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
+            Container(
+              height: 35.h,
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: viewModel.enabled
+                    ? () async {
+                        await viewModel.write();
+                        Navigator.of(context).pop();
+                      }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: viewModel.enabled
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey,
+                  minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ), icon: const Icon(UniconsLine.plus_circle, color: Colors.white),
+                label: Text(
+                  "Créer le groupe",
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.bold, // Texte en gras pour plus de présence
+                  color: Colors.white, // Assure que le texte est blanc pour tous les boutons
+                ),
               ),
-              child: Text('Créer',
-                  style: TextStyle(
-                      color: viewModel.enabled ? Colors.white : Colors.grey)),
-            ),
-          ],
+            )
+            )],
         ),
       ),
     );

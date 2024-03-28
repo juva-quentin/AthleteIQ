@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart'; // Pour ouvrir les liens
 class MessageTile extends StatelessWidget {
   final String message;
   final String sender;
+  final String senderImage;
   final String date;
   final bool sentByMe;
 
@@ -13,56 +14,87 @@ class MessageTile extends StatelessWidget {
     Key? key,
     required this.message,
     required this.sender,
+    required this.senderImage,
     required this.date,
     required this.sentByMe,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: sentByMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width *
-              0.6, // Limitation de la largeur
-        ),
-        child: GestureDetector(
-          onLongPress: () {
-            Clipboard.setData(ClipboardData(text: message));
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Message copié')),
-            );
-          },
-          child: Container(
-            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: sentByMe ? Colors.blue : Colors.grey[300],
-              borderRadius: BorderRadius.circular(8),
+    return Row(
+      mainAxisAlignment: sentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end, // Alignement vertical au bas
+      children: [
+        if (!sentByMe)
+          CircleAvatar(
+            backgroundImage: NetworkImage(senderImage),
+            radius: 16,
+          ),
+        Padding(
+          padding: sentByMe ? const EdgeInsets.symmetric(horizontal: 1.0) : const EdgeInsets.symmetric(horizontal: 8.0),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.6, // Limitation de la largeur à 60%
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  sender,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: sentByMe ? Colors.white : Colors.black),
+            child: GestureDetector(
+              onLongPress: () {
+                Clipboard.setData(ClipboardData(text: message));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Message copié')),
+                );
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                decoration: BoxDecoration(
+                  color: sentByMe ? Colors.blue : Colors.white,
+                  borderRadius: sentByMe
+                      ? const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                    bottomLeft: Radius.circular(10),
+
+                  )
+                      : const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 4),
-                _buildMessageText(context, message),
-                SizedBox(height: 4),
-                Text(
-                  date,
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: sentByMe ? Colors.white70 : Colors.grey),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(sender,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: sentByMe ? Colors.white : Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    _buildMessageText(context, message),
+                    const SizedBox(height: 3),
+                    Text(
+                      date,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: sentByMe ? Colors.white70 : Colors.grey,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 

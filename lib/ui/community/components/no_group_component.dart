@@ -13,26 +13,6 @@ Widget noGroupWidget(WidgetRef ref, BuildContext context) {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        GestureDetector(
-          onTap: () async {
-            await Navigator.of(context).push(
-              CustomPopupRoute(
-                builder: (BuildContext context) {
-                  return const CreateGroupScreen();
-                },
-              ),
-            );
-            ref.read(creatGroupViewModelProvider).clear();
-          },
-          child: Icon(
-            Icons.add_circle,
-            color: Colors.grey[700],
-            size: 75.r, // Ajusté pour la responsivité
-          ),
-        ),
-        SizedBox(
-          height: 20.h, // Ajusté pour la responsivité
-        ),
         Text(
           "Vous n'avez rejoint aucun groupe, tapez sur l'icône pour créer un groupe. Vous pouvez aussi en chercher un depuis le bouton de recherche en haut.",
           textAlign: TextAlign.center,

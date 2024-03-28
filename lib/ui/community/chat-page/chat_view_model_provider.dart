@@ -75,6 +75,7 @@ class ChatViewModel extends ChangeNotifier {
         Map<String, dynamic> chatMessageMap = {
           "message": messageController.text,
           "sender": _username,
+          "senderImageUrl": value.image,
           "time": DateTime.now(),
         };
         GroupsRepository().sendMessage(_groupeId, chatMessageMap);
@@ -91,7 +92,7 @@ class ChatViewModel extends ChangeNotifier {
     if (difference.inHours < 24) {
       // Moins de 24 heures écoulées, afficher le temps écoulé
       return difference.inHours != 0
-          ? 'Il y à ${difference.inHours}h${difference.inMinutes.remainder(60)}min'
+          ? 'Il y a ${difference.inHours}h${difference.inMinutes.remainder(60)}min'
           : '${difference.inMinutes.remainder(60)}min';
     } else {
       // Plus de 24 heures écoulées, afficher la date complète

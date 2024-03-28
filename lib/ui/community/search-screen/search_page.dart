@@ -21,7 +21,6 @@ class SearchPage extends ConsumerWidget {
     final model = ref.watch(searchPageViewModelProvider);
     final selectedTab = ValueNotifier<SearchTab>(SearchTab.Utilisateurs);
     final TextEditingController searchController = TextEditingController();
-    print(selectedTab.value);
 
     return Scaffold(
       appBar: AppBar(

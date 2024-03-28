@@ -72,7 +72,7 @@ Widget groupTile(Groups group, BuildContext context, WidgetRef ref) {
                   SizedBox(height: 4.h),
                   Text(
                     group.recentMessage.length > 30
-                        ? '${group.recentMessage.substring(0, 27)}...'
+                        ? '${group.recentMessage.substring(0, 25)}...'
                         : group.recentMessage,
                     style: TextStyle(
                       color: Colors.grey,

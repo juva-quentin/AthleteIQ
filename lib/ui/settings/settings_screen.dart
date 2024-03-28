@@ -12,20 +12,40 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Paramètres"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: const Text("Paramètres"),
       ),
       body: ListView(
         children: [
           ListTile(
-            title: Text("Profile"),
+            title: const Text("Profil"),
             onTap: () => Navigator.pushNamed(context, ProfileScreen.route),
           ),
           ListTile(
-            title: Text("Appareils"),
+            title: const Text("Appareils"),
+            onTap: () =>
+                Navigator.pushNamed(context, BluetoothDevicesScreen.route),
+          ),
+          ListTile(
+            title: const Text("A propos de nous"),
+            onTap: () =>
+                Navigator.pushNamed(context, BluetoothDevicesScreen.route),
+          ),
+          ListTile(
+            title: const Text("Conditions d'utilisation"),
+            onTap: () =>
+                Navigator.pushNamed(context, BluetoothDevicesScreen.route),
+          ),
+          ListTile(
+            title: const Text("Politique de confidentialité"),
             onTap: () =>
                 Navigator.pushNamed(context, BluetoothDevicesScreen.route),
           ),
         ],
+        //TODO: Ajouter la version de l'application
       ),
     );
   }

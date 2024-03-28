@@ -25,108 +25,33 @@ class GroupInfo extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Theme.of(context).primaryColor,
+        title: const Text("Information du groupe"),
         leading: IconButton(
-          icon: Icon(
-            UniconsLine.arrow_left,
-            size: 35.w,
-            color: Colors.white,
-          ),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(
-          "Information",
-          style: TextStyle(
-            fontSize: 24.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
-        ),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        centerTitle: true,
+        elevation: 0,
         actions: [
           group.when(
-            data: (data) {
-              return FutureBuilder<UserModel>(
-                future: userRepo.getUserWithId(userId: data.admin),
-                builder: (context, AsyncSnapshot<UserModel> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError) {
-                      return const Text('Error');
-                    } else if (snapshot.hasData) {
-                      return model.isAdmin(data.admin)
-                          ? IconButton(
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  CustomPopupRoute(
-                                    builder: (BuildContext context) {
-                                      return UpdateGroupScreen(
-                                        groupId: args.toString(),
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                              icon: Icon(Icons.edit,
-                                  size: 28.w, color: Colors.white),
-                            )
-                          : IconButton(
-                              onPressed: () {
-                                showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: const Text("Quitter le groupe"),
-                                      content: const Text(
-                                          "Êtes-vous sûr de vouloir quitter le groupe ?"),
-                                      actions: [
-                                        IconButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          icon: const Icon(
-                                            Icons.cancel,
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(
-                                            Icons.done,
-                                            color: Colors.green,
-                                          ),
-                                          onPressed: () async {
-                                            try {
-                                              await model.removeUserToGroup();
-                                            } catch (e) {
-                                              Utils.flushBarErrorMessage(
-                                                  e.toString(), context);
-                                            }
-                                            Navigator.pushNamed(
-                                                context, App.route);
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                              icon: Icon(Icons.exit_to_app,
-                                  size: 35.w, color: Colors.white),
-                            );
-                    } else {
-                      return const Text('Empty data');
-                    }
-                  } else {
-                    return Text('State: ${snapshot.connectionState}');
-                  }
-                },
-              );
-            },
-            error: (error, _) => Text(error.toString()),
+            data: (data) => model.isAdmin(data.admin)
+                ? IconButton(
+              icon: const Icon(UniconsLine.edit),
+              onPressed: () {
+                Navigator.of(context).push(
+                  CustomPopupRoute(
+                    builder: (_) => UpdateGroupScreen(groupId: args.toString()),
+                  ),
+                );
+              },
+            )
+                : IconButton(
+              icon: const Icon(UniconsLine.exit),
+              onPressed: () => _confirmExitGroupDialog(context, model),
+            ),
             loading: () => const CircularProgressIndicator(),
+            error: (_, __) => const Icon(UniconsLine.circle, color: Colors.red),
           ),
         ],
       ),
@@ -139,33 +64,33 @@ class GroupInfo extends ConsumerWidget {
                 Container(
                   padding: EdgeInsets.all(20.r),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30.r),
-                    color: Theme.of(context).primaryColor.withOpacity(0.2),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       CircleAvatar(
+                        backgroundImage: NetworkImage(data.groupIcon),
                         radius: 30.r,
-                        backgroundColor: Theme.of(context).primaryColor,
-                        child: Text(
-                          data.groupName.substring(0, 1).toUpperCase(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                            fontSize: 18.sp,
-                          ),
-                        ),
                       ),
                       SizedBox(width: 20.w),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Group: ${data.groupName}",
+                            "Groupe: ${data.groupName}",
                             style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14.sp,
                             ),
                           ),
                           SizedBox(height: 5.h),
@@ -182,8 +107,8 @@ class GroupInfo extends ConsumerWidget {
                                   return const Text('Error');
                                 } else if (snapshot.hasData) {
                                   return Text(
-                                    "Admin: ${snapshot.data?.pseudo}",
-                                    style: TextStyle(fontSize: 16.sp),
+                                    "Administrateur: ${snapshot.data?.pseudo}",
+                                    style: TextStyle(fontSize: 13.sp),
                                   );
                                 } else {
                                   return const Text('Empty data');
@@ -217,57 +142,55 @@ class GroupInfo extends ConsumerWidget {
         final userRepo = ref.watch(userRepositoryProvider);
         return group.when(
           data: (data) {
-            return ListView.builder(
-              itemCount: data.members.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return FutureBuilder<UserModel>(
-                  future: userRepo.getUserWithId(userId: data.members[index]),
-                  builder: (context, AsyncSnapshot<UserModel> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else if (snapshot.connectionState ==
-                        ConnectionState.done) {
-                      if (snapshot.hasError) {
-                        return const Text('Error');
-                      } else if (snapshot.hasData) {
-                        return Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 5.w, vertical: 10.h),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              radius: 30.r,
-                              backgroundColor: Theme.of(context).primaryColor,
-                              child: Text(
-                                snapshot.data!.pseudo
-                                    .substring(0, 1)
-                                    .toUpperCase(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
+            return Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.h),
+                  child: Text(
+                    "${data.members.length} Membres",
+                    style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                ListView.builder(
+                  itemCount: data.members.length,
+                  shrinkWrap: true,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return FutureBuilder<UserModel>(
+                      future: userRepo.getUserWithId(userId: data.members[index]),
+                      builder: (context, AsyncSnapshot<UserModel> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasError) {
+                            return const Text('Error');
+                          } else if (snapshot.hasData) {
+                            return ListTile(
+                              contentPadding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(snapshot.data!.image),
+                                radius: 24.r,
                               ),
-                            ),
-                            title: Text(
-                              snapshot.data!.pseudo,
-                              style: TextStyle(fontSize: 16.sp),
-                            ),
-                            subtitle: Text(
-                              'Utilisateur',
-                              style: TextStyle(fontSize: 14.sp),
-                            ),
-                          ),
-                        );
-                      } else {
-                        return const Text('Empty data');
-                      }
-                    } else {
-                      return Text('State: ${snapshot.connectionState}');
-                    }
+                              title: Text(
+                                snapshot.data!.pseudo,
+                                style: TextStyle(fontSize: 16.sp),
+                              ),
+                              subtitle: Text(
+                                "Objectif : ${snapshot.data!.objectif.toString()}Km",
+                                style: TextStyle(fontSize: 14.sp, color: Colors.grey),
+                              ),
+                            );
+                          } else {
+                            return const Text('Empty data');
+                          }
+                        } else {
+                          return Text('State: ${snapshot.connectionState}');
+                        }
+                      },
+                    );
                   },
-                );
-              },
+                ),
+              ],
             );
           },
           error: (error, _) => Text(error.toString()),
@@ -276,4 +199,27 @@ class GroupInfo extends ConsumerWidget {
       },
     );
   }
+}
+
+  void _confirmExitGroupDialog(BuildContext context, ChatViewModel model) {
+  showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: Text("Quitter le groupe"),
+      content: Text("Êtes-vous sûr de vouloir quitter ce groupe ?"),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text("Annuler"),
+        ),
+        TextButton(
+          onPressed: () async {
+            await model.removeUserToGroup();
+            Navigator.popUntil(context, ModalRoute.withName('/'));
+          },
+          child: Text("Quitter", style: TextStyle(color: Theme.of(context).errorColor)),
+        ),
+      ],
+    ),
+  );
 }

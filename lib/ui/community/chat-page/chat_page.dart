@@ -58,42 +58,21 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(
-              UniconsLine.arrow_left,
-              size: 35.w, // Modifié
-              color: Colors.white,
-            ),
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: group.when(
+            data: (data) => Text(data.groupName),
+            error: (_, __) => Text("Erreur"),
+            loading: () => const CircularProgressIndicator(),
           ),
           actions: [
             IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, GroupInfo.route,
-                    arguments: widget.args);
-              },
-              icon:
-                  Icon(Icons.info, size: 35.w, color: Colors.white), // Modifié
+              icon: const Icon(Icons.info_outline),
+              onPressed: () => Navigator.pushNamed(context, GroupInfo.route, arguments: widget.args),
             ),
           ],
-          centerTitle: true,
-          backgroundColor: Theme.of(context).primaryColor,
-          title: group.when(
-            data: (data) {
-              return Text(
-                data.groupName,
-                style: TextStyle(
-                  fontSize: 24.sp, // Modifié
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              );
-            },
-            error: (error, _) {
-              return Text(error
-                  .toString()); // Correction: affichage correct de l'erreur
-            },
-            loading: () => const CircularProgressIndicator(),
-          ),
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         ),
         body: Stack(
           children: <Widget>[
@@ -120,7 +99,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                       style: const TextStyle(color: Colors.black),
                       decoration: const InputDecoration(
                         hintText: "Envoyer un message...",
-                        hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                        hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
                         border: InputBorder.none,
                       ),
                     )),
@@ -142,7 +121,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                         width: 40.h,
                         decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(20.r),
+                          borderRadius: BorderRadius.circular(12.r),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.1),
@@ -191,7 +170,8 @@ chatMessages() {
                       date: model.formatMessageDateTime(
                           snapshot.data.docs[index]['time'].toDate()),
                       sentByMe: model.username ==
-                          snapshot.data.docs[index]['sender']);
+                          snapshot.data.docs[index]['sender'],
+                    senderImage: snapshot.data.docs[index]['senderImageUrl'],);
                 },
               )
             : Container();
